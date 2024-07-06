@@ -1,4 +1,3 @@
-
 services:
   main_spring:
     container_name: main_spring
