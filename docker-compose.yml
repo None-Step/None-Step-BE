@@ -1,0 +1,9 @@
+services:
+  main_spring:
+    container_name: main_spring
+    build: ./
+    ports:
+      - "8081:8080"
+    volumes:
+      - /spring:/image
+    restart: on-failure
