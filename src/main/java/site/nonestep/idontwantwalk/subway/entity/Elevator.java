@@ -30,6 +30,9 @@ public class Elevator {
     @Column(name = "elevator_comment", length = 500)
     private String elevatorComment;
 
+    @Column(name = "elevator_address", length = 500)
+    private String elevatorAddress;
+
     @Digits(integer = 5, fraction = 15)
     @Column(name = "elevator_latitude")
     private BigDecimal elevatorLatitude;
