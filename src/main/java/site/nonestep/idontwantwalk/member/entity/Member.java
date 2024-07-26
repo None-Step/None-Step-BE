@@ -45,8 +45,8 @@ public class Member {
     @Column(name = "member_social_type")
     private SocialType memberSocialType;
 
-    @Column(name = "member_social_id", length = 100)
-    private String memberSocialId;
+    @Column(name = "member_social_id", length = 500)
+    private String memberSocialID;
 
     @Column(name = "member_refresh_token", length = 2000)
     private String memberRefreshToken;
@@ -69,4 +69,9 @@ public class Member {
 
     @Column(name = "member_report")
     private Integer memberReport;
+
+    // 일반 & 소셜 로그인 시, Refresh Token DB 저장
+    public void changeToken(String memberRefreshToken){
+        this.memberRefreshToken = memberRefreshToken;
+    }
 }

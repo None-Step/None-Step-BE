@@ -16,5 +16,4 @@ public class MemberSignUpResponseDTO {
     private String memberRandom;
     private LocalDateTime memberJoinDate;
 
-
 }
