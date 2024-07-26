@@ -12,6 +12,7 @@ import site.nonestep.idontwantwalk.member.dto.MemberSignUpResponseDTO;
 import site.nonestep.idontwantwalk.member.repository.MemberRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -78,4 +79,26 @@ public class MemberServiceImpl implements MemberService {
             return false;
         }
     }
+
+
+    //id 찾기
+    @Override
+    public List<MemberIdFindResponseDTO> idFind(MemberIdFindRequestDTO memberIdFindRequestDTO) {
+        List<Member> memberIdFind = memberRepository.selectMemberNameAndMemberPhone(memberIdFindRequestDTO.getMemberName(),
+                memberIdFindRequestDTO.getMemberPhone());
+
+        List<MemberIdFindResponseDTO> memberIdFindResponse = memberIdFind.stream().map(this::listIdFind).toList();
+        return memberIdFindResponse;
+    }
+
+
+    //id 찾기 <<list로 받아올 때는 하나 더 작성해야한다.
+    public MemberIdFindResponseDTO listIdFind (Member member){
+        MemberIdFindResponseDTO memberIdFindResponseDTO = new MemberIdFindResponseDTO();
+
+        memberIdFindResponseDTO.setMemberID(member.getMemberID());
+        memberIdFindResponseDTO.setMemberJoinDate(member.getMemberJoinTime());
+        return memberIdFindResponseDTO;
+    }
+
 }

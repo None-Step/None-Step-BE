@@ -2,8 +2,10 @@ package site.nonestep.idontwantwalk.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.member.entity.Member;
 import site.nonestep.idontwantwalk.member.entity.SocialType;
 
+import java.util.List;
 import java.util.Optional;
 
 import static site.nonestep.idontwantwalk.member.entity.QMember.member; //jpa q속성: member entity 사용할 때 씀,
@@ -41,6 +43,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
                 queryFactory.select(member.memberNo)
                         .from(member)
                         .where(member.memberSocialID.eq(socialID).and(member.memberSocialType.eq(registrationID)))
-                        .fetchFirst());
+                        .fetchFirst()); //결과가 하나만 나올 때
+    }
+
+    //id 찾기
+    @Override
+    public List<Member> selectMemberNameAndMemberPhone(String memberName, String memberPhone) {
+        return queryFactory.select(member)
+                .from(member)
+                .where(member.memberName.eq(memberName).and(member.memberPhone.eq(memberPhone)))
+                .fetch();//결과가 여러개 나올 때
     }
 }

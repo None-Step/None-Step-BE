@@ -16,6 +16,7 @@ import site.nonestep.idontwantwalk.config.AuthConfig;
 import site.nonestep.idontwantwalk.member.dto.*;
 import site.nonestep.idontwantwalk.member.service.MemberService;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
@@ -81,4 +82,16 @@ public class MemberController {
         return new ResponseEntity<>(isIdCheck, HttpStatus.OK);
     }
 
+    //ID 찾기
+    @PostMapping("/idfind") //response에서 받아서! request로 전해준다.
+    public ResponseEntity<?> idfind(@RequestBody MemberIdFindRequestDTO memberIdFindRequestDTO){
+        List<MemberIdFindResponseDTO> memberIdFindResponseDTO = memberService.idFind(memberIdFindRequestDTO);
+
+        //id 있을 수도 있고, 없을수도 있지 정보가 있으면 보내고, 정보가 없으면 안보내겠다.
+        if (memberIdFindResponseDTO.isEmpty()) {
+            return new ResponseEntity<>("회원정보가 없습니다.",HttpStatus.BAD_REQUEST);
+        }else{
+            return new ResponseEntity<>(memberIdFindResponseDTO, HttpStatus.OK);
+        }
+    }
 }
