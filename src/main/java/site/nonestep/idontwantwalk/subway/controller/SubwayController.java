@@ -57,4 +57,14 @@ public class SubwayController {
         return new ResponseEntity<>(subwayLiftResponseDTO, HttpStatus.OK);
     }
 
+    // 역 내 화장실 조회
+    @GetMapping("/toilet")
+    public ResponseEntity<?> toilet(@ModelAttribute SubwayToiletRequestDTO subwayToiletRequestDTO){
+        List<SubwayToiletResponseDTO> subwayToiletResponseDTO = subwayService.toilet(subwayToiletRequestDTO.getLatitude(),
+                subwayToiletRequestDTO.getLongitude(), subwayToiletRequestDTO.getRadius());
+
+        return new ResponseEntity<>(subwayToiletResponseDTO, HttpStatus.OK);
+    }
+
+
 }
