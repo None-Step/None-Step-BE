@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import site.nonestep.idontwantwalk.subway.dto.SubwayElevatorResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.SubwayEscalResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.SubwayLiftResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.Info;
 import site.nonestep.idontwantwalk.subway.repository.*;
@@ -66,6 +68,24 @@ public class SubwayServiceImpl implements SubwayService{
                 longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
 
         return subwayElevatorResponseDTO;
+    }
+
+    // 에스컬레이터 있는 역 조회
+    @Override
+    public List<SubwayEscalResponseDTO> escal(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayEscalResponseDTO> subwayEscalResponseDTO = subwayEscalRepository.selectEscal(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayEscalResponseDTO;
+    }
+
+    // 휠체어 리프트 있는 역 조회
+    @Override
+    public List<SubwayLiftResponseDTO> lift(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayLiftResponseDTO> subwayLiftResponseDTO = subwayLiftRepository.selectLift(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayLiftResponseDTO;
     }
 
 }
