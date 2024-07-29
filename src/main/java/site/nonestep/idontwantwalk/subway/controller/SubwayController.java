@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import site.nonestep.idontwantwalk.subway.dto.SubwayElevatorRequestDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayElevatorResponseDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayLocationRequestDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.*;
 import site.nonestep.idontwantwalk.subway.service.SubwayService;
 
 import java.util.List;
@@ -42,5 +39,22 @@ public class SubwayController {
         return new ResponseEntity<>(subwayElevatorResponseDTO, HttpStatus.OK);
     }
 
+    // 에스컬레이터 있는 역 조회
+    @GetMapping("/escal")
+    public ResponseEntity<?> escal(@ModelAttribute SubwayEscalRequestDTO subwayEscalRequestDTO){
+        List<SubwayEscalResponseDTO> subwayEscalResponseDTO = subwayService.escal(subwayEscalRequestDTO.getLatitude(),
+                subwayEscalRequestDTO.getLongitude(), subwayEscalRequestDTO.getRadius());
+
+        return new ResponseEntity<>(subwayEscalResponseDTO, HttpStatus.OK);
+    }
+
+    // 휠체어 리프트 있는 역 조회
+    @GetMapping("/lift")
+    public ResponseEntity<?> lift(@ModelAttribute SubwayLiftRequestDTO subwayLiftRequestDTO){
+        List<SubwayLiftResponseDTO> subwayLiftResponseDTO = subwayService.lift(subwayLiftRequestDTO.getLatitude(),
+                subwayLiftRequestDTO.getLongitude(), subwayLiftRequestDTO.getRadius());
+
+        return new ResponseEntity<>(subwayLiftResponseDTO, HttpStatus.OK);
+    }
 
 }
