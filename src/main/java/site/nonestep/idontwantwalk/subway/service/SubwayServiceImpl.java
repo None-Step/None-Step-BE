@@ -3,10 +3,7 @@ package site.nonestep.idontwantwalk.subway.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import site.nonestep.idontwantwalk.subway.dto.SubwayElevatorResponseDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayEscalResponseDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayLiftResponseDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.*;
 import site.nonestep.idontwantwalk.subway.entity.Info;
 import site.nonestep.idontwantwalk.subway.repository.*;
 
@@ -86,6 +83,15 @@ public class SubwayServiceImpl implements SubwayService{
                 longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
 
         return subwayLiftResponseDTO;
+    }
+
+    // 역 내 화장실 조회
+    @Override
+    public List<SubwayToiletResponseDTO> toilet(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayToiletResponseDTO> subwayToiletResponseDTO = subwayToiletRepository.selectToilet(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayToiletResponseDTO;
     }
 
 }

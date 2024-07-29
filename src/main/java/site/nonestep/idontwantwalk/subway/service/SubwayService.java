@@ -1,9 +1,6 @@
 package site.nonestep.idontwantwalk.subway.service;
 
-import site.nonestep.idontwantwalk.subway.dto.SubwayElevatorResponseDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayEscalResponseDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayLiftResponseDTO;
-import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,4 +18,7 @@ public interface SubwayService {
 
     // 휠체어 리프트 있는 역 조회
     List<SubwayLiftResponseDTO> lift(BigDecimal latitude, BigDecimal longitude, Long radius);
+
+    // 역 내 화장실 조회
+    List<SubwayToiletResponseDTO> toilet(BigDecimal latitude, BigDecimal longitude, Long radius);
 }
