@@ -94,4 +94,41 @@ public class SubwayServiceImpl implements SubwayService{
         return subwayToiletResponseDTO;
     }
 
+    // 역 내 장애인 화장실 조회
+    @Override
+    public List<SubwayDifToiletResponseDTO> difToilet(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayDifToiletResponseDTO> subwayDifToiletResponseDTO = subwayDifToiletRepository.selectDifToilet(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayDifToiletResponseDTO;
+    }
+
+    // 역 내 수유실 조회
+    @Override
+    public List<SubwayNursingResponseDTO> nursingRoom(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayNursingResponseDTO> subwayNursingResponseDTO = subwayNursingRepository.selectNursingRoom(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayNursingResponseDTO;
+    }
+
+    // 역 내 atm 조회
+    @Override
+    public List<SubwayATMResponseDTO> atm(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayATMResponseDTO> subwayATMResponseDTO = subwayATMRepository.selectATM(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayATMResponseDTO;
+    }
+
+    // 역 내 AED(제세동기) 조회
+    @Override
+    public List<SubwayAEDResponseDTO> aed(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayAEDResponseDTO> subwayAEDResponseDTO = subwayAedRepository.selectAED(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayAEDResponseDTO;
+    }
+
+
 }
