@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.nonestep.idontwantwalk.subway.dto.*;
+import site.nonestep.idontwantwalk.subway.entity.Subway;
 import site.nonestep.idontwantwalk.subway.service.SubwayService;
 
 import java.util.List;
@@ -66,5 +67,39 @@ public class SubwayController {
         return new ResponseEntity<>(subwayToiletResponseDTO, HttpStatus.OK);
     }
 
+    // 역 내 장애인 화장실 조회
+    @GetMapping("/dif-toilet")
+    public ResponseEntity<?> difToilet(@ModelAttribute SubwayDifToiletRequestDTO subwayDifToiletRequestDTO){
+        List<SubwayDifToiletResponseDTO> subwayDifToiletResponseDTO = subwayService.difToilet(subwayDifToiletRequestDTO.getLatitude(),
+                subwayDifToiletRequestDTO.getLongitude(), subwayDifToiletRequestDTO.getRadius());
 
+        return new ResponseEntity<>(subwayDifToiletResponseDTO, HttpStatus.OK);
+    }
+
+    // 역 내 수유실 조회
+    @GetMapping("/nursing-room")
+    public ResponseEntity<?> nursingRoom(@ModelAttribute SubwayNursingRequestDTO subwayNursingRequestDTO){
+        List<SubwayNursingResponseDTO> subwayNursingResponseDTO = subwayService.nursingRoom(subwayNursingRequestDTO.getLatitude(),
+                subwayNursingRequestDTO.getLongitude(), subwayNursingRequestDTO.getRadius());
+
+        return new ResponseEntity<>(subwayNursingResponseDTO, HttpStatus.OK);
+    }
+
+    // 역 내 ATM 조회
+    @GetMapping("/atm")
+    public ResponseEntity<?> atm(@ModelAttribute SubwayATMReqeustDTO subwayATMReqeustDTO){
+        List<SubwayATMResponseDTO> subwayATMResponseDTO = subwayService.atm(subwayATMReqeustDTO.getLatitude(),
+                subwayATMReqeustDTO.getLongitude(), subwayATMReqeustDTO.getRadius());
+
+        return new ResponseEntity<>(subwayATMResponseDTO, HttpStatus.OK);
+    }
+
+    // 역 내 제세동기 조회
+    @GetMapping("/aed")
+    public ResponseEntity<?> aed(@ModelAttribute SubwayAEDRequestDTO subwayAEDRequestDTO){
+        List<SubwayAEDResponseDTO> subwayAEDResponseDTO = subwayService.aed(subwayAEDRequestDTO.getLatitude(),
+                subwayAEDRequestDTO.getLongitude(), subwayAEDRequestDTO.getRadius());
+
+        return new ResponseEntity<>(subwayAEDResponseDTO, HttpStatus.OK);
+    }
 }
