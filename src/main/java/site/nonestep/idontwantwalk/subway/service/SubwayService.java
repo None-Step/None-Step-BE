@@ -21,4 +21,16 @@ public interface SubwayService {
 
     // 역 내 화장실 조회
     List<SubwayToiletResponseDTO> toilet(BigDecimal latitude, BigDecimal longitude, Long radius);
+
+    // 역 내 장애인 화장실 조회
+    List<SubwayDifToiletResponseDTO> difToilet(BigDecimal latitude, BigDecimal longitude, Long radius);
+
+    // 역 내 수유실 조회
+    List<SubwayNursingResponseDTO> nursingRoom(BigDecimal latitude, BigDecimal longitude, Long radius);
+
+    // 역 내 atm 조회
+    List<SubwayATMResponseDTO> atm(BigDecimal latitude, BigDecimal longitude, Long radius);
+
+    // 역 내 제세동기 조회(aed)
+    List<SubwayAEDResponseDTO> aed(BigDecimal latitude, BigDecimal longitude, Long radius);
 }
