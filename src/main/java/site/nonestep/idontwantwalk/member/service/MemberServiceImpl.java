@@ -22,7 +22,7 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
-    //닉네임 배열을 위한 9]
+    //닉네임 배열을 위한
     String [] nick1 = new String[]{"성실한","재밌는","유쾌한","밝은","목마른","배아픈","청량한","심심한","차가운","지루한","불안한","행복한",
             "추위를 많이 타는","용감한","서글픈","웃고있는","감성적인","이성적인","말이 많은","무뚝뚝한","쾌활한","신나는","뒤집어진","걸어가는",
             "생각하는","배고픈","질서를 중요시하는","개구장이","귀여운","단호한","소심한","잠만보","감기에 걸린","맛있는 걸 좋아하는","특이한",
@@ -101,4 +101,17 @@ public class MemberServiceImpl implements MemberService {
         return memberIdFindResponseDTO;
     }
 
+    //일반 로그인
+    @Override
+    public Long login(String memberID, String memberPass) {
+        Long selectMemberIdAndMemberPass = memberRepository.selectMemberIdAndMemberPass(memberID, memberPass);
+        return selectMemberIdAndMemberPass;
+    }
+
+    // DB에 refreshtoken  저장
+    @Override
+    public void refreshlogin(Long memberNo, String memberRefreshToken) {
+        Member member = memberRepository.getReferenceById(memberNo);
+        member.changeToken(memberRefreshToken);  //void라서 return안함
+    }
 }
