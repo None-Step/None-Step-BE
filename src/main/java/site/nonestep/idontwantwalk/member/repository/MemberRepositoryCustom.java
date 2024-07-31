@@ -20,4 +20,8 @@ public interface MemberRepositoryCustom {
     //id 찾기
     List<Member> selectMemberNameAndMemberPhone(String memberName, String memberPhone);
     //memberid를 찾기 위해서 조회해야 할 것 name,phone을 변수이름으로, (자료타입 + 변수명)=> 2개 적어야 할 때는 괄호 안에 동일하게 적기
+
+
+    //일반로그인
+    Long selectMemberIdAndMemberPass(String memberID, String memberPass);
 }

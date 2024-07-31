@@ -9,15 +9,22 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import site.nonestep.idontwantwalk.auth.jwt.JsonWebToken;
+import site.nonestep.idontwantwalk.auth.util.JwtTokenUtils;
 import site.nonestep.idontwantwalk.config.AuthConfig;
 import site.nonestep.idontwantwalk.member.dto.*;
 import site.nonestep.idontwantwalk.member.service.MemberService;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static site.nonestep.idontwantwalk.auth.util.JwtTokenUtils.REFRESH_PERIOD;
 
 @Slf4j
 @RestController
@@ -92,6 +99,53 @@ public class MemberController {
             return new ResponseEntity<>("회원정보가 없습니다.",HttpStatus.BAD_REQUEST);
         }else{
             return new ResponseEntity<>(memberIdFindResponseDTO, HttpStatus.OK);
+        }
+    }
+
+//    //일반로그인
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody){
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+
+    // 일반 로그인
+    @PostMapping("/login")
+    public ResponseEntity<?> normalLogin(@RequestBody MemberLoginRequestDTO memberLoginRequestDTO){
+
+        Long login = memberService.login(memberLoginRequestDTO.getMemberID(), memberLoginRequestDTO.getMemberPass());
+
+        if (login != null){
+            // ROLE_USER : user인지 admin인지 같이 판별하기 위해서 보내는 것
+            JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(login, "ROLE_USER");
+            MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("Authorization", jsonWebToken.getAccessToken());
+
+            // path("/") : Cookie는 FE에서 설정 없이 접근하기 때문에 해당 쿠키가 어떤 url에서 사용하고 안하고를 정할 수 있음.
+            // header같은 경우, 호출이나 값을 빼오는 코드를 모두 적어줘야한다.
+            // Cookie는 코드 구현이 필요2 없다. Chrome 등 exp에서 가지고 있다가 자동으로 보내준다(크롬이)
+            // 우리는 그래서 아래 코드와 같이 추가 설정만 해주는 것이다.
+            // 그러나 "/"만 적게 되면 어떤 url에서도 Cookie를 보내겠다는 뜻
+            // "/abcd" 등 /뒤에 path를 적게 되면 해당 path로만 Cookie를 보내게 됨
+            // sameSite("None") : 다른 사이트에서도 접근 가능함 > LocalHost에서 nonestep.site로 접근 가능
+            // sameSite("None")을 안써야하는거 아냐? 우리는 지금 개발단계이니까 풀어두고, 실제 배포할 때에는 지워야함!
+            // 그러나 우리는 배우는 단계니까.. 걍 둔다.. ㅎㅎ
+            // secure(true) : http뿐만 아니라 https에서도 보내겠다. 둘 다 허용한다!
+            memberService.refreshlogin(login, jsonWebToken.getRefreshToken());
+            ResponseCookie cookie = ResponseCookie.from("Refresh", jsonWebToken.getRefreshToken())
+                    .sameSite("None")
+                    .secure(true)
+                    .path("/")
+                    .maxAge(REFRESH_PERIOD)
+                    .build();
+            headers.add("Set-Cookie", cookie.toString());
+
+            MemberLoginResponseDTO memberLoginResponseDTO = new MemberLoginResponseDTO();
+            memberLoginResponseDTO.setMessage("Success");
+
+            return new ResponseEntity<>(memberLoginResponseDTO, headers, HttpStatus.OK);3
+        }else{
+            return new ResponseEntity<>("ID와 비밀번호를 확인해주세요", HttpStatus.BAD_REQUEST);
         }
     }
 }

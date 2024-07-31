@@ -54,4 +54,16 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
                 .where(member.memberName.eq(memberName).and(member.memberPhone.eq(memberPhone)))
                 .fetch();//결과가 여러개 나올 때
     }
+
+    //일반로그인
+    @Override
+    public Long selectMemberIdAndMemberPass(String memberID, String memberPass) {
+
+        return queryFactory.select(member.memberNo)
+                .from(member)
+                .where(member.memberID.eq(memberID).and(member.memberPassword.eq(memberPass)))
+                .fetchFirst();
+    }
+
+
 }

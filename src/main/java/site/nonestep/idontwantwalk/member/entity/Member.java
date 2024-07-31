@@ -68,10 +68,11 @@ public class Member {
     private LocalDateTime memberDeleteTime;
 
     @Column(name = "member_report")
-    private Integer memberReport;
+    private Integer memberReport; //신고횟수
 
     // 일반 & 소셜 로그인 시, Refresh Token DB 저장
-    public void changeToken(String memberRefreshToken){
+    public void  changeToken(String memberRefreshToken){
         this.memberRefreshToken = memberRefreshToken;
     }
+
 }
