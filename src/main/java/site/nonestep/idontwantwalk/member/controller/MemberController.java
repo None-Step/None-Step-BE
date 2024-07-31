@@ -143,7 +143,7 @@ public class MemberController {
             MemberLoginResponseDTO memberLoginResponseDTO = new MemberLoginResponseDTO();
             memberLoginResponseDTO.setMessage("Success");
 
-            return new ResponseEntity<>(memberLoginResponseDTO, headers, HttpStatus.OK);3
+            return new ResponseEntity<>(memberLoginResponseDTO, headers, HttpStatus.OK);
         }else{
             return new ResponseEntity<>("ID와 비밀번호를 확인해주세요", HttpStatus.BAD_REQUEST);
         }
