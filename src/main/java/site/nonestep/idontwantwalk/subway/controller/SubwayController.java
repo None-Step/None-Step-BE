@@ -102,4 +102,22 @@ public class SubwayController {
 
         return new ResponseEntity<>(subwayAEDResponseDTO, HttpStatus.OK);
     }
+
+    // 역 내 전동 휠체어 충전기 설비 조회
+    @GetMapping("/charger")
+    public ResponseEntity<?> charger(@ModelAttribute SubwayChargerRequestDTO subwayChargerRequestDTO){
+        List<SubwayChargerResponseDTO> subwayChargerResponseDTO = subwayService.charger(subwayChargerRequestDTO.getLatitude(),
+                subwayChargerRequestDTO.getLongitude(), subwayChargerRequestDTO.getRadius());
+
+        return new ResponseEntity<>(subwayChargerResponseDTO, HttpStatus.OK);
+    }
+
+    // 역 내 고객센터 조회
+    @GetMapping("/center")
+    public ResponseEntity<?> center(@ModelAttribute SubwayCenterRequestDTO subwayCenterRequestDTO){
+        List<SubwayCenterResponseDTO> subwayCenterResponseDTO = subwayService.center(subwayCenterRequestDTO.getLatitude(),
+                subwayCenterRequestDTO.getLongitude(), subwayCenterRequestDTO.getRadius());
+
+        return new ResponseEntity<>(subwayCenterResponseDTO, HttpStatus.OK);
+    }
 }
