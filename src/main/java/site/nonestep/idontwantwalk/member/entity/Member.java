@@ -75,4 +75,13 @@ public class Member {
         this.memberRefreshToken = memberRefreshToken;
     }
 
+    //프로필변경: 휴대폰
+    public void modifyPhone(String memberPhone){
+        this.memberPhone = memberPhone;
+    }
+
+    //프로필변경: 메일
+    public void modifyMail(String memberMail){
+        this.memberMail = memberMail;
+    }
 }
