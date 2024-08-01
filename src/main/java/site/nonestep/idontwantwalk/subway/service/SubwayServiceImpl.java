@@ -130,5 +130,23 @@ public class SubwayServiceImpl implements SubwayService{
         return subwayAEDResponseDTO;
     }
 
+    // 역 내 전동 휠체어 충전 설비 조회
+    @Override
+    public List<SubwayChargerResponseDTO> charger(BigDecimal latitude, BigDecimal longitude, Long radius) {
+        List<SubwayChargerResponseDTO> subwayChargerResponseDTO = subwayChargerRepository.selectCharger(latitude,
+                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayChargerResponseDTO;
+    }
+
+    // 역 내 고객센터 조회
+    @Override
+    public List<SubwayCenterResponseDTO> center(BigDecimal latitude, BigDecimal longitue, Long radius) {
+        List<SubwayCenterResponseDTO> subwayCenterResponseDTO = subwayCenterRepository.selectCenter(latitude,
+                longitue, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+
+        return subwayCenterResponseDTO;
+    }
+
 
 }
