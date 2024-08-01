@@ -33,4 +33,10 @@ public interface SubwayService {
 
     // 역 내 제세동기 조회(aed)
     List<SubwayAEDResponseDTO> aed(BigDecimal latitude, BigDecimal longitude, Long radius);
+
+    // 역 내 전동 휠체어 충전 설비 조회
+    List<SubwayChargerResponseDTO> charger(BigDecimal latitude, BigDecimal longitude, Long radius);
+
+    // 역 내 고객센터 조회
+    List<SubwayCenterResponseDTO> center(BigDecimal latitude, BigDecimal longitue, Long radius);
 }
