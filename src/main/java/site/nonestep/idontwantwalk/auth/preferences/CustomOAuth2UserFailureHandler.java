@@ -95,10 +95,14 @@ public class CustomOAuth2UserFailureHandler extends SimpleUrlAuthenticationFailu
         CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
 
         //프론트에 전달할 쿠키
-        Cookie acessCookie = new Cookie("Access", jsonWebToken.getAccessToken());
-        acessCookie.setMaxAge((int) ACCESS_PERIOD);
-        acessCookie.setPath("/");
-        response.addCookie(acessCookie);
+        ResponseCookie acessCookie = ResponseCookie.from("Access", jsonWebToken.getAccessToken())
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .maxAge(ACCESS_PERIOD)
+                .build();
+        response.addHeader("Set-Cookie",acessCookie.toString());
+
         ResponseCookie cookie = ResponseCookie.from("Refresh", jsonWebToken.getRefreshToken())
                 .sameSite("None")
                 .secure(true)
