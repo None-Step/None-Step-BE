@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.subway.dto.InfoCenter;
 import site.nonestep.idontwantwalk.subway.dto.SubwayCenterResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayChargerResponseDTO;
 
@@ -40,6 +41,15 @@ public class SubwayCenterRepositoryImpl implements SubwayCenterRepositoryCustom{
                 Expressions.as(distanceExpression, distancePath)))
                 .from(center)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                .fetch();
+    }
+
+    // 역 1개 정보 전체 조회
+    @Override
+    public List<InfoCenter> selectInfoCenter(String region, String line, String station) {
+        return queryFactory.select(Projections.constructor(InfoCenter.class, center.centerComment, center.centerHours, center.centerTel))
+                .from(center)
+                .where(center.info.region.eq(region).and(center.info.line.eq(line).and(center.info.station.eq(station))))
                 .fetch();
     }
 }

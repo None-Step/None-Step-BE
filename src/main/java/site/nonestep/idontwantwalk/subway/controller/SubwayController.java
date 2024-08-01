@@ -120,4 +120,12 @@ public class SubwayController {
 
         return new ResponseEntity<>(subwayCenterResponseDTO, HttpStatus.OK);
     }
+
+    // 역 1개 정보 전체 조회
+    @GetMapping("/station-info")
+    public ResponseEntity<?> station(@ModelAttribute SubwayStationInfoRequestDTO subwayStationInfoRequestDTO){
+        SubwayStationInfoResponseDTO subwayStationInfoResponseDTO = subwayService.totalStationInfo(subwayStationInfoRequestDTO);
+
+        return new ResponseEntity<>(subwayStationInfoResponseDTO, HttpStatus.OK);
+    }
 }

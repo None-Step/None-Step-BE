@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.subway.dto.InfoCharger;
 import site.nonestep.idontwantwalk.subway.dto.SubwayChargerResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayDifToiletResponseDTO;
 
@@ -41,6 +42,15 @@ public class SubwayChargerRepositoryImpl implements SubwayChargerRepositoryCusto
                 charger.chargerLatitude, charger.chargerLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(charger)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                .fetch();
+    }
+
+    // 역 1개 정보 전체 조회시 필요
+    @Override
+    public List<InfoCharger> selectInfoCharger(String region, String line, String station) {
+        return queryFactory.select(Projections.constructor(InfoCharger.class, charger.chargerComment))
+                .from(charger)
+                .where(charger.info.region.eq(region).and(charger.info.line.eq(line).and(charger.info.station.eq(station))))
                 .fetch();
     }
 }

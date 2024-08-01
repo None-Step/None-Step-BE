@@ -39,4 +39,7 @@ public interface SubwayService {
 
     // 역 내 고객센터 조회
     List<SubwayCenterResponseDTO> center(BigDecimal latitude, BigDecimal longitue, Long radius);
+
+    // 역 1개 정보 전체 조회
+    SubwayStationInfoResponseDTO totalStationInfo(SubwayStationInfoRequestDTO subwayStationInfoRequestDTO);
 }

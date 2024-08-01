@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.subway.dto.InfoToilet;
 import site.nonestep.idontwantwalk.subway.dto.SubwayEscalResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayToiletResponseDTO;
 
@@ -41,6 +42,15 @@ public class SubwayToiletRepositoryImpl implements SubwayToiletRepositoryCustom{
                 toilet.toiletAddress, toilet.toiletLatitude, toilet.toiletLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(toilet)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                .fetch();
+    }
+
+    // 역 1개 전체 조회 시 필요
+    @Override
+    public List<InfoToilet> selectInfoToilet(String region, String line, String station) {
+        return queryFactory.select(Projections.constructor(InfoToilet.class, toilet.toiletExit, toilet.toiletComment))
+                .from(toilet)
+                .where(toilet.info.region.eq(region).and(toilet.info.line.eq(line).and(toilet.info.station.eq(station))))
                 .fetch();
     }
 }
