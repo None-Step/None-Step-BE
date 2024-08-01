@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import site.nonestep.idontwantwalk.auth.jwt.JsonWebToken;
@@ -102,6 +103,19 @@ public class MemberController {
         }
     }
 
+    //pw 찾기
+    @PostMapping("/pwfind")
+    public ResponseEntity<?> pwfind(@RequestBody MemberPwFindRequestDTO memberPwFindRequestDTO){
+        MemberPwFindResponseDTO memberPwFindResponseDTO = memberService.pwFind(memberPwFindRequestDTO);
+
+        if (memberPwFindResponseDTO == null){
+            return new ResponseEntity<>("일치하는 정보가 없습니다.", HttpStatus.BAD_REQUEST);
+        }else{
+             return new ResponseEntity<>(memberPwFindResponseDTO, HttpStatus.OK);
+        }
+    }
+
+
 //    //일반로그인
 //    @PostMapping("/login")
 //    public ResponseEntity<?> login(@RequestBody){
@@ -123,7 +137,7 @@ public class MemberController {
 
             // path("/") : Cookie는 FE에서 설정 없이 접근하기 때문에 해당 쿠키가 어떤 url에서 사용하고 안하고를 정할 수 있음.
             // header같은 경우, 호출이나 값을 빼오는 코드를 모두 적어줘야한다.
-            // Cookie는 코드 구현이 필요2 없다. Chrome 등 exp에서 가지고 있다가 자동으로 보내준다(크롬이)
+            // Cookie는 코드 구현이 필요 없다. Chrome 등 exp에서 가지고 있다가 자동으로 보내준다(크롬이)
             // 우리는 그래서 아래 코드와 같이 추가 설정만 해주는 것이다.
             // 그러나 "/"만 적게 되면 어떤 url에서도 Cookie를 보내겠다는 뜻
             // "/abcd" 등 /뒤에 path를 적게 되면 해당 path로만 Cookie를 보내게 됨
@@ -148,4 +162,68 @@ public class MemberController {
             return new ResponseEntity<>("ID와 비밀번호를 확인해주세요", HttpStatus.BAD_REQUEST);
         }
     }
+
+    //로그아웃
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(){
+        MultiValueMap<String, String> headers = new HttpHeaders(); //새로 선언
+        MemberLogoutResponseDTO memberLogoutResponseDTO = new MemberLogoutResponseDTO();
+        memberLogoutResponseDTO.setMessage("success");
+        //이제 보내야하는데 그 전에 토큰을 제거해준다.
+        ResponseCookie cookie = ResponseCookie.from("Refresh")
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .maxAge(0)//즉시 제거해
+                .build();
+        headers.add("Set-Cookie", cookie.toString());
+
+        //이제 토큰 제거할 준비다됨
+
+        return new ResponseEntity<>(memberLogoutResponseDTO, headers, HttpStatus.OK);
+
+
+    }
+
+    //마이페이지 조회
+    @GetMapping("/info")
+    public ResponseEntity<?> info(){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()); //나 토큰을 가져오겠다. 쓰겠어!
+        MemberInfoResponseDTO memberInfoResponseDTO = memberService.info(memberNo);
+        if (memberInfoResponseDTO == null){
+            return new ResponseEntity<>("잘못된 정보입니다.", HttpStatus.BAD_REQUEST);
+        }else{
+            return new ResponseEntity<>(memberInfoResponseDTO, HttpStatus.OK);
+        }
+    }
+
+    //다른유저 프로필 조회
+    @PostMapping("/others")
+    public ResponseEntity<?> others(@RequestBody MemberOthersRequestDTO memberOthersRequestDTO){
+        //나도 로그인이 되어 있는 상태기 때문에 token을 가지고 있다.
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()); //나 토큰을 가져오겠다. 쓰겠어!
+        MemberOthersResponseDTO memberOthersResponseDTO = memberService.others(memberOthersRequestDTO);
+        if (memberOthersResponseDTO == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            return new ResponseEntity<>(memberOthersResponseDTO, HttpStatus.OK);
+        }
+    }
+
+    //프로필변경:휴대폰
+    @PutMapping("/modify-phone")
+    public ResponseEntity<?> modifyPhone(@RequestBody MemberModifyPhoneRequestDTO memberModifyPhoneRequestDTO){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        MemberModifyPhoneResponseDTO memberModifyPhoneResponseDTO = memberService.modifyPhone(memberModifyPhoneRequestDTO, memberNo);
+        return new ResponseEntity<>(memberModifyPhoneResponseDTO, HttpStatus.OK);
+    }
+
+    //프로필변경: 메일
+    @PutMapping("/modify-mail")
+    public ResponseEntity<?> modifyMail(@RequestBody MemberModifyMailRequestDTO memberModifyMailRequestDTO){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        MemberModifyMailResponseDTO memberModifyMailResponseDTO = memberService.modifyMail(memberModifyMailRequestDTO, memberNo);
+        return new ResponseEntity<>(memberModifyMailResponseDTO ,HttpStatus.OK);
+    }
+
 }
