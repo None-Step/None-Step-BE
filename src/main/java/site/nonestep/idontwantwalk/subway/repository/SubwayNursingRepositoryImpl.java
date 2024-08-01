@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.subway.dto.InfoNursing;
 import site.nonestep.idontwantwalk.subway.dto.SubwayDifToiletResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayNursingResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.NursingRoom;
@@ -42,6 +43,15 @@ public class SubwayNursingRepositoryImpl implements SubwayNursingRepositoryCusto
                 nursingRoom.nursingLatitude, nursingRoom.nursingLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(nursingRoom)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                .fetch();
+    }
+
+    // 역 1개 정보 전체 조회
+    @Override
+    public List<InfoNursing> selectInfoNursing(String region, String line, String station) {
+        return queryFactory.select(Projections.constructor(InfoNursing.class, nursingRoom.nursingComment))
+                .from(nursingRoom)
+                .where(nursingRoom.info.region.eq(region).and(nursingRoom.info.line.eq(line).and(nursingRoom.info.station.eq(station))))
                 .fetch();
     }
 }

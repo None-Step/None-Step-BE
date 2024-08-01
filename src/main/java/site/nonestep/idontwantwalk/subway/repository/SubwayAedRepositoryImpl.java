@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.aspectj.weaver.ast.Expr;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.subway.dto.InfoAed;
 import site.nonestep.idontwantwalk.subway.dto.SubwayAEDResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayATMResponseDTO;
 
@@ -42,6 +43,15 @@ public class SubwayAedRepositoryImpl implements SubwayAedRepositoryCustom{
                 Expressions.as(distanceExpression, distancePath)))
                 .from(aed)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                .fetch();
+    }
+
+    // 역 1개 정보 전체 조회
+    @Override
+    public List<InfoAed> selectAed(String region, String line, String station) {
+        return queryFactory.select(Projections.constructor(InfoAed.class, aed.aedComment))
+                .from(aed)
+                .where(aed.info.region.eq(region).and(aed.info.line.eq(line).and(aed.info.station.eq(station))))
                 .fetch();
     }
 }

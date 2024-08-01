@@ -9,6 +9,7 @@ import site.nonestep.idontwantwalk.subway.repository.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -146,6 +147,65 @@ public class SubwayServiceImpl implements SubwayService{
                 longitue, radius).stream().filter(a -> a.getDistance() <= radius).toList();
 
         return subwayCenterResponseDTO;
+    }
+
+    // 역 1개 정보 전체 조회
+    @Override
+    public SubwayStationInfoResponseDTO totalStationInfo(SubwayStationInfoRequestDTO subwayStationInfoRequestDTO) {
+        Optional<Info> infoStation = subwayInfoRepository.selectInfo(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoEscal> escalInfo = subwayEscalRepository.selectEscal(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoElevator> elevatorInfo = subwayElevatorRepository.selectInfoElevator(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoToilet> toiletInfo = subwayToiletRepository.selectInfoToilet(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoDifToilet> difToiletInfo = subwayDifToiletRepository.selectInfoDifToilet(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoLift> liftInfo = subwayLiftRepository.selectInfoLift(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoCharger> chargerInfo = subwayChargerRepository.selectInfoCharger(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoNursing> nursingInfo = subwayNursingRepository.selectInfoNursing(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoAtm> atmInfo = subwayATMRepository.selectInfoAtm(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoAed> aedInfo = subwayAedRepository.selectAed(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+        List<InfoCenter> centerInfo = subwayCenterRepository.selectInfoCenter(subwayStationInfoRequestDTO.getRegion(),
+                subwayStationInfoRequestDTO.getLine(), subwayStationInfoRequestDTO.getStation());
+
+        SubwayStationInfoResponseDTO subwayStationInfoResponseDTO = new SubwayStationInfoResponseDTO();
+
+        if (infoStation.isEmpty()){
+            return null;
+        }else{
+            subwayStationInfoResponseDTO.setInfoRegion(subwayStationInfoRequestDTO.getRegion());
+            subwayStationInfoResponseDTO.setInfoLine(subwayStationInfoRequestDTO.getLine());
+            subwayStationInfoResponseDTO.setInfoStation(subwayStationInfoRequestDTO.getStation());
+            subwayStationInfoResponseDTO.setInfoAddress(infoStation.get().getInfoAddress());
+            subwayStationInfoResponseDTO.setInfoLatitude(infoStation.get().getInfoLatitude());
+            subwayStationInfoResponseDTO.setInfoLongitude(infoStation.get().getInfoLongitude());
+            subwayStationInfoResponseDTO.setInfoTransfer(infoStation.get().getInfoTransfer());
+            subwayStationInfoResponseDTO.setInfoWeekDayStart(infoStation.get().getInfoWeekdayStart());
+            subwayStationInfoResponseDTO.setInfoWeekDayEnd(infoStation.get().getInfoWeekdayEnd());
+            subwayStationInfoResponseDTO.setInfoSatStart(infoStation.get().getInfoSatStart());
+            subwayStationInfoResponseDTO.setInfoSatEnd(infoStation.get().getInfoSatEnd());
+            subwayStationInfoResponseDTO.setInfoHolidayStart(infoStation.get().getInfoHolidayStart());
+            subwayStationInfoResponseDTO.setInfoHolidayEnd(infoStation.get().getInfoHolidayEnd());
+            subwayStationInfoResponseDTO.setEscal(escalInfo);
+            subwayStationInfoResponseDTO.setElevator(elevatorInfo);
+            subwayStationInfoResponseDTO.setToilet(toiletInfo);
+            subwayStationInfoResponseDTO.setDifToilet(difToiletInfo);
+            subwayStationInfoResponseDTO.setLift(liftInfo);
+            subwayStationInfoResponseDTO.setCharger(chargerInfo);
+            subwayStationInfoResponseDTO.setNursingRoom(nursingInfo);
+            subwayStationInfoResponseDTO.setAtm(atmInfo);
+            subwayStationInfoResponseDTO.setAed(aedInfo);
+            subwayStationInfoResponseDTO.setCenter(centerInfo);
+
+            return subwayStationInfoResponseDTO;
+        }
     }
 
 

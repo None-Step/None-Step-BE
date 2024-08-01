@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.subway.dto.InfoAtm;
 import site.nonestep.idontwantwalk.subway.dto.SubwayATMResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayDifToiletResponseDTO;
 
@@ -40,6 +41,15 @@ public class SubwayATMRepositoryImpl implements SubwayATMRepositoryCustom {
                 atm.atmLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(atm)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                .fetch();
+    }
+
+    // 역 1개 정보 전체 조회
+    @Override
+    public List<InfoAtm> selectInfoAtm(String region, String line, String station) {
+        return queryFactory.select(Projections.constructor(InfoAtm.class, atm.atmComment))
+                .from(atm)
+                .where(atm.info.region.eq(region).and(atm.info.line.eq(line).and(atm.info.station.eq(station))))
                 .fetch();
     }
 }

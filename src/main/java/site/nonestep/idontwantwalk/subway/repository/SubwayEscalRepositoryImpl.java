@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.subway.dto.InfoEscal;
 import site.nonestep.idontwantwalk.subway.dto.SubwayElevatorResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayEscalResponseDTO;
 
@@ -40,6 +41,15 @@ public class SubwayEscalRepositoryImpl implements SubwayEscalRepositoryCustom {
                         escal.escalLatitude, escal.escalLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(escal)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                .fetch();
+    }
+
+    // 역 1개 정보 전체 조회 시 필요한 코드
+    @Override
+    public List<InfoEscal> selectEscal(String region, String line, String station) {
+        return queryFactory.select(Projections.constructor(InfoEscal.class, escal.escalComment))
+                .from(escal)
+                .where(escal.info.region.eq(region).and(escal.info.line.eq(line).and(escal.info.station.eq(station))))
                 .fetch();
     }
 }
