@@ -3,10 +3,7 @@ package site.nonestep.idontwantwalk.subway.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -14,6 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Getter
 @IdClass(Subway.class)
 public class Info {
 

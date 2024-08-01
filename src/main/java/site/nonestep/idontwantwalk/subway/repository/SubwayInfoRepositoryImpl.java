@@ -13,6 +13,7 @@ import site.nonestep.idontwantwalk.subway.entity.Info;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static com.querydsl.core.types.dsl.MathExpressions.*;
 import static site.nonestep.idontwantwalk.subway.entity.QInfo.*;
@@ -39,5 +40,16 @@ public class SubwayInfoRepositoryImpl implements SubwayInfoRepositoryCustom{
                 .from(info)
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
+    }
+
+    // 역 1개 정보 전체 조회
+    @Override
+    public Optional<Info> selectInfo(String region, String line, String station) {
+        return Optional.ofNullable(
+                queryFactory.select(info)
+                        .from(info)
+                        .where(info.region.eq(region).and(info.line.eq(line).and(info.station.eq(station))))
+                        .fetchFirst()
+        );
     }
 }
