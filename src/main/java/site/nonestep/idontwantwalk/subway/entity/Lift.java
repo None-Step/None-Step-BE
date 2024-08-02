@@ -34,11 +34,11 @@ public class Lift {
     @Column(name = "lift_address", length = 500)
     private String liftAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "lift_latitdue")
     private BigDecimal liftLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "lift_longitude")
     private BigDecimal liftLongitude;
 

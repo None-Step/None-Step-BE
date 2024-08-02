@@ -35,11 +35,11 @@ public class Atm {
     @Column(name = "atm_address", length = 500)
     private String atmAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "atm_latitude")
     private BigDecimal atmLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "atm_longitude")
     private BigDecimal atmLongitude;
 }

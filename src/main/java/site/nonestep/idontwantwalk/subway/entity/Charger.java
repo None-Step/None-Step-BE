@@ -34,11 +34,11 @@ public class Charger {
     @Column(name = "charger_address", length = 500)
     private String chargerAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "charger_latitude")
     private BigDecimal chargerLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "charger_longitude")
     private BigDecimal chargerLongitude;
 }

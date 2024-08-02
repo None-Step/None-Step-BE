@@ -34,11 +34,11 @@ public class Escal {
     @Column(name = "escal_address", length = 500)
     private String escalAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "escal_latitude")
     private BigDecimal escalLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "escal_Longitude")
     private BigDecimal escalLongitude;
 

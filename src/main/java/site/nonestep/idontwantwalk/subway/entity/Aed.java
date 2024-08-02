@@ -34,11 +34,11 @@ public class Aed{
     @Column(name = "aed_address", length = 500)
     private String aedAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "aed_latitude")
     private BigDecimal aedLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "aed_longitude")
     private BigDecimal aedLongitude;
 

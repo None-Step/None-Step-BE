@@ -37,11 +37,11 @@ public class Toilet {
     @Column(name = "toilet_address", length = 500)
     private String toiletAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "toilet_latitude")
     private BigDecimal toiletLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "toilet_longitude")
     private BigDecimal toiletLongitude;
 }
