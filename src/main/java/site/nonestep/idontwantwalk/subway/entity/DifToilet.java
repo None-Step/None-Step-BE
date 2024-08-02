@@ -37,11 +37,11 @@ public class DifToilet {
     @Column(name = "dif_toilet_address", length = 500)
     private String difToiletAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "dif_toilet_latitude")
     private BigDecimal difToiletLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "dif_toilet_longitude")
     private BigDecimal difToiletLongitude;
 }

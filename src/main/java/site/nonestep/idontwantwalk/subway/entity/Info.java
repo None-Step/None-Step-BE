@@ -30,11 +30,11 @@ public class Info {
     @Column(name = "info_address", length = 500, nullable = false)
     private String infoAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "info_latitude", nullable = false)
     private BigDecimal infoLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "info_longitude", nullable = false)
     private BigDecimal infoLongitude;
 

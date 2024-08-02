@@ -33,11 +33,11 @@ public class Elevator {
     @Column(name = "elevator_address", length = 500)
     private String elevatorAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "elevator_latitude")
     private BigDecimal elevatorLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "elevator_longitude")
     private BigDecimal elevatorLongitude;
 }

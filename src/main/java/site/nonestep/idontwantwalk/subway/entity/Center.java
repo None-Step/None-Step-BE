@@ -40,11 +40,11 @@ public class Center {
     @Column(name = "center_tel", length = 100)
     private String centerTel;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "center_latitude")
     private BigDecimal centerLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "center_longitude")
     private BigDecimal centerLongitude;
 }
