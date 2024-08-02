@@ -34,11 +34,11 @@ public class NursingRoom {
     @Column(name = "nursing_address", length = 500)
     private String nursingAddress;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "nursing_latitude")
     private BigDecimal nursingLatitude;
 
-    @Digits(integer = 5, fraction = 15)
+    @Digits(integer = 5, fraction = 13)
     @Column(name = "nursing_longitude")
     private BigDecimal nursingLongitude;
 }
