@@ -68,10 +68,41 @@ public class Member {
     private LocalDateTime memberDeleteTime;
 
     @Column(name = "member_report")
-    private Integer memberReport;
+    private Integer memberReport; //신고횟수
 
     // 일반 & 소셜 로그인 시, Refresh Token DB 저장
-    public void changeToken(String memberRefreshToken){
+    public void  changeToken(String memberRefreshToken){
         this.memberRefreshToken = memberRefreshToken;
+    }
+
+    //프로필변경: 휴대폰
+    public void modifyPhone(String memberPhone){
+        this.memberPhone = memberPhone;
+    }
+
+    //프로필변경: 메일
+    public void modifyMail(String memberMail){
+        this.memberMail = memberMail;
+    }
+
+    //프로필변경: 비밀먼호
+    public void modifyPass(String memberPassword){
+        this.memberPassword = memberPassword;
+    }
+
+    //프로필변경: 이미지, 닉네임
+    public void  modifyNickname(String memberNickname, String memberFile ){
+        if (memberNickname != null){
+            this.memberNickname = memberNickname;
+        }
+
+        if (memberFile != null){
+            this.memberFile = memberFile;
+        }// 오류가날 수 있기 때문에 각각 나눠서 해준다.
+    }
+
+    //회원탈퇴
+    public void delete(Boolean memberIsDelete ){
+        this.memberIsDelete = memberIsDelete;
     }
 }

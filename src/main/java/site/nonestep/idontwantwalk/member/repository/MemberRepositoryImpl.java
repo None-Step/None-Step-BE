@@ -54,4 +54,58 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
                 .where(member.memberName.eq(memberName).and(member.memberPhone.eq(memberPhone)))
                 .fetch();//결과가 여러개 나올 때
     }
+
+    //pw 찾기
+    @Override
+    public String selectMemberPwFind(String memberID, String memberName, String memberPhone) {
+        return queryFactory.select(member.memberPassword)
+                .from(member)
+                .where(member.memberID.eq(memberID).and(member.memberName.eq(memberName).and(member.memberPhone.eq(memberPhone))))
+                .fetchFirst();
+    }
+
+    //일반로그인
+    @Override
+    public Long selectMemberIdAndMemberPass(String memberID, String memberPass) {
+
+        return queryFactory.select(member.memberNo)
+                .from(member)
+                .where(member.memberID.eq(memberID).and(member.memberPassword.eq(memberPass).and(member.memberIsDelete.eq(false))))
+                .fetchFirst();
+    }
+
+    //마이페이지 조회 , 여기서는 member전체를 조회하고, serviceImpl에서 필요한 애들만 보낸다.
+    @Override
+    public Optional<Member> selectMemberInfo(Long memberNo) {
+        return Optional.ofNullable( //optional은 괄호 안에 queryfactory사용함
+                queryFactory.select(member)
+                        .from(member)
+                        .where(member.memberNo.eq(memberNo))
+                        .fetchFirst()
+        );
+    }
+
+
+    //다른유저 프로필 조회
+    @Override
+    public Optional<Member> selectMemberOther(String memberNickName, String memberRandom) {
+        return Optional.ofNullable(
+                queryFactory.select(member)
+                        .from(member)
+                        .where(member.memberNickname.eq(memberNickName).and(member.memberRandom.eq(memberRandom)))
+                        .fetchFirst()
+        );
+    }
+
+    // Refresh Token과 ID가 같은지 확인
+    @Override
+    public Optional<Long> memberRefreshTokenAndID(String memberID, String memberToken) {
+        return Optional.ofNullable(
+                queryFactory.select(member.memberNo)
+                        .from(member)
+                        .where(member.memberID.eq(memberID).and(member.memberRefreshToken.eq(memberToken)))
+                        .fetchFirst()
+        );
+    }
+
 }
