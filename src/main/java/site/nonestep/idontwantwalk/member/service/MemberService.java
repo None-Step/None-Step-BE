@@ -34,5 +34,17 @@ public interface MemberService {
 
     //프로필편집: 메일 변경
     MemberModifyMailResponseDTO modifyMail(MemberModifyMailRequestDTO memberModifyMailRequestDTO, Long memberNo);
+
+    //프로필편집: 비밀번호
+    MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO, Long memberNo);
+
+    //프로필편집: 닉네임 및 이미지 변경
+    MemberModifyNicknameResponseDTO modifyNick(MemberModifyNicknameRequestDTO memberModifyNicknameRequestDTO, Long memberNo);
+
+    //회원탈퇴
+    MemberDeleteResponseDTO delete(Long memberNo);
+
+    // Refresh Token과 ID가 같은지 확인하기
+    Long isRefreshTokenAndIdOk(SendTokenRequestDTO sendTokenRequestDTO);
 }
 

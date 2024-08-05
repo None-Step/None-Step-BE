@@ -70,7 +70,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
 
         return queryFactory.select(member.memberNo)
                 .from(member)
-                .where(member.memberID.eq(memberID).and(member.memberPassword.eq(memberPass)))
+                .where(member.memberID.eq(memberID).and(member.memberPassword.eq(memberPass).and(member.memberIsDelete.eq(false))))
                 .fetchFirst();
     }
 
@@ -97,5 +97,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
         );
     }
 
+    // Refresh Token과 ID가 같은지 확인
+    @Override
+    public Optional<Long> memberRefreshTokenAndID(String memberID, String memberToken) {
+        return Optional.ofNullable(
+                queryFactory.select(member.memberNo)
+                        .from(member)
+                        .where(member.memberID.eq(memberID).and(member.memberRefreshToken.eq(memberToken)))
+                        .fetchFirst()
+        );
+    }
 
 }
