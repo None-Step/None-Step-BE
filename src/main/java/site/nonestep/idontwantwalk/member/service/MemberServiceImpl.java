@@ -21,6 +21,8 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private S3UploadService s3UploadService;
 
     //닉네임 배열을 위한
     String[] nick1 = new String[]{"성실한", "재밌는", "유쾌한", "밝은", "목마른", "배아픈", "청량한", "심심한", "차가운", "지루한", "불안한", "행복한",
@@ -188,5 +190,52 @@ public class MemberServiceImpl implements MemberService {
         memberModifyMailResponseDTO.setMessage("Success");
 
         return memberModifyMailResponseDTO;
+    }
+
+    //프로필편집: 비밀번호변경
+    @Override
+    public MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO, Long memberNo) {
+        Member member = memberRepository.getReferenceById(memberNo);
+        member.modifyPass(memberModifyPassRequestDTO.getMemberPass());
+        MemberModifyPassResponseDTO memberModifyPassResponseDTO = new MemberModifyPassResponseDTO();
+        memberModifyPassResponseDTO.setMessage("Success");
+
+        return memberModifyPassResponseDTO;
+    }
+
+    //프로필편집: 닉네임, 이미지 변경
+    @Override
+    public MemberModifyNicknameResponseDTO modifyNick(MemberModifyNicknameRequestDTO memberModifyNicknameRequestDTO, Long memberNo) {
+        Member member = memberRepository.getReferenceById(memberNo);
+        String memberIMG = null;
+        if (memberModifyNicknameRequestDTO.getMemberIMG() != null) {
+            memberIMG = s3UploadService.upload(memberModifyNicknameRequestDTO.getMemberIMG(), "nonestepFile");
+        }
+
+        member.modifyNickname(memberModifyNicknameRequestDTO.getMemberNickname(),memberIMG);
+        MemberModifyNicknameResponseDTO memberModifyNicknameResponseDTO = new MemberModifyNicknameResponseDTO();
+        memberModifyNicknameResponseDTO.setMemberNickname(memberModifyNicknameRequestDTO.getMemberNickname());
+        memberModifyNicknameResponseDTO.setMemberIMG(memberIMG);
+        return memberModifyNicknameResponseDTO;
+    }
+
+    //회원탈퇴
+    @Override
+    public MemberDeleteResponseDTO delete(Long memberNo) {
+        Member member = memberRepository.getReferenceById(memberNo);
+        member.delete(true);
+        MemberDeleteResponseDTO memberDeleteResponseDTO = new MemberDeleteResponseDTO();
+        memberDeleteResponseDTO.setMessage("Success");
+        return memberDeleteResponseDTO;
+    }
+
+    //Token재발급
+    @Override
+    public Long isRefreshTokenAndIdOk(SendTokenRequestDTO sendTokenRequestDTO) {
+        Long isOk = memberRepository.memberRefreshTokenAndID(
+                sendTokenRequestDTO.getMemberID()
+                , sendTokenRequestDTO.getMemberToken()).orElse(null);
+
+        return isOk;
     }
 }

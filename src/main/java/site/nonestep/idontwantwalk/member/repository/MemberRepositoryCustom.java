@@ -34,4 +34,7 @@ public interface MemberRepositoryCustom {
 
     //다른유저 프로필 조회
     Optional<Member> selectMemberOther(String memberNickName, String memberRandom);
+
+    // Refresh Token과 ID가 같은지 확인
+    Optional<Long> memberRefreshTokenAndID(String memberID, String memberToken);
 }
