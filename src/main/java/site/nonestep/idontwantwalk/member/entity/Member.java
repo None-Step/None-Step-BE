@@ -84,4 +84,25 @@ public class Member {
     public void modifyMail(String memberMail){
         this.memberMail = memberMail;
     }
+
+    //프로필변경: 비밀먼호
+    public void modifyPass(String memberPassword){
+        this.memberPassword = memberPassword;
+    }
+
+    //프로필변경: 이미지, 닉네임
+    public void  modifyNickname(String memberNickname, String memberFile ){
+        if (memberNickname != null){
+            this.memberNickname = memberNickname;
+        }
+
+        if (memberFile != null){
+            this.memberFile = memberFile;
+        }// 오류가날 수 있기 때문에 각각 나눠서 해준다.
+    }
+
+    //회원탈퇴
+    public void delete(Boolean memberIsDelete ){
+        this.memberIsDelete = memberIsDelete;
+    }
 }

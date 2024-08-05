@@ -226,4 +226,49 @@ public class MemberController {
         return new ResponseEntity<>(memberModifyMailResponseDTO ,HttpStatus.OK);
     }
 
+    //프로필변경: 비밀번호
+    @PutMapping("/modify-pass")
+    public ResponseEntity<?> modifyPass(@RequestBody MemberModifyPassRequestDTO memberModifyPassRequestDTO){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        MemberModifyPassResponseDTO memberModifyPassResponseDTO = memberService.modifyPass(memberModifyPassRequestDTO, memberNo);
+        return new ResponseEntity<>(memberModifyPassResponseDTO ,HttpStatus.OK);
+    }
+
+    //프로필변경: 닉네임 이름 및 이미지 변경
+    @PutMapping("/modify-nickname")
+    public ResponseEntity<?> modifyNickname(@ModelAttribute MemberModifyNicknameRequestDTO memberModifyNicknameRequestDTO){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        MemberModifyNicknameResponseDTO memberModifyNicknameResponseDTO = memberService.modifyNick(memberModifyNicknameRequestDTO, memberNo);
+        return new ResponseEntity<>(memberModifyNicknameResponseDTO ,HttpStatus.OK);
+    }
+
+    //회원탈퇴
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        MemberDeleteResponseDTO memberDeleteResponseDTO = memberService.delete(memberNo);
+        return new ResponseEntity<>(memberDeleteResponseDTO ,HttpStatus.OK);
+    }
+
+    // Access Token 값 만료 되었을 경우 Refresh Token 전달 후 새로운 Access Token 생성
+    @PostMapping("/token")
+    public ResponseEntity<?> accessToken(@RequestBody SendTokenRequestDTO sendTokenRequestDTO) {
+        log.info("{}", sendTokenRequestDTO);
+
+        Long newAccessToken = memberService.isRefreshTokenAndIdOk(sendTokenRequestDTO);
+
+        if (newAccessToken == null) {
+            return new ResponseEntity<>("잘못된 처리입니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST);
+        } else {
+            JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(newAccessToken, "ROLE_USER");
+            MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("Authorization", jsonWebToken.getAccessToken());
+
+            SendTokenResponseDTO sendTokenResponseDTO = new SendTokenResponseDTO();
+            sendTokenResponseDTO.setMessage("Success");
+
+            log.info("{}", sendTokenResponseDTO);
+            return new ResponseEntity<>(sendTokenResponseDTO, headers, HttpStatus.OK);
+        }
+    }
 }
