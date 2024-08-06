@@ -1,5 +1,6 @@
 package site.nonestep.idontwantwalk.member.service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import site.nonestep.idontwantwalk.member.entity.SocialType;
 import site.nonestep.idontwantwalk.member.entity.Member;
 import site.nonestep.idontwantwalk.member.dto.*;
@@ -51,7 +52,10 @@ public class MemberServiceImpl implements MemberService {
         Member signUp = memberRepository.save(
                 Member.builder()
                         .memberID(memberSignUpRequestDTO.getMemberID())
-                        .memberPassword(memberSignUpRequestDTO.getMemberPass())
+                        .memberPassword(
+                                BCrypt.hashpw(
+                                memberSignUpRequestDTO.getMemberPass(), BCrypt.gensalt())
+                        )
                         .memberName(memberSignUpRequestDTO.getMemberName())
                         .memberMail(memberSignUpRequestDTO.getMemberMail())
                         .memberPhone(memberSignUpRequestDTO.getMemberPhone())
@@ -107,8 +111,17 @@ public class MemberServiceImpl implements MemberService {
     //일반 로그인
     @Override
     public Long login(String memberID, String memberPass) {
-        Long selectMemberIdAndMemberPass = memberRepository.selectMemberIdAndMemberPass(memberID, memberPass);
-        return selectMemberIdAndMemberPass;
+        Member selectMemberIdAndMemberPass = memberRepository.selectMemberIdAndMemberPass(memberID);
+
+        if (selectMemberIdAndMemberPass == null){
+            return null;
+        }else{
+            if (BCrypt.checkpw(memberPass, selectMemberIdAndMemberPass.getMemberPassword())){
+                return selectMemberIdAndMemberPass.getMemberNo();
+            }else{
+                return null;
+            }
+        }
     }
 
     // DB에 refreshtoken  저장
@@ -196,7 +209,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO, Long memberNo) {
         Member member = memberRepository.getReferenceById(memberNo);
-        member.modifyPass(memberModifyPassRequestDTO.getMemberPass());
+        member.modifyPass(BCrypt.hashpw(memberModifyPassRequestDTO.getMemberPass(), BCrypt.gensalt()));
         MemberModifyPassResponseDTO memberModifyPassResponseDTO = new MemberModifyPassResponseDTO();
         memberModifyPassResponseDTO.setMessage("Success");
 
