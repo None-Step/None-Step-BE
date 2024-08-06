@@ -25,7 +25,7 @@ public interface MemberRepositoryCustom {
     String selectMemberPwFind(String memberID, String memberName, String memberPhone);
 
     //일반로그인
-    Long selectMemberIdAndMemberPass(String memberID, String memberPass);
+    Member selectMemberIdAndMemberPass(String memberID);
 
 
     //마이페이지 조회
