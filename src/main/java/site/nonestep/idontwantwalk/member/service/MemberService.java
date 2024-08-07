@@ -39,7 +39,7 @@ public interface MemberService {
     MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO, Long memberNo);
 
     //프로필편집: 닉네임 및 이미지 변경
-    MemberModifyNicknameResponseDTO modifyNick(MemberModifyNicknameRequestDTO memberModifyNicknameRequestDTO, Long memberNo);
+    MemberModifyNickNameResponseDTO modifyNick(MemberModifyNickNameRequestDTO memberModifyNickNameRequestDTO, Long memberNo);
 
     //회원탈퇴
     MemberDeleteResponseDTO delete(Long memberNo);

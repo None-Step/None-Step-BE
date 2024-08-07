@@ -92,7 +92,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
         return Optional.ofNullable(
                 queryFactory.select(member)
                         .from(member)
-                        .where(member.memberNickname.eq(memberNickName).and(member.memberRandom.eq(memberRandom)))
+                        .where(member.memberNickName.eq(memberNickName).and(member.memberRandom.eq(memberRandom)))
                         .fetchFirst()
         );
     }

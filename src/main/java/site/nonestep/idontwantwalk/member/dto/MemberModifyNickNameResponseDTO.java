@@ -5,8 +5,8 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class MemberModifyNicknameResponseDTO {
-    private String memberNickname;
+public class MemberModifyNickNameResponseDTO {
+    private String memberNickName;
     private String memberIMG;
 
 }
