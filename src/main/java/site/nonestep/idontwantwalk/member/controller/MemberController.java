@@ -1,6 +1,5 @@
 package site.nonestep.idontwantwalk.member.controller;
 
-import com.mysql.cj.x.protobuf.Mysqlx;
 import jakarta.validation.Valid;//유효성검사해라, 따라서 회원가입에서만 사용한다.
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
@@ -236,10 +235,10 @@ public class MemberController {
 
     //프로필변경: 닉네임 이름 및 이미지 변경
     @PutMapping("/modify-nickname")
-    public ResponseEntity<?> modifyNickname(@ModelAttribute MemberModifyNicknameRequestDTO memberModifyNicknameRequestDTO){
+    public ResponseEntity<?> modifyNickName(@ModelAttribute MemberModifyNickNameRequestDTO memberModifyNickNameRequestDTO){
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        MemberModifyNicknameResponseDTO memberModifyNicknameResponseDTO = memberService.modifyNick(memberModifyNicknameRequestDTO, memberNo);
-        return new ResponseEntity<>(memberModifyNicknameResponseDTO ,HttpStatus.OK);
+        MemberModifyNickNameResponseDTO memberModifyNickNameResponseDTO = memberService.modifyNick(memberModifyNickNameRequestDTO, memberNo);
+        return new ResponseEntity<>(memberModifyNickNameResponseDTO ,HttpStatus.OK);
     }
 
     //회원탈퇴
