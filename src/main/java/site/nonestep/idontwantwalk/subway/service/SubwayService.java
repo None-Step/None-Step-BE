@@ -1,5 +1,9 @@
 package site.nonestep.idontwantwalk.subway.service;
 
+import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
+import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
+import site.nonestep.idontwantwalk.road.dto.GoStationResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.*;
 
 import java.math.BigDecimal;
@@ -42,4 +46,16 @@ public interface SubwayService {
 
     // 역 1개 정보 전체 조회
     SubwayStationInfoResponseDTO totalStationInfo(SubwayStationInfoRequestDTO subwayStationInfoRequestDTO);
+
+    // 지역, 역명을 넣으면 기본 역의 위도, 경도를 return해주는 것
+    SkResponseDTO walkStation(GoStationRequestDTO goStationRequestDTO);
+
+    // 지역, 역명을 넣으면 기본 역의 가장 가까운 에스컬레이터의 위도, 경도를 return하는 것
+    SkResponseDTO nearByEscal(GoStationRequestDTO goStationRequestDTO);
+
+    // 지역, 역명을 넣으면 기본 역의 가장 가까운 엘리베이터의 위도, 경도를 return 하는 것
+    SkResponseDTO nearByElevator(GoStationRequestDTO goStationRequestDTO);
+
+    // 지하철 탑승 시, 내가 어느 역인지 알아보기
+    SubwayNowResponseDTO nowStation(SubwayNowRequestDTO subwayNowRequestDTO);
 }
