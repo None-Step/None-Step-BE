@@ -8,7 +8,10 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
+import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.SubwayNowResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.Info;
 
 import java.math.BigDecimal;
@@ -49,6 +52,52 @@ public class SubwayInfoRepositoryImpl implements SubwayInfoRepositoryCustom{
                 queryFactory.select(info)
                         .from(info)
                         .where(info.region.eq(region).and(info.line.eq(line).and(info.station.eq(station))))
+                        .fetchFirst()
+        );
+    }
+
+    // 지하철 탑승 시 내가 어느 역인지 알아보기
+    @Override
+    public Optional<SubwayNowResponseDTO> selectStation(BigDecimal latitude, BigDecimal longitude) {
+
+        NumberExpression<Double> distanceExpression = acos(sin(radians(Expressions.constant(latitude)))
+                .multiply(sin(radians(info.infoLatitude)))
+                .add(cos(radians(Expressions.constant(latitude)))
+                        .multiply(cos(radians(info.infoLatitude)))
+                        .multiply(cos(radians(Expressions.constant(longitude)).subtract(
+                                radians(info.infoLongitude))))
+                )).multiply(6371000);
+        Path<Double> distancePath = Expressions.numberPath(Double.class, "distance");
+
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(SubwayNowResponseDTO.class, info.region,
+                        info.line, info.station, Expressions.as(distanceExpression, distancePath)))
+                        .from(info)
+                        .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                        .fetchFirst()
+
+        );
+    }
+
+    // [도보 길찾기] 지역, 호선을 입력하면 일치하면서 가장 가까운 지하철 기본 역의 위도와 경도를 return
+    @Override
+    public Optional<SkResponseDTO> selectNearByStation(GoStationRequestDTO goStationRequestDTO) {
+
+        NumberExpression<Double> distanceExpression = acos(sin(radians(Expressions.constant(goStationRequestDTO.getCurrentLatitude())))
+                .multiply(sin(radians(info.infoLatitude)))
+                .add(cos(radians(Expressions.constant(goStationRequestDTO.getCurrentLatitude())))
+                        .multiply(cos(radians(info.infoLatitude)))
+                        .multiply(cos(radians(Expressions.constant(goStationRequestDTO.getCurrentLongitude())).subtract(
+                                radians(info.infoLongitude))))
+                )).multiply(6371000);
+        Path<Double> distancePath = Expressions.numberPath(Double.class, "distance");
+
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(SkResponseDTO.class, info.infoLatitude,
+                        info.infoLongitude, Expressions.as(distanceExpression, distancePath)))
+                        .from(info)
+                        .where(info.region.eq(goStationRequestDTO.getGoRegion()).and(info.station.eq(goStationRequestDTO.getGoStation())))
+                        .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                         .fetchFirst()
         );
     }
