@@ -22,4 +22,5 @@ public class AuthConfig {
     private Map<String, Credentials> credentials;
     private String coolsmsapikey;
     private String coolsmssecretkey;
+    private String sk;
 }

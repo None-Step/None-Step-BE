@@ -128,4 +128,12 @@ public class SubwayController {
 
         return new ResponseEntity<>(subwayStationInfoResponseDTO, HttpStatus.OK);
     }
+
+    // 지하철에 타고 있을 때, 어느 역인지 알아보기
+    @GetMapping("/now-station")
+    public ResponseEntity<?> nowStation(@ModelAttribute SubwayNowRequestDTO subwayNowRequestDTO){
+        SubwayNowResponseDTO subwayNowResponseDTO = subwayService.nowStation(subwayNowRequestDTO);
+
+        return new ResponseEntity<>(subwayNowResponseDTO, HttpStatus.OK);
+    }
 }
