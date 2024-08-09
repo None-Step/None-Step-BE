@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
@@ -97,6 +98,29 @@ public class SubwayInfoRepositoryImpl implements SubwayInfoRepositoryCustom{
                         info.infoLongitude, Expressions.as(distanceExpression, distancePath)))
                         .from(info)
                         .where(info.region.eq(goStationRequestDTO.getGoRegion()).and(info.station.eq(goStationRequestDTO.getGoStation())))
+                        .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                        .fetchFirst()
+        );
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 위도, 경도를 return
+    @Override
+    public Optional<SkResponseDTO> selectGoRoadStation(GoRoadRequestDTO goRoadRequestDTO) {
+
+        NumberExpression<Double> distanceExpression = acos(sin(radians(Expressions.constant(goRoadRequestDTO.getGoLatitude())))
+                .multiply(sin(radians(info.infoLatitude)))
+                .add(cos(radians(Expressions.constant(goRoadRequestDTO.getGoLatitude())))
+                        .multiply(cos(radians(info.infoLatitude)))
+                        .multiply(cos(radians(Expressions.constant(goRoadRequestDTO.getGoLongitude())).subtract(
+                                radians(info.infoLongitude))))
+                )).multiply(6371000);
+        Path<Double> distancePath = Expressions.numberPath(Double.class, "distance");
+
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(SkResponseDTO.class, info.infoLatitude,
+                        info.infoLongitude, Expressions.as(distanceExpression, distancePath)))
+                        .from(info)
+                        .where(info.region.eq(goRoadRequestDTO.getCurrentRegion()).and(info.station.eq(goRoadRequestDTO.getCurrentStation())))
                         .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                         .fetchFirst()
         );

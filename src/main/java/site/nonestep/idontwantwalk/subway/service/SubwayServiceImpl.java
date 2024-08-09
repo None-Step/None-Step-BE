@@ -244,7 +244,7 @@ public class SubwayServiceImpl implements SubwayService {
 
         if (selectNearByElevator.isEmpty()) {
             return null;
-        }else{
+        } else {
             return selectNearByElevator.get();
         }
     }
@@ -260,6 +260,42 @@ public class SubwayServiceImpl implements SubwayService {
             return null;
         } else {
             return subwayNowResponseDTO.get();
+        }
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 위도, 경도를 return
+    @Override
+    public SkResponseDTO goRoadStation(GoRoadRequestDTO goRoadRequestDTO) {
+        Optional<SkResponseDTO> selectGoRoadStation = subwayInfoRepository.selectGoRoadStation(goRoadRequestDTO);
+
+        if (selectGoRoadStation.isEmpty()) {
+            return null;
+        } else {
+            return selectGoRoadStation.get();
+        }
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 가장 가까운 에스컬레이터의 위도, 경도를 return
+    @Override
+    public SkResponseDTO goRoadEscal(GoRoadRequestDTO goRoadRequestDTO) {
+        Optional<SkResponseDTO> selectGoRoadEscal = subwayEscalRepository.selectGoRoadEscal(goRoadRequestDTO);
+
+        if (selectGoRoadEscal.isEmpty()) {
+            return null;
+        } else {
+            return selectGoRoadEscal.get();
+        }
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 가장 가까운 엘리베이터의 위도, 경도를 return
+    @Override
+    public SkResponseDTO goRoadElevator(GoRoadRequestDTO goRoadRequestDTO) {
+        Optional<SkResponseDTO> selectGoRoadElevator = subwayElevatorRepository.selectGoRoadElevator(goRoadRequestDTO);
+
+        if (selectGoRoadElevator.isEmpty()) {
+            return null;
+        } else {
+            return selectGoRoadElevator.get();
         }
     }
 

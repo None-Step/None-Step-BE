@@ -1,5 +1,6 @@
 package site.nonestep.idontwantwalk.subway.repository;
 
+import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.InfoEscal;
@@ -20,4 +21,7 @@ public interface SubwayEscalRepositoryCustom {
 
     // 지역, 호선, 역 명을 입력하면 역의 가장 가까운 에스컬레이터의 위도, 경도를 return
     Optional<SkResponseDTO> selectNearByEscal(GoStationRequestDTO goStationRequestDTO);
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 가장 가까운 에스컬레이터의 위도, 경도를 return 하는 것
+    Optional<SkResponseDTO> selectGoRoadEscal(GoRoadRequestDTO goRoadRequestDTO);
 }
