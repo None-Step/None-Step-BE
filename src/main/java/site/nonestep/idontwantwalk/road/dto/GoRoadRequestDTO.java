@@ -3,12 +3,13 @@ package site.nonestep.idontwantwalk.road.dto;
 import lombok.Data;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Data
 @ToString
 public class GoRoadRequestDTO {
-    private String currentLatitude;
-    private String currentLongitude;
+    private BigDecimal goLatitude;
+    private BigDecimal goLongitude;
     private String currentRegion;
-    private String currentLine;
     private String currentStation;
 }

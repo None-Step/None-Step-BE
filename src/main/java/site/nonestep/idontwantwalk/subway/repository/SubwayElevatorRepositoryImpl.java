@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.aspectj.weaver.ast.Expr;
 import org.springframework.beans.factory.annotation.Autowired;
+import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.InfoElevator;
@@ -74,6 +75,29 @@ public class SubwayElevatorRepositoryImpl implements SubwayElevatorRepositoryCus
                         elevator.elevatorLongitude, Expressions.as(distanceExpression, distancePath)))
                         .from(elevator)
                         .where(elevator.info.region.eq(goStationRequestDTO.getGoRegion()).and(elevator.info.station.eq(goStationRequestDTO.getGoStation())))
+                        .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                        .fetchFirst()
+        );
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 가장 가까운 엘리베이터의 위도, 경도를 return 하는 것
+    @Override
+    public Optional<SkResponseDTO> selectGoRoadElevator(GoRoadRequestDTO goRoadRequestDTO) {
+
+        NumberExpression<Double> distanceExpression = acos(sin(radians(Expressions.constant(goRoadRequestDTO.getGoLatitude())))
+                .multiply(sin(radians(elevator.elevatorLatitude)))
+                .add(cos(radians(Expressions.constant(goRoadRequestDTO.getGoLatitude())))
+                        .multiply(cos(radians(elevator.elevatorLatitude)))
+                        .multiply(cos(radians(Expressions.constant(goRoadRequestDTO.getGoLongitude())).subtract(
+                                radians(elevator.elevatorLongitude))))
+                )).multiply(6371000);
+        Path<Double> distancePath = Expressions.numberPath(Double.class, "distance");
+
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(SkResponseDTO.class, elevator.elevatorLatitude,
+                        elevator.elevatorLongitude, Expressions.as(distanceExpression, distancePath)))
+                        .from(elevator)
+                        .where(elevator.info.region.eq(goRoadRequestDTO.getCurrentRegion()).and(elevator.info.station.eq(goRoadRequestDTO.getCurrentStation())))
                         .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                         .fetchFirst()
         );
