@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @ToString
 public class ChatRegionLineSelectAfterResponseDTO {
     private Long chatNo;
+    private String chatLine;
     private String message;
     private LocalDateTime date;
     private String memberNickName;
