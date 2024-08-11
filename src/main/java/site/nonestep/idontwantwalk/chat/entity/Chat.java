@@ -45,4 +45,8 @@ public class Chat {
     private Chat chatReply;
 
 
+    // 채팅 삭제
+    public void chatDelete(Boolean isChatDelete){
+        this.isChatDelete = isChatDelete;
+    }
 }
