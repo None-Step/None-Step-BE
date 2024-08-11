@@ -97,8 +97,6 @@ public class MemberServiceImpl implements MemberService {
         List<MemberIdFindResponseDTO> memberIdFindResponse = memberIdFind.stream().map(this::listIdFind).toList();
         return memberIdFindResponse;
     }
-
-
     //id 찾기 <<list로 받아올 때는 하나 더 작성해야한다.
     public MemberIdFindResponseDTO listIdFind(Member member) {
         MemberIdFindResponseDTO memberIdFindResponseDTO = new MemberIdFindResponseDTO();
