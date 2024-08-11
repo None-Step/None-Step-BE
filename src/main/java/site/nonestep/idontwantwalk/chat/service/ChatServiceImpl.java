@@ -73,7 +73,7 @@ public class ChatServiceImpl implements ChatService {
         chatRegionLineSelectAfterResponseDTO.setChatNo(chatMSG.getChatNo());
         chatRegionLineSelectAfterResponseDTO.setMessage(chatMSG.getChatMsg());
         chatRegionLineSelectAfterResponseDTO.setDate(chatMSG.getChatDate());
-        chatRegionLineSelectAfterResponseDTO.setMemberNickName(member.getMemberNickname());
+        chatRegionLineSelectAfterResponseDTO.setMemberNickName(member.getMemberNickName());
         chatRegionLineSelectAfterResponseDTO.setMemberRandom(member.getMemberRandom());
         chatRegionLineSelectAfterResponseDTO.setMemberIMG(member.getMemberFile());
 
