@@ -3,6 +3,10 @@ package site.nonestep.idontwantwalk.subway.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
+import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
+import site.nonestep.idontwantwalk.road.dto.GoStationResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.*;
 import site.nonestep.idontwantwalk.subway.entity.Info;
 import site.nonestep.idontwantwalk.subway.repository.*;
@@ -13,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class SubwayServiceImpl implements SubwayService{
+public class SubwayServiceImpl implements SubwayService {
 
     @Autowired
     private SubwayInfoRepository subwayInfoRepository;
@@ -42,7 +46,8 @@ public class SubwayServiceImpl implements SubwayService{
     @Autowired
     private SubwayAedRepository subwayAedRepository;
 
-    @Autowired SubwayLiftRepository subwayLiftRepository;
+    @Autowired
+    SubwayLiftRepository subwayLiftRepository;
 
     @Autowired
     private SubwayChargerRepository subwayChargerRepository;
@@ -177,9 +182,9 @@ public class SubwayServiceImpl implements SubwayService{
 
         SubwayStationInfoResponseDTO subwayStationInfoResponseDTO = new SubwayStationInfoResponseDTO();
 
-        if (infoStation.isEmpty()){
+        if (infoStation.isEmpty()) {
             return null;
-        }else{
+        } else {
             subwayStationInfoResponseDTO.setInfoRegion(subwayStationInfoRequestDTO.getRegion());
             subwayStationInfoResponseDTO.setInfoLine(subwayStationInfoRequestDTO.getLine());
             subwayStationInfoResponseDTO.setInfoStation(subwayStationInfoRequestDTO.getStation());
@@ -205,6 +210,92 @@ public class SubwayServiceImpl implements SubwayService{
             subwayStationInfoResponseDTO.setCenter(centerInfo);
 
             return subwayStationInfoResponseDTO;
+        }
+    }
+
+    // 지역, 호선, 역명을 입력하면 위도와 경도를 return
+    @Override
+    public SkResponseDTO walkStation(GoStationRequestDTO goStationRequestDTO) {
+        Optional<SkResponseDTO> selectInfo = subwayInfoRepository.selectNearByStation(goStationRequestDTO);
+
+        if (!selectInfo.isEmpty()) {
+            return selectInfo.get();
+        } else {
+            return null;
+        }
+    }
+
+    // 지역, 역 명을 입력하면 역의 가장 가까운 에스컬레이터의 위도, 경도를 return
+    @Override
+    public SkResponseDTO nearByEscal(GoStationRequestDTO goStationRequestDTO) {
+        Optional<SkResponseDTO> selectNearByEscal = subwayEscalRepository.selectNearByEscal(goStationRequestDTO);
+
+        if (selectNearByEscal.isEmpty()) {
+            return null;
+        } else {
+            return selectNearByEscal.get();
+        }
+    }
+
+    // 지역, 역 명을 입력하면 역의 가장 가까운 엘리베이터의 위도, 경도를 return
+    @Override
+    public SkResponseDTO nearByElevator(GoStationRequestDTO goStationRequestDTO) {
+        Optional<SkResponseDTO> selectNearByElevator = subwayElevatorRepository.selectNearByElevator(goStationRequestDTO);
+
+        if (selectNearByElevator.isEmpty()) {
+            return null;
+        } else {
+            return selectNearByElevator.get();
+        }
+    }
+
+    // 지하철 탑승 시 내가 어느 역인지 알아보기
+    @Override
+    public SubwayNowResponseDTO nowStation(SubwayNowRequestDTO subwayNowRequestDTO) {
+
+        Optional<SubwayNowResponseDTO> subwayNowResponseDTO = subwayInfoRepository.selectStation(subwayNowRequestDTO.getLatitude(),
+                subwayNowRequestDTO.getLongitude());
+
+        if (subwayNowResponseDTO.isEmpty()) {
+            return null;
+        } else {
+            return subwayNowResponseDTO.get();
+        }
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 위도, 경도를 return
+    @Override
+    public SkResponseDTO goRoadStation(GoRoadRequestDTO goRoadRequestDTO) {
+        Optional<SkResponseDTO> selectGoRoadStation = subwayInfoRepository.selectGoRoadStation(goRoadRequestDTO);
+
+        if (selectGoRoadStation.isEmpty()) {
+            return null;
+        } else {
+            return selectGoRoadStation.get();
+        }
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 가장 가까운 에스컬레이터의 위도, 경도를 return
+    @Override
+    public SkResponseDTO goRoadEscal(GoRoadRequestDTO goRoadRequestDTO) {
+        Optional<SkResponseDTO> selectGoRoadEscal = subwayEscalRepository.selectGoRoadEscal(goRoadRequestDTO);
+
+        if (selectGoRoadEscal.isEmpty()) {
+            return null;
+        } else {
+            return selectGoRoadEscal.get();
+        }
+    }
+
+    // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 가장 가까운 엘리베이터의 위도, 경도를 return
+    @Override
+    public SkResponseDTO goRoadElevator(GoRoadRequestDTO goRoadRequestDTO) {
+        Optional<SkResponseDTO> selectGoRoadElevator = subwayElevatorRepository.selectGoRoadElevator(goRoadRequestDTO);
+
+        if (selectGoRoadElevator.isEmpty()) {
+            return null;
+        } else {
+            return selectGoRoadElevator.get();
         }
     }
 
