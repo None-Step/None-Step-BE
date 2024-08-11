@@ -3,6 +3,7 @@ package site.nonestep.idontwantwalk.chat.dto;
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
