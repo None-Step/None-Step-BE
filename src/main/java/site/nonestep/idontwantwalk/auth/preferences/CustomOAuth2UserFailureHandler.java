@@ -55,7 +55,7 @@ public class CustomOAuth2UserFailureHandler extends SimpleUrlAuthenticationFailu
                             .memberSocialID(
                                     customOAuth2User.getSocialId())
                             .memberID(UUID.randomUUID().toString())
-                            .memberNickname(customOAuth2User.getSocialName())
+                            .memberNickName(customOAuth2User.getSocialName())
                             .memberName(customOAuth2User.getSocialName())
                             .memberPassword("")
                             .memberPhone("")
@@ -71,7 +71,7 @@ public class CustomOAuth2UserFailureHandler extends SimpleUrlAuthenticationFailu
                             .memberSocialID(
                                     customOAuth2User.getSocialId())
                             .memberID(UUID.randomUUID().toString())
-                            .memberNickname(customOAuth2User.getSocialName())
+                            .memberNickName(customOAuth2User.getSocialName())
                             .memberName(customOAuth2User.getSocialName())
                             .memberPassword("")
                             .memberPhone("")

@@ -66,11 +66,11 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
 
     //일반로그인
     @Override
-    public Long selectMemberIdAndMemberPass(String memberID, String memberPass) {
+    public Member selectMemberIdAndMemberPass(String memberID) {
 
-        return queryFactory.select(member.memberNo)
+        return queryFactory.select(member)
                 .from(member)
-                .where(member.memberID.eq(memberID).and(member.memberPassword.eq(memberPass).and(member.memberIsDelete.eq(false))))
+                .where(member.memberID.eq(memberID).and(member.memberIsDelete.eq(false)))
                 .fetchFirst();
     }
 
@@ -92,7 +92,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
         return Optional.ofNullable(
                 queryFactory.select(member)
                         .from(member)
-                        .where(member.memberNickname.eq(memberNickName).and(member.memberRandom.eq(memberRandom)))
+                        .where(member.memberNickName.eq(memberNickName).and(member.memberRandom.eq(memberRandom)))
                         .fetchFirst()
         );
     }

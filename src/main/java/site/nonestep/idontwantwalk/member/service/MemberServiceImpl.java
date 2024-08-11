@@ -1,5 +1,6 @@
 package site.nonestep.idontwantwalk.member.service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import site.nonestep.idontwantwalk.member.entity.SocialType;
 import site.nonestep.idontwantwalk.member.entity.Member;
 import site.nonestep.idontwantwalk.member.dto.*;
@@ -51,13 +52,16 @@ public class MemberServiceImpl implements MemberService {
         Member signUp = memberRepository.save(
                 Member.builder()
                         .memberID(memberSignUpRequestDTO.getMemberID())
-                        .memberPassword(memberSignUpRequestDTO.getMemberPass())
+                        .memberPassword(
+                                BCrypt.hashpw(
+                                memberSignUpRequestDTO.getMemberPass(), BCrypt.gensalt())
+                        )
                         .memberName(memberSignUpRequestDTO.getMemberName())
                         .memberMail(memberSignUpRequestDTO.getMemberMail())
                         .memberPhone(memberSignUpRequestDTO.getMemberPhone())
                         .memberSocialType(SocialType.NOMAL)
                         .memberJoinTime(LocalDateTime.now())
-                        .memberNickname(nick1[(int) (Math.random() * nick1.length)] + nick2[(int) (Math.random() * nick2.length)])
+                        .memberNickName(nick1[(int) (Math.random() * nick1.length)] + nick2[(int) (Math.random() * nick2.length)])
                         .memberRandom("#" + randomTag)
                         .build()
         );
@@ -65,7 +69,7 @@ public class MemberServiceImpl implements MemberService {
         MemberSignUpResponseDTO memberSignUpResponseDTO = new MemberSignUpResponseDTO();
         memberSignUpResponseDTO.setMemberID(signUp.getMemberID());
         memberSignUpResponseDTO.setMemberName(signUp.getMemberName());
-        memberSignUpResponseDTO.setMemberNickname(signUp.getMemberNickname());
+        memberSignUpResponseDTO.setMemberNickname(signUp.getMemberNickName());
         memberSignUpResponseDTO.setMemberRandom(signUp.getMemberRandom());
         memberSignUpResponseDTO.setMemberJoinDate(signUp.getMemberJoinTime());
 
@@ -105,8 +109,17 @@ public class MemberServiceImpl implements MemberService {
     //일반 로그인
     @Override
     public Long login(String memberID, String memberPass) {
-        Long selectMemberIdAndMemberPass = memberRepository.selectMemberIdAndMemberPass(memberID, memberPass);
-        return selectMemberIdAndMemberPass;
+        Member selectMemberIdAndMemberPass = memberRepository.selectMemberIdAndMemberPass(memberID);
+
+        if (selectMemberIdAndMemberPass == null){
+            return null;
+        }else{
+            if (BCrypt.checkpw(memberPass, selectMemberIdAndMemberPass.getMemberPassword())){
+                return selectMemberIdAndMemberPass.getMemberNo();
+            }else{
+                return null;
+            }
+        }
     }
 
     // DB에 refreshtoken  저장
@@ -142,7 +155,7 @@ public class MemberServiceImpl implements MemberService {
             memberInfoResponseDTO.setMemberID(memberInfo.get().getMemberID());//optional 이라서 get 한 번더 씀
             memberInfoResponseDTO.setMemberMail(memberInfo.get().getMemberMail());
             memberInfoResponseDTO.setMemberName(memberInfo.get().getMemberName());
-            memberInfoResponseDTO.setMemberNickName(memberInfo.get().getMemberNickname());
+            memberInfoResponseDTO.setMemberNickName(memberInfo.get().getMemberNickName());
             memberInfoResponseDTO.setMemberIMG(memberInfo.get().getMemberFile());
             memberInfoResponseDTO.setMemberPhone(memberInfo.get().getMemberPhone());
             memberInfoResponseDTO.setMemberRandom(memberInfo.get().getMemberRandom());
@@ -161,7 +174,7 @@ public class MemberServiceImpl implements MemberService {
         if (memberOthers.isEmpty()) {
             return null;
         } else {
-            memberOthersResponseDTO.setMemberNickName(memberOthers.get().getMemberNickname());
+            memberOthersResponseDTO.setMemberNickName(memberOthers.get().getMemberNickName());
             memberOthersResponseDTO.setMemberRandom(memberOthers.get().getMemberRandom());
             memberOthersResponseDTO.setMemberFile(memberOthers.get().getMemberFile());
             memberOthersResponseDTO.setMemberJoinDate(memberOthers.get().getMemberJoinTime());
@@ -194,7 +207,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO, Long memberNo) {
         Member member = memberRepository.getReferenceById(memberNo);
-        member.modifyPass(memberModifyPassRequestDTO.getMemberPass());
+        member.modifyPass(BCrypt.hashpw(memberModifyPassRequestDTO.getMemberPass(), BCrypt.gensalt()));
         MemberModifyPassResponseDTO memberModifyPassResponseDTO = new MemberModifyPassResponseDTO();
         memberModifyPassResponseDTO.setMessage("Success");
 
@@ -203,16 +216,16 @@ public class MemberServiceImpl implements MemberService {
 
     //프로필편집: 닉네임, 이미지 변경
     @Override
-    public MemberModifyNicknameResponseDTO modifyNick(MemberModifyNicknameRequestDTO memberModifyNicknameRequestDTO, Long memberNo) {
+    public MemberModifyNickNameResponseDTO modifyNick(MemberModifyNickNameRequestDTO memberModifyNickNameRequestDTO, Long memberNo) {
         Member member = memberRepository.getReferenceById(memberNo);
         String memberIMG = null;
-        if (memberModifyNicknameRequestDTO.getMemberIMG() != null) {
-            memberIMG = s3UploadService.upload(memberModifyNicknameRequestDTO.getMemberIMG(), "nonestepFile");
+        if (memberModifyNickNameRequestDTO.getMemberIMG() != null) {
+            memberIMG = s3UploadService.upload(memberModifyNickNameRequestDTO.getMemberIMG(), "nonestepFile");
         }
 
-        member.modifyNickname(memberModifyNicknameRequestDTO.getMemberNickname(),memberIMG);
-        MemberModifyNicknameResponseDTO memberModifyNicknameResponseDTO = new MemberModifyNicknameResponseDTO();
-        memberModifyNicknameResponseDTO.setMemberNickname(memberModifyNicknameRequestDTO.getMemberNickname());
+        member.modifyNickName(memberModifyNickNameRequestDTO.getMemberNickName(),memberIMG);
+        MemberModifyNickNameResponseDTO memberModifyNicknameResponseDTO = new MemberModifyNickNameResponseDTO();
+        memberModifyNicknameResponseDTO.setMemberNickName(memberModifyNickNameRequestDTO.getMemberNickName());
         memberModifyNicknameResponseDTO.setMemberIMG(memberIMG);
         return memberModifyNicknameResponseDTO;
     }

@@ -51,8 +51,8 @@ public class Member {
     @Column(name = "member_refresh_token", length = 2000)
     private String memberRefreshToken;
 
-    @Column(name = "member_nickname", length = 100, nullable = false)
-    private String memberNickname;
+    @Column(name = "member_nickName", length = 100, nullable = false)
+    private String memberNickName;
 
     @Column(name = "member_random", length = 100, nullable = false)
     private String memberRandom;
@@ -91,9 +91,9 @@ public class Member {
     }
 
     //프로필변경: 이미지, 닉네임
-    public void  modifyNickname(String memberNickname, String memberFile ){
-        if (memberNickname != null){
-            this.memberNickname = memberNickname;
+    public void  modifyNickName(String memberNickName, String memberFile ){
+        if (memberNickName != null){
+            this.memberNickName = memberNickName;
         }
 
         if (memberFile != null){
