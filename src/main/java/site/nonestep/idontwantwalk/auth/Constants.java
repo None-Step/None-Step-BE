@@ -14,6 +14,7 @@ public class Constants {
             "/nonestep/member/login/**", "/nonestep/resources/**", "/nonestep/swagger*/**", "favicon.ico",
             "/nonestep/webjars/**", "/nonestep/swagger-ui/**", "/nonestep/subway/**",
             "/nonestep/v3/api-docs/**", "/nonestep/swagger-ui/**", "/nonestep/swagger-resources/**",
+            "/nonestep/connect", "/connect", "/nonestep/sub/**",  "/sub/**","/nonestep/pub/**",  "/pub/**",
             "/nonestep/road/**"};
 
     //Authorization == JWT 사용을 위함
