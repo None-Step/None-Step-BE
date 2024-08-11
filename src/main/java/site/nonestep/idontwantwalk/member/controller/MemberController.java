@@ -1,6 +1,5 @@
 package site.nonestep.idontwantwalk.member.controller;
 
-import com.mysql.cj.x.protobuf.Mysqlx;
 import jakarta.validation.Valid;//유효성검사해라, 따라서 회원가입에서만 사용한다.
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
