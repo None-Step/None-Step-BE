@@ -106,6 +106,7 @@ public class RoadController {
                 goRoad.setFeatures(featuresList);
             }
 
+            log.info("호출된 API: {}", goRoad);
             return new ResponseEntity<>(goRoad, HttpStatus.OK);
         }
     }
@@ -113,6 +114,9 @@ public class RoadController {
     // 길 찾기 (역 > 목적지)
     @PostMapping("/go-road")
     ResponseEntity<?> goRoad(@org.springframework.web.bind.annotation.RequestBody GoRoadRequestDTO goRoadRequestDTO) throws IOException {
+
+        log.info("호출된 API: {}", goRoadRequestDTO);
+
         SkResponseDTO skResponseDTOtotalStation = subwayService.goRoadStation(goRoadRequestDTO);
         SkResponseDTO skResponseDTOEscal = subwayService.goRoadEscal(goRoadRequestDTO);
         SkResponseDTO skResponseDTOElevator = subwayService.goRoadElevator(goRoadRequestDTO);
@@ -177,6 +181,7 @@ public class RoadController {
                 goRoad.setFeatures(featuresList);
             }
 
+            log.info("호출된 API: {}", goRoad);
             return new ResponseEntity<>(goRoad, HttpStatus.OK);
         }
     }

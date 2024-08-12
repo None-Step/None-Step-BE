@@ -24,6 +24,7 @@ public class ChatController {
     // 지역별 전체 채팅방 조회 - 입장 전
     @GetMapping("/all")
     public ResponseEntity<?> chatAll(@ModelAttribute ChatBeforeAllRequestDTO chatBeforeAllRequestDTO){
+        log.info("호출된 API: {}", chatBeforeAllRequestDTO);
 
         String region = chatBeforeAllRequestDTO.getRegion();
         if("seoul".equals(region)){
@@ -43,12 +44,14 @@ public class ChatController {
         List<ChatBeforeAllResponseDTO> chatBeforeAllResponseDTO = chatService.chatBeforeAll(chatBeforeAllRequestDTO).stream()
                 .map(this::ChatBeforeAllChangeLanguage).toList();
 
+        log.info("호출된 API: {}", chatBeforeAllResponseDTO);
         return new ResponseEntity<>(chatBeforeAllResponseDTO, HttpStatus.OK);
     }
 
     // 호선별 채팅방 조회 - 입장전
     @GetMapping("/subscribe")
     public ResponseEntity<?> subscribeLine(@ModelAttribute ChatBeforeLineRequestDTO chatBeforeLineRequestDTO){
+        log.info("호출된 API: {}", chatBeforeLineRequestDTO);
 
         String region = chatBeforeLineRequestDTO.getRegion();
         if("seoul".equals(region)){
@@ -124,11 +127,13 @@ public class ChatController {
 
         List<ChatBeforeLineResponseDTO> chatBeforeLine = chatService.chatBeforeLine(chatBeforeLineRequestDTO);
 
+        log.info("호출된 API: {}", chatBeforeLine);
         return new ResponseEntity<>(chatBeforeLine, HttpStatus.OK);
     }
 
     // 호선(한글) > 영어로
     public ChatBeforeAllResponseDTO ChatBeforeAllChangeLanguage (ChatBeforeAllResponseDTO chatBeforeAllResponseDTO){
+        log.info("호출된 API: {}", chatBeforeAllResponseDTO);
 
         String line = chatBeforeAllResponseDTO.getChatLine();
 
@@ -188,11 +193,13 @@ public class ChatController {
 
         chatBeforeAllResponseDTO.setChatLine(line);
 
+        log.info("호출된 API: {}", chatBeforeAllResponseDTO);
         return chatBeforeAllResponseDTO;
     }
 
     // 호선(한글) > 영어로
     public ChatListResponseDTO ChangeKorToEng (ChatListResponseDTO chatListResponseDTO){
+        log.info("호출된 API: {}", chatListResponseDTO);
 
         String line = chatListResponseDTO.getLine();
 
@@ -252,6 +259,7 @@ public class ChatController {
 
         chatListResponseDTO.setLine(line);
 
+        log.info("호출된 API: {}", chatListResponseDTO);
         return chatListResponseDTO;
     }
 
@@ -259,6 +267,7 @@ public class ChatController {
     // 채팅 목록 보기
     @GetMapping("/list")
     public ResponseEntity<?> chatList (@ModelAttribute ChatListRequestDTO chatListRequestDTO){
+        log.info("호출된 API: {}", chatListRequestDTO);
 
         String region = chatListRequestDTO.getRegion();
         if("seoul".equals(region)){
@@ -277,6 +286,8 @@ public class ChatController {
 
         List<ChatListResponseDTO> chatListResponseDTO = chatService.chatList(chatListRequestDTO).stream()
                 .map(this::ChangeKorToEng).toList();
+
+        log.info("호출된 API: {}", chatListResponseDTO);
         return new ResponseEntity<>(chatListResponseDTO, HttpStatus.OK);
     }
 
