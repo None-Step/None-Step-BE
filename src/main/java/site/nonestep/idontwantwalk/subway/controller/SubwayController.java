@@ -200,4 +200,5 @@ public class SubwayController {
 
         return new ResponseEntity<>(subwayNowResponseDTO, HttpStatus.OK);
     }
+
 }
