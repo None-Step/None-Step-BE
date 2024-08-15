@@ -31,6 +31,7 @@ public class WebSocketChatController {
     // 앞에 자동으로 /pub 붙음
     @MessageMapping("/chat")
     public void chatSend(ChatSendRequestDTO chatSendRequestDTO, @Header("Authorization") String authorization ){
+        log.info("호출된 API: {}", chatSendRequestDTO);
 
         String engChangeKorRegion = chatSendRequestDTO.getRegion();
         if("seoul".equals(engChangeKorRegion)){
@@ -180,6 +181,7 @@ public class WebSocketChatController {
         }
 
         chatRegionLineSelectAfterResponseDTO.setChatLine(line);
+        log.info("호출된 API: {}", chatRegionLineSelectAfterResponseDTO);
 
         // FE 입장에서 받는 부분
         simpMessagingTemplate.convertAndSend("/sub/all/" + region, chatRegionLineSelectAfterResponseDTO);
@@ -190,6 +192,7 @@ public class WebSocketChatController {
     // 앞에 자동으로 /pub 붙음
     @MessageMapping("/chat-delete")
     public void subChatDelete(ChatDeleteDTO chatDeleteDTO, @Header("Authorization") String authorization){
+        log.info("호출된 API: {}", chatDeleteDTO);
         Long memberNo = Long.parseLong(JwtTokenUtils.getClaimAttribute(authorization, "sequence"));
 
         // 실시간 삭제 수신
@@ -266,6 +269,8 @@ public class WebSocketChatController {
 
         chatDeleteDTO.setRegion(engChangeKorRegion);
         chatDeleteDTO.setLine(engChangeKorLine);
+
+        log.info("호출된 API: {}", chatDeleteDTO);
 
         chatService.chatDelete(chatDeleteDTO, memberNo);
     }
