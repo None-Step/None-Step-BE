@@ -11,15 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.nonestep.idontwantwalk.config.AuthConfig;
-import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.SeoulBikeDTO;
-import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.road.gsonClass.Features;
 import site.nonestep.idontwantwalk.road.gsonClass.Geometry;
 import site.nonestep.idontwantwalk.road.gsonClass.GeometryDeserializer;
 import site.nonestep.idontwantwalk.road.gsonClass.GoRoad;
-import site.nonestep.idontwantwalk.road.jsonClass.RentBikeStatus;
+import site.nonestep.idontwantwalk.road.jsonClass.DaejeonBike;
+import site.nonestep.idontwantwalk.road.jsonClass.DaejeonRow;
 import site.nonestep.idontwantwalk.road.jsonClass.Row;
 import site.nonestep.idontwantwalk.road.jsonClass.SeoulBike;
 import site.nonestep.idontwantwalk.subway.service.SubwayService;
@@ -31,8 +29,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.awt.geom.Point2D.distance;
 
 @Slf4j
 @RestController
@@ -251,20 +247,23 @@ public class RoadController {
         GoStationRequestDTO goStationRequestDTO = new GoStationRequestDTO();
         goStationRequestDTO.setGoStation(seoulBikeDTO.getGoStation());
         goStationRequestDTO.setGoRegion(seoulBikeDTO.getGoRegion());
-        goStationRequestDTO.setCurrentLatitude(new BigDecimal(""+seoulBikeDTO.getCurrentLatitude()));
-        goStationRequestDTO.setCurrentLongitude(new BigDecimal(""+seoulBikeDTO.getCurrentLongitude()));
+        goStationRequestDTO.setCurrentLatitude(new BigDecimal("" + seoulBikeDTO.getCurrentLatitude()));
+        goStationRequestDTO.setCurrentLongitude(new BigDecimal("" + seoulBikeDTO.getCurrentLongitude()));
 
         // 현재 위치 > 역 까지의 거리를 도보로도 계산한다.
         SkResponseDTO skResponseDTOtotalStation = subwayService.walkStation(goStationRequestDTO);
-        double homeToStation =  skResponseDTOtotalStation.getDistance();
-        double homeToBike = distance(Double.parseDouble(seoulRow.get(0).getStationLatitude()) ,Double.parseDouble(seoulRow.get(0).getStationLongitude())
-                                    , seoulBikeDTO.getCurrentLatitude(), seoulBikeDTO.getCurrentLongitude());
+        double homeToStation = skResponseDTOtotalStation.getDistance();
+        double homeToBike = distance(Double.parseDouble(seoulRow.get(0).getStationLatitude()), Double.parseDouble(seoulRow.get(0).getStationLongitude())
+                , seoulBikeDTO.getCurrentLatitude(), seoulBikeDTO.getCurrentLongitude());
 
         // 도보로 가는게 더 빠르면 BAD_REQUEST를 보낸다.
-        if (homeToStation <= homeToBike){
+        if (skResponseDTOtotalStation == null) {
+
+            return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
+        } else if (homeToStation <= homeToBike) {
             return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리의 절반보다 멉니다.", HttpStatus.BAD_REQUEST);
-        }else{
-        // 자전거 보관소가 더 가까울 경우 SK API를 이용해 보관소까지의 도보 거리를 보낸다
+        } else {
+            // 자전거 보관소가 더 가까울 경우 SK API를 이용해 보관소까지의 도보 거리를 보낸다
             OkHttpClient client = new OkHttpClient();
 
             MediaType mediaType = MediaType.parse("application/json");
@@ -335,4 +334,117 @@ public class RoadController {
         return (rad * 180 / Math.PI);
     }
 
+    // 대전 자전거 API
+    @PostMapping("daejeon-bike")
+    public ResponseEntity<?> daejeonBike(@org.springframework.web.bind.annotation.RequestBody DaejeonBikeDTO daejeonBikeDTO) throws IOException {
+
+        OkHttpClient client = new OkHttpClient();
+
+        // 대전시 자전거 API 호출
+        Request request = new Request.Builder()
+                .url("https://bikeapp.tashu.or.kr:50041/v1/openapi/station")
+                .addHeader("api-token", authConfig.getDaejeonbike())
+                .addHeader("accept", "application/json")
+                .addHeader("content-type", "application/json")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        String changeResponse = response.body().string();
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(changeResponse);
+
+        JsonObject daejeonBike = element.getAsJsonObject();
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        DaejeonBike daejeon = gson.fromJson(daejeonBike, DaejeonBike.class);
+
+        List<DaejeonRow> daejeonRow = daejeon.getResults();
+
+        // 보관소에 거치된 자전거가 1개 이상인 경우만 뜨게끔 filter를 건다.
+        daejeonRow = daejeonRow.stream().filter(o -> o.getParking_count() >= 1).collect(Collectors.toList());
+
+        // 그 후, 사용자 위치에서 가장 가까운 자전거 보관소를 추출하기 위해 정렬한다.
+        Collections.sort(daejeonRow, new Comparator<DaejeonRow>() {
+            @Override
+            public int compare(DaejeonRow o1, DaejeonRow o2) {
+
+                double whereIsMyBike = distance(Double.parseDouble(o1.getX_pos()), Double.parseDouble(o1.getY_pos())
+                        , daejeonBikeDTO.getCurrentLatitude(), daejeonBikeDTO.getCurrentLongitude());
+
+                double whereIsMyBike2 = distance(Double.parseDouble(o2.getX_pos()), Double.parseDouble(o2.getY_pos())
+                        , daejeonBikeDTO.getCurrentLatitude(), daejeonBikeDTO.getCurrentLongitude());
+
+                if (whereIsMyBike > whereIsMyBike2) {
+                    return 1;
+                } else if (whereIsMyBike < whereIsMyBike2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        // 현재 위치에서 역 까지 도보순으로 계산 후 비교하기 위해 선언 후 채워줌
+        // 도보: 현재 위치 > 역의 거리와  현재 위치 > 자전거 보관소의 거리를 비교한다.
+        // 비교 후, 도보로 목적지 역 까지의 거리가 더 멀면 띄우지 않기 위해서
+        GoStationRequestDTO goStationRequestDTO = new GoStationRequestDTO();
+        goStationRequestDTO.setGoStation(daejeonBikeDTO.getGoStation());
+        goStationRequestDTO.setGoRegion(daejeonBikeDTO.getGoRegion());
+        goStationRequestDTO.setCurrentLatitude(new BigDecimal("" + daejeonBikeDTO.getCurrentLatitude()));
+        goStationRequestDTO.setCurrentLongitude(new BigDecimal("" + daejeonBikeDTO.getCurrentLongitude()));
+
+        // 현재 위치 > 역 까지의 거리를 도보로도 계산한다.
+        SkResponseDTO skResponseDTOtotalStation = subwayService.walkStation(goStationRequestDTO);
+        double homeToStation = skResponseDTOtotalStation.getDistance();
+        double homeToBike = distance(Double.parseDouble(daejeonRow.get(0).getX_pos()), Double.parseDouble(daejeonRow.get(0).getY_pos())
+                , daejeonBikeDTO.getCurrentLatitude(), daejeonBikeDTO.getCurrentLongitude());
+
+        // 도보로 가는게 더 빠르면 BAD_REQUEST를 보낸다.
+        if (skResponseDTOtotalStation == null) {
+
+            return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
+        } else if (homeToStation <= homeToBike) {
+            return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리의 절반보다 멉니다.", HttpStatus.BAD_REQUEST);
+        } else {
+            // 자전거 보관소가 더 가까울 경우 SK API를 이용해 보관소까지의 도보 거리를 보낸다
+            OkHttpClient daeClient = new OkHttpClient();
+
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, "{\"startX\":"
+                    + goStationRequestDTO.getCurrentLongitude() + ",\"startY\":" + goStationRequestDTO.getCurrentLatitude() +
+                    ",\"endX\":" + daejeonRow.get(0).getY_pos() + ",\"endY\":" + daejeonRow.get(0).getX_pos() +
+                    ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
+                    "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+            Request daeRequest = new Request.Builder()
+                    .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
+                    .post(body)
+                    .addHeader("accept", "application/json")
+                    .addHeader("content-type", "application/json")
+                    .addHeader("appKey", authConfig.getSk())
+                    .build();
+
+            Response daeResponse = daeClient.newCall(daeRequest).execute();
+
+            String changeDaeResponse = daeResponse.body().string();
+            JsonParser daeParser = new JsonParser();
+            JsonElement daeElement = daeParser.parse(changeDaeResponse);
+
+            JsonObject features = daeElement.getAsJsonObject();
+
+            GsonBuilder daeGsonBuilder = new GsonBuilder();
+            Gson daeGson = daeGsonBuilder.create();
+            GoRoad goRoad = daeGson.fromJson(features, GoRoad.class);
+
+            if (!goRoad.getFeatures().isEmpty()) {
+                List<Features> featuresList = goRoad.getFeatures()
+                        .stream().filter(o -> o.getGeometry().getType().equals("LineString")).collect(Collectors.toList());
+                goRoad.setFeatures(featuresList);
+            }
+
+            return new ResponseEntity<>(goRoad, HttpStatus.OK);
+        }
+
+    }
 }
