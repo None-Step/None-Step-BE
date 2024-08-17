@@ -68,7 +68,7 @@ public class RoadController {
         if (whatsUrResult.isEmpty()) {
 
             return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (whatsUrResult.get(0).getDistance() >= 5000) {
+        } else if (whatsUrResult.get(0).getDistance() >= 15000) {
             return new ResponseEntity<>("조회하려는 거리가 5km 이상입니다.", HttpStatus.BAD_REQUEST);
         } else {
 
@@ -139,7 +139,7 @@ public class RoadController {
         if (whatsUrResult.isEmpty()) {
 
             return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (whatsUrResult.get(0).getDistance() >= 5000) {
+        } else if (whatsUrResult.get(0).getDistance() >= 15000) {
             return new ResponseEntity<>("조회하려는 거리가 5km 이상입니다.", HttpStatus.BAD_REQUEST);
         } else {
 
