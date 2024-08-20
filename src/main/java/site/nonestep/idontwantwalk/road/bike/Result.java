@@ -1,8 +1,6 @@
-package site.nonestep.idontwantwalk.road.jsonClass;
+package site.nonestep.idontwantwalk.road.bike;
 
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class Result {

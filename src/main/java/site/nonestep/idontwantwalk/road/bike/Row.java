@@ -1,4 +1,4 @@
-package site.nonestep.idontwantwalk.road.jsonClass;
+package site.nonestep.idontwantwalk.road.bike;
 
 import lombok.Data;
 

@@ -8,9 +8,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayNowResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.Info;
@@ -122,6 +120,29 @@ public class SubwayInfoRepositoryImpl implements SubwayInfoRepositoryCustom{
                         .from(info)
                         .where(info.region.eq(goRoadRequestDTO.getCurrentRegion()).and(info.station.eq(goRoadRequestDTO.getCurrentStation())))
                         .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
+                        .fetchFirst()
+        );
+    }
+
+    // 지하철 경로 추출
+    @Override
+    public Optional<SubwayPathResponseDTOX> selectSidAndCid(String region, String line, String station) {
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(SubwayPathResponseDTOX.class, info.infoCID, info.infoSID))
+                        .from(info)
+                        .where(info.region.eq(region).and(info.line.eq(line).and(info.station.eq(station))))
+                        .fetchFirst()
+        );
+    }
+
+    // [목록] 지역, 호선, 역 명을 넣으면 해당 역의 위도, 경도 return
+    @Override
+    public Optional<StationListDTOX> selectLatitudeAndLongitude(GoListRequestDTO goListRequestDTO) {
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(StationListDTOX.class, info.infoLatitude, info.infoLongitude))
+                        .from(info)
+                        .where(info.region.eq(goListRequestDTO.getGoRegion()).and(info.line.eq(goListRequestDTO.getGoLine())
+                                .and(info.station.eq(goListRequestDTO.getGoStation()))))
                         .fetchFirst()
         );
     }
