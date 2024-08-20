@@ -1,4 +1,4 @@
-package site.nonestep.idontwantwalk.road.gsonClass;
+package site.nonestep.idontwantwalk.road.sk;
 
 import com.nimbusds.jose.shaded.gson.*;
 import com.nimbusds.jose.shaded.gson.reflect.TypeToken;

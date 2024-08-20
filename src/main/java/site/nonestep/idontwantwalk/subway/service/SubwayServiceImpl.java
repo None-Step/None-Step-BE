@@ -3,10 +3,7 @@ package site.nonestep.idontwantwalk.subway.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationResponseDTO;
-import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.subway.dto.*;
 import site.nonestep.idontwantwalk.subway.entity.Info;
 import site.nonestep.idontwantwalk.subway.repository.*;
@@ -299,5 +296,16 @@ public class SubwayServiceImpl implements SubwayService {
         }
     }
 
+    // [목록] 지역, 호선, 역 명을 넣으면 해당 역의 위도, 경도 return
+    @Override
+    public StationListDTOX station(GoListRequestDTO goListRequestDTO) {
+        Optional<StationListDTOX> latitudeAndLongitude = subwayInfoRepository.selectLatitudeAndLongitude(goListRequestDTO);
+
+        if (latitudeAndLongitude.isEmpty()) {
+            return null;
+        }else{
+           return latitudeAndLongitude.get();
+        }
+    }
 
 }
