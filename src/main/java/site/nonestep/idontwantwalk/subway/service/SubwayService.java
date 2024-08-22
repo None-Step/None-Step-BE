@@ -67,4 +67,10 @@ public interface SubwayService {
 
     // [목록] 지역, 호선, 역 명을 넣으면 해당 역의 위도, 경도 return
     StationListDTOX station(GoListRequestDTO goListRequestDTO);
+
+    // 상행선 시간표 조회
+    List<SubwayUpTimeResponseDTO> upTime(SubwayUpTimeRequestDTO subwayUpTimeRequestDTO);
+
+    // 하행선 시간표 조회
+    List<SubwayDownTimeResponseDTO> downTime(SubwayDownTimeRequestDTO subwayDownTimeRequestDTO);
 }

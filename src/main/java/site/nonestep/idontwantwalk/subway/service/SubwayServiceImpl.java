@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.subway.dto.*;
 import site.nonestep.idontwantwalk.subway.entity.Info;
+import site.nonestep.idontwantwalk.subway.entity.UpTime;
 import site.nonestep.idontwantwalk.subway.repository.*;
 
 import java.math.BigDecimal;
@@ -45,6 +46,12 @@ public class SubwayServiceImpl implements SubwayService {
 
     @Autowired
     SubwayLiftRepository subwayLiftRepository;
+
+    @Autowired
+    SubwayUpTimeRepository subwayUpTimeRepository;
+
+    @Autowired
+    SubwayDownTimeRepository subwayDownTimeRepository;
 
     @Autowired
     private SubwayChargerRepository subwayChargerRepository;
@@ -303,8 +310,33 @@ public class SubwayServiceImpl implements SubwayService {
 
         if (latitudeAndLongitude.isEmpty()) {
             return null;
+        } else {
+            return latitudeAndLongitude.get();
+        }
+    }
+
+    // 상행선 시간표 조회
+    @Override
+    public List<SubwayUpTimeResponseDTO> upTime(SubwayUpTimeRequestDTO subwayUpTimeRequestDTO) {
+        List<SubwayUpTimeResponseDTO> upTime = subwayUpTimeRepository.selectUpTime(subwayUpTimeRequestDTO);
+
+        if (upTime.isEmpty()) {
+            return null;
+        } else {
+            return upTime;
+        }
+    }
+
+
+    // 하행선 시간표 조회
+    @Override
+    public List<SubwayDownTimeResponseDTO> downTime(SubwayDownTimeRequestDTO subwayDownTimeRequestDTO) {
+        List<SubwayDownTimeResponseDTO> downTime = subwayDownTimeRepository.selectDownTime(subwayDownTimeRequestDTO);
+
+        if (downTime.isEmpty()) {
+            return null;
         }else{
-           return latitudeAndLongitude.get();
+            return downTime;
         }
     }
 
