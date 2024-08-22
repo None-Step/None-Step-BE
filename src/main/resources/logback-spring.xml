@@ -21,7 +21,6 @@
     </root>
 
     <logger name="site.nonestep.idontwantwalk" level="DEBUG" additivity="false">
-        <appender-ref ref="LOGSTASH" />
         <appender-ref ref="CONSOLE" />
     </logger>
 
