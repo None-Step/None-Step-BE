@@ -1,13 +1,15 @@
 <configuration>
-    <property name="LOG_PATTERN" value="logs-%d{yy-MM-dd HH:mm:ss} [%logger{0}:%line] - %msg%n" />
+    <!-- 로그 패턴 정의 -->
+    <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss} [%logger{0}:%line] - %msg%n" />
 
+    <!-- Console Appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
-
+    <!-- Logstash Appender -->
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>15.165.214.22:5000</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
@@ -15,15 +17,12 @@
         </encoder>
     </appender>
 
+    <!-- Root logger 설정 -->
+    <!-- INFO 레벨 이상의 로그를 Logstash와 Console로 전달 -->
     <root level="INFO">
         <appender-ref ref="LOGSTASH" />
         <appender-ref ref="CONSOLE" />
     </root>
-
-    <logger name="site.nonestep.idontwantwalk" level="DEBUG" additivity="false">
-        <appender-ref ref="CONSOLE" />
-    </logger>
-
 
 
 </configuration>
