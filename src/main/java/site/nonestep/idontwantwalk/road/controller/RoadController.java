@@ -50,7 +50,8 @@ public class RoadController {
     // 현재 위치 > 역 까지 도보 API
     @PostMapping("/go-station")
     public ResponseEntity<?> goStation(@org.springframework.web.bind.annotation.RequestBody GoStationRequestDTO goStationRequestDTO) throws IOException {
-        log.info("{}", goStationRequestDTO);
+        log.info("호출된 API: {}", goStationRequestDTO);
+
         SkResponseDTO skResponseDTOtotalStation = subwayService.walkStation(goStationRequestDTO);
         SkResponseDTO skResponseDTOEscal = subwayService.nearByEscal(goStationRequestDTO);
         SkResponseDTO skResponseDTOElevator = subwayService.nearByElevator(goStationRequestDTO);
@@ -191,7 +192,7 @@ public class RoadController {
     // 공공데이터 - 서울 자전거 api 쓰기
     @PostMapping("/seoul-bike")
     ResponseEntity<?> seoulBike(@org.springframework.web.bind.annotation.RequestBody SeoulBikeDTO seoulBikeDTO) throws IOException {
-
+        log.info("호출된 API: {}", seoulBikeDTO);
         List<Row> seoulRow = new ArrayList<>();
 
         // 서울 자전거는 한 번에 1000건 까지 밖에 못가져오기 때문에 3번에 걸쳐 받아온다.
@@ -278,6 +279,7 @@ public class RoadController {
                     ,skResponseDTOtotalStation.getLatitude().toString(),skResponseDTOtotalStation.getLongitude().toString());
 
             pathFromHomeToBike.getFeatures().addAll( pathFromBikeToStation.getFeatures());
+            log.info("호출된 API: {}", pathFromHomeToBike);
             return new ResponseEntity<>(pathFromHomeToBike, HttpStatus.OK);
         }
     }
@@ -315,6 +317,7 @@ public class RoadController {
     @PostMapping("daejeon-bike")
     public ResponseEntity<?> daejeonBike(@org.springframework.web.bind.annotation.RequestBody DaejeonBikeDTO daejeonBikeDTO) throws IOException {
 
+        log.info("호출된 API: {}", daejeonBikeDTO);
         OkHttpClient client = new OkHttpClient();
 
         // 대전시 자전거 API 호출
@@ -393,6 +396,7 @@ public class RoadController {
                     ,skResponseDTOtotalStation.getLatitude().toString(),skResponseDTOtotalStation.getLongitude().toString());
 
             pathFromHomeToBike.getFeatures().addAll( pathFromBikeToStation.getFeatures());
+            log.info("호출된 API: {}", pathFromHomeToBike);
             return new ResponseEntity<>(pathFromHomeToBike, HttpStatus.OK);
 
 
@@ -403,6 +407,7 @@ public class RoadController {
     @PostMapping("/subway-path")
     public ResponseEntity<?> subwayPath(@org.springframework.web.bind.annotation.RequestBody SubwayPathRequestDTO subwayPathRequestDTO) throws IOException {
 
+        log.info("호출된 API: {}", subwayPathRequestDTO);
         OkHttpClient client = new OkHttpClient();
 
         SubwayPathResponseDTOX start = roadService.selectCidAndSid(subwayPathRequestDTO.getRegion(), subwayPathRequestDTO.getStartLine(), subwayPathRequestDTO.getStartStation());
@@ -433,6 +438,7 @@ public class RoadController {
             Path path = gson.fromJson(subwayPath, Path.class);
 
 
+            log.info("호출된 API: {}", path);
             return new ResponseEntity<>(path, HttpStatus.OK);
 
         }
@@ -442,6 +448,7 @@ public class RoadController {
     @PostMapping("/go-list")
     public ResponseEntity<?> goList(@org.springframework.web.bind.annotation.RequestBody GoListRequestDTO goListRequestDTO) throws IOException {
 
+        log.info("호출된 API: {}", goListRequestDTO);
         StationListDTOX stationListDTOX = subwayService.station(goListRequestDTO);
         List<GoListResponseDTO> goListResponseDTOList = new ArrayList<>();
         if (stationListDTOX == null){
@@ -644,6 +651,7 @@ public class RoadController {
                 goListResponseDTO.setDistance(skBikePath2.getFeatures().get(0).getProperties().getTotalDistance() + goListResponseDTO.getDistance());
 
                 goListResponseDTOList.add(goListResponseDTO);
+                log.info("호출된 API: {}", goListResponseDTOList);
                 return new ResponseEntity<>(goListResponseDTOList, HttpStatus.OK);
 
 
@@ -801,10 +809,12 @@ public class RoadController {
                 goListResponseDTO.setDistance(skBikePath2.getFeatures().get(0).getProperties().getTotalDistance() + goListResponseDTO.getDistance());
 
                 goListResponseDTOList.add(goListResponseDTO);
+                log.info("호출된 API: {}", goListResponseDTOList);
                 return new ResponseEntity<>(goListResponseDTOList, HttpStatus.OK);
             }
         }else{
 
+            log.info("호출된 API: {}", goListResponseDTOList);
             return new ResponseEntity<>(goListResponseDTOList,HttpStatus.OK);
         }
     }
@@ -812,6 +822,7 @@ public class RoadController {
     // 자전거 보관소의 위치를 알려주는 API
     @GetMapping("/bike-marker")
     public ResponseEntity<?> bikeMarker(@ModelAttribute BikeMarkerDTO bikeMarkerDTO) throws IOException {
+        log.info("호출된 API: {}", bikeMarkerDTO);
         BikeMarkerDTO daejeon = daejeonBike(bikeMarkerDTO);
         BikeMarkerDTO seoul = seoulBike(bikeMarkerDTO);
         if(daejeon == null && seoul == null) {
@@ -828,6 +839,7 @@ public class RoadController {
         double seoulLength = distance(seoul.getLatitude().doubleValue(), seoul.getLongitude().doubleValue()
                 , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
 
+        log.info("호출된 API: {}", daejeonLength > seoulLength ? seoul : daejeon );
        return new ResponseEntity<>(daejeonLength > seoulLength ? seoul : daejeon  ,HttpStatus.OK);
 
     }
