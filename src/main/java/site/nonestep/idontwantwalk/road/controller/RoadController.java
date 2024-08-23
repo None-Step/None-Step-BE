@@ -246,6 +246,7 @@ public class RoadController {
             }
         });
 
+
         // 현재 위치에서 역 까지 도보순으로 계산 후 비교하기 위해 선언 후 채워줌
         // 도보: 현재 위치 > 역의 거리와  현재 위치 > 자전거 보관소의 거리를 비교한다.
         // 비교 후, 도보로 목적지 역 까지의 거리가 더 멀면 띄우지 않기 위해서
@@ -268,45 +269,16 @@ public class RoadController {
         } else if (homeToStation <= homeToBike) {
             return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
         } else {
-            // 자전거 보관소가 더 가까울 경우 SK API를 이용해 보관소까지의 도보 거리를 보낸다
-            OkHttpClient client = new OkHttpClient();
 
-            MediaType mediaType = MediaType.parse("application/json");
-            RequestBody body = RequestBody.create(mediaType, "{\"startX\":"
-                    + goStationRequestDTO.getCurrentLongitude() + ",\"startY\":" + goStationRequestDTO.getCurrentLatitude() +
-                    ",\"endX\":" + seoulRow.get(0).getStationLongitude() + ",\"endY\":" + seoulRow.get(0).getStationLatitude() +
-                    ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
-                    "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
-            Request request = new Request.Builder()
-                    .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
-                    .post(body)
-                    .addHeader("accept", "application/json")
-                    .addHeader("content-type", "application/json")
-                    .addHeader("appKey", authConfig.getSk())
-                    .build();
 
-            Response response = client.newCall(request).execute();
+            GoRoad pathFromHomeToBike = skApiMethod(Double.toString(seoulBikeDTO.getCurrentLatitude()),Double.toString(seoulBikeDTO.getCurrentLongitude())
+                    ,seoulRow.get(0).getStationLatitude(), seoulRow.get(0).getStationLongitude());
 
-            String changeResponse = response.body().string();
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(changeResponse);
+            GoRoad pathFromBikeToStation = skApiMethod(seoulRow.get(0).getStationLatitude(), seoulRow.get(0).getStationLongitude()
+                    ,skResponseDTOtotalStation.getLatitude().toString(),skResponseDTOtotalStation.getLongitude().toString());
 
-            JsonObject features = element.getAsJsonObject();
-
-//            Gson gson = new Gson();
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(Geometry.class, new GeometryDeserializer());
-            Gson gson = gsonBuilder.create();
-            GoRoad goRoad = gson.fromJson(features, GoRoad.class);
-            if (!goRoad.getFeatures().isEmpty()) {
-                List<Features> featuresList = goRoad.getFeatures()
-                        .stream().filter(o -> o.getGeometry().getType().equals("LineString")).collect(Collectors.toList());
-                goRoad.setFeatures(featuresList);
-            }
-
-            log.info("호출된 API: {}", goRoad);
-            return new ResponseEntity<>(goRoad, HttpStatus.OK);
-
+            pathFromHomeToBike.getFeatures().addAll( pathFromBikeToStation.getFeatures());
+            return new ResponseEntity<>(pathFromHomeToBike, HttpStatus.OK);
         }
     }
 
@@ -413,42 +385,17 @@ public class RoadController {
         } else if (homeToStation <= homeToBike) {
             return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
         } else {
-            // 자전거 보관소가 더 가까울 경우 SK API를 이용해 보관소까지의 도보 거리를 보낸다
-            OkHttpClient daeClient = new OkHttpClient();
 
-            MediaType mediaType = MediaType.parse("application/json");
-            RequestBody body = RequestBody.create(mediaType, "{\"startX\":"
-                    + goStationRequestDTO.getCurrentLongitude() + ",\"startY\":" + goStationRequestDTO.getCurrentLatitude() +
-                    ",\"endX\":" + daejeonRow.get(0).getY_pos() + ",\"endY\":" + daejeonRow.get(0).getX_pos() +
-                    ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
-                    "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
-            Request daeRequest = new Request.Builder()
-                    .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
-                    .post(body)
-                    .addHeader("accept", "application/json")
-                    .addHeader("content-type", "application/json")
-                    .addHeader("appKey", authConfig.getSk())
-                    .build();
+            GoRoad pathFromHomeToBike = skApiMethod(Double.toString(daejeonBikeDTO.getCurrentLatitude()),Double.toString(daejeonBikeDTO.getCurrentLongitude())
+                    ,daejeonRow.get(0).getX_pos(), daejeonRow.get(0).getY_pos());
 
-            Response daeResponse = daeClient.newCall(daeRequest).execute();
+            GoRoad pathFromBikeToStation = skApiMethod(daejeonRow.get(0).getX_pos(), daejeonRow.get(0).getY_pos()
+                    ,skResponseDTOtotalStation.getLatitude().toString(),skResponseDTOtotalStation.getLongitude().toString());
 
-            String changeDaeResponse = daeResponse.body().string();
-            JsonParser daeParser = new JsonParser();
-            JsonElement daeElement = daeParser.parse(changeDaeResponse);
+            pathFromHomeToBike.getFeatures().addAll( pathFromBikeToStation.getFeatures());
+            return new ResponseEntity<>(pathFromHomeToBike, HttpStatus.OK);
 
-            JsonObject features = daeElement.getAsJsonObject();
 
-            GsonBuilder daeGsonBuilder = new GsonBuilder();
-            Gson daeGson = daeGsonBuilder.create();
-            GoRoad goRoad = daeGson.fromJson(features, GoRoad.class);
-
-            if (!goRoad.getFeatures().isEmpty()) {
-                List<Features> featuresList = goRoad.getFeatures()
-                        .stream().filter(o -> o.getGeometry().getType().equals("LineString")).collect(Collectors.toList());
-                goRoad.setFeatures(featuresList);
-            }
-
-            return new ResponseEntity<>(goRoad, HttpStatus.OK);
         }
     }
 
@@ -862,11 +809,172 @@ public class RoadController {
         }
     }
 
-//    // 자전거 보관소의 위치를 알려주는 API
-//    @GetMapping("/bike-marker")
-//    public ResponseEntity<?> bikeMarker(@ModelAttribute BikeMarkerRequestDTO bikeMarkerRequestDTO){
-//
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    // 자전거 보관소의 위치를 알려주는 API
+    @GetMapping("/bike-marker")
+    public ResponseEntity<?> bikeMarker(@ModelAttribute BikeMarkerDTO bikeMarkerDTO) throws IOException {
+        BikeMarkerDTO daejeon = daejeonBike(bikeMarkerDTO);
+        BikeMarkerDTO seoul = seoulBike(bikeMarkerDTO);
+        if(daejeon == null && seoul == null) {
+            return new ResponseEntity<>("오류가 발생하였습니다.", HttpStatus.BAD_REQUEST);
+        }else if(daejeon == null){
+            return new ResponseEntity<>(seoul,HttpStatus.OK);
+        }else if(seoul == null){
+            return new ResponseEntity<>(daejeon,HttpStatus.OK);
+        }
+
+        double daejeonLength = distance(daejeon.getLatitude().doubleValue(), daejeon.getLongitude().doubleValue()
+                , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+
+        double seoulLength = distance(seoul.getLatitude().doubleValue(), seoul.getLongitude().doubleValue()
+                , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+
+       return new ResponseEntity<>(daejeonLength > seoulLength ? seoul : daejeon  ,HttpStatus.OK);
+
+    }
+
+    public BikeMarkerDTO daejeonBike(BikeMarkerDTO bikeMarkerDTO) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        // 대전시 자전거 API 호출
+        Request request = new Request.Builder()
+                .url("https://bikeapp.tashu.or.kr:50041/v1/openapi/station")
+                .addHeader("api-token", authConfig.getDaejeonbike())
+                .addHeader("accept", "application/json")
+                .addHeader("content-type", "application/json")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        String changeResponse = response.body().string();
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(changeResponse);
+
+        JsonObject daejeonBike = element.getAsJsonObject();
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        DaejeonBike daejeon = gson.fromJson(daejeonBike, DaejeonBike.class);
+
+        List<DaejeonRow> daejeonRow = daejeon.getResults();
+
+        // 보관소에 거치된 자전거가 1개 이상인 경우만 뜨게끔 filter를 건다.
+        daejeonRow = daejeonRow.stream().filter(o -> o.getParking_count() >= 1).collect(Collectors.toList());
+
+        // 그 후, 사용자 위치에서 가장 가까운 자전거 보관소를 추출하기 위해 정렬한다.
+        daejeonRow.sort(new Comparator<DaejeonRow>() {
+            @Override
+            public int compare(DaejeonRow o1, DaejeonRow o2) {
+
+                double whereIsMyBike = distance(Double.parseDouble(o1.getX_pos()), Double.parseDouble(o1.getY_pos())
+                        , bikeMarkerDTO.getLatitude().doubleValue(), bikeMarkerDTO.getLongitude().doubleValue());
+
+                double whereIsMyBike2 = distance(Double.parseDouble(o2.getX_pos()), Double.parseDouble(o2.getY_pos())
+                        , bikeMarkerDTO.getLatitude().doubleValue(), bikeMarkerDTO.getLongitude().doubleValue());
+
+                return Double.compare(whereIsMyBike, whereIsMyBike2);
+            }
+        });
+
+        if(daejeonRow.isEmpty()){
+            return null;
+        }
+
+        return new BikeMarkerDTO(new BigDecimal(daejeonRow.get(0).getX_pos()),new BigDecimal(daejeonRow.get(0).getY_pos()));
+    }
+
+    public BikeMarkerDTO seoulBike(BikeMarkerDTO bikeMarkerDTO) throws IOException {
+        List<Row> seoulRow = new ArrayList<>();
+
+        // 서울 자전거는 한 번에 1000건 까지 밖에 못가져오기 때문에 3번에 걸쳐 받아온다.
+        // 서울시 자전거 보관소 갯수 약 2641개로 추정
+        for (int i = 1; i <= 1800; i += 900) {
+
+            OkHttpClient client = new OkHttpClient();
+
+            // 서울시 자전거 API 호출
+            Request request = new Request.Builder()
+                    .url("http://openapi.seoul.go.kr:8088/" + authConfig.getSeoulbike() + "/json/bikeList/" + i + "/" + (i + 900) + "/")
+                    .addHeader("accept", "application/json")
+                    .addHeader("content-type", "application/json")
+                    .build();
+
+            Response response = client.newCall(request).execute();
+
+            String changeResponse = response.body().string();
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(changeResponse);
+
+            JsonObject seoulBike = element.getAsJsonObject();
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+            SeoulBike seoul = gson.fromJson(seoulBike, SeoulBike.class);
+
+            seoulRow.addAll(seoul.getRentBikeStatus().getRow());
+        }
+
+        // 보관소에 거치된 자전거가 1개 이상인 경우만 뜨게끔 filter를 건다.
+        seoulRow = seoulRow.stream().filter(o -> Integer.parseInt(o.getParkingBikeTotCnt()) >= 1).collect(Collectors.toList());
+
+        // 그 후, 사용자 위치에서 가장 가까운 자전거 보관소를 추출하기 위해 정렬한다.
+        Collections.sort(seoulRow, new Comparator<Row>() {
+            @Override
+            public int compare(Row o1, Row o2) {
+
+                double whereIsMyBike = distance(Double.parseDouble(o1.getStationLatitude()), Double.parseDouble(o1.getStationLongitude())
+                        , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+
+                double whereIsMyBike2 = distance(Double.parseDouble(o2.getStationLatitude()), Double.parseDouble(o2.getStationLongitude())
+                        , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+
+                return Double.compare(whereIsMyBike, whereIsMyBike2);
+            }
+        });
+
+
+        if(seoulRow.isEmpty()){
+            return null;
+        }
+
+        return new BikeMarkerDTO(new BigDecimal(seoulRow.get(0).getStationLatitude()),new BigDecimal(seoulRow.get(0).getStationLongitude()));
+    }
+    
+    
+    public GoRoad skApiMethod(String startLatitude, String startLongitude,String endLatitude, String endLongitude) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, "{\"startX\":"
+                + startLongitude + ",\"startY\":" + startLatitude +
+                ",\"endX\":" + endLongitude + ",\"endY\":" + endLatitude +
+                ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"" + "출발지" + "\",\"endName\":\"" + "도착지" + "\"," +
+                "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+        Request request = new Request.Builder()
+                .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
+                .post(body)
+                .addHeader("accept", "application/json")
+                .addHeader("content-type", "application/json")
+                .addHeader("appKey", authConfig.getSk())
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        String changeResponse = response.body().string();
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(changeResponse);
+
+        JsonObject features = element.getAsJsonObject();
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Geometry.class, new GeometryDeserializer());
+        Gson gson = gsonBuilder.create();
+        GoRoad goRoad = gson.fromJson(features, GoRoad.class);
+        if (!goRoad.getFeatures().isEmpty()) {
+            List<Features> featuresList = goRoad.getFeatures()
+                    .stream().filter(o -> o.getGeometry().getType().equals("LineString")).collect(Collectors.toList());
+            goRoad.setFeatures(featuresList);
+        }
+
+        return goRoad;
+    }
 }
