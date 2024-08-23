@@ -3,13 +3,11 @@ package site.nonestep.idontwantwalk.road.controller;
 import com.nimbusds.jose.shaded.gson.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import okhttp3.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import retrofit2.http.HTTP;
 import site.nonestep.idontwantwalk.config.AuthConfig;
 import site.nonestep.idontwantwalk.road.dto.*;
@@ -75,8 +73,8 @@ public class RoadController {
         if (whatsUrResult.isEmpty()) {
 
             return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (whatsUrResult.get(0).getDistance() >= 15000) {
-            return new ResponseEntity<>("조회하려는 거리가 5km 이상입니다.", HttpStatus.BAD_REQUEST);
+        } else if (whatsUrResult.get(0).getDistance() >= 40000) {
+            return new ResponseEntity<>("조회하려는 거리가 40km 이상입니다.", HttpStatus.BAD_REQUEST);
         } else {
 
             OkHttpClient client = new OkHttpClient();
@@ -146,8 +144,8 @@ public class RoadController {
         if (whatsUrResult.isEmpty()) {
 
             return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (whatsUrResult.get(0).getDistance() >= 15000) {
-            return new ResponseEntity<>("조회하려는 거리가 5km 이상입니다.", HttpStatus.BAD_REQUEST);
+        } else if (whatsUrResult.get(0).getDistance() >= 40000) {
+            return new ResponseEntity<>("조회하려는 거리가 40km 이상입니다.", HttpStatus.BAD_REQUEST);
         } else {
 
             OkHttpClient client = new OkHttpClient();
@@ -862,7 +860,13 @@ public class RoadController {
 
             return new ResponseEntity<>(goListResponseDTOList,HttpStatus.OK);
         }
-
-
     }
+
+//    // 자전거 보관소의 위치를 알려주는 API
+//    @GetMapping("/bike-marker")
+//    public ResponseEntity<?> bikeMarker(@ModelAttribute BikeMarkerRequestDTO bikeMarkerRequestDTO){
+//
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 }
