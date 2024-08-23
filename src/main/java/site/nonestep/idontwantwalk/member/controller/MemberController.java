@@ -57,15 +57,18 @@ public class MemberController {
     //회원가입 api
     @PostMapping("/signup")//?는 다 받아주겟다
     public ResponseEntity<?> signup(@Valid @RequestBody MemberSignUpRequestDTO memberSignUpRequestDTO){
+        log.info("호출된 API: {}", memberSignUpRequestDTO);
 
         MemberSignUpResponseDTO memberSignUpResponseDTO = memberService.signUp(memberSignUpRequestDTO);
 
+        log.info("호출된 API: {}", memberSignUpResponseDTO);
         return new ResponseEntity<MemberSignUpResponseDTO>(memberSignUpResponseDTO, HttpStatus.OK);
     }
 
     // 휴대폰 인증
     @PostMapping("/phone")
     public ResponseEntity<?> phone(@RequestBody MemberPhoneRequestDTO memberPhoneRequestDTO) {
+        log.info("호출된 API: {}", memberPhoneRequestDTO);
 
         Message message = new Message();
         int randomPhone = generateAuthNo1();//46번째 줄 만들어둔 변수를 가져온 것임
@@ -79,25 +82,31 @@ public class MemberController {
         MemberPhoneResponseDTO memberPhoneResponseDTO = new MemberPhoneResponseDTO();
         memberPhoneResponseDTO.setAuthenticationNumber(String.valueOf(randomPhone));
 
+        log.info("호출된 API: {}", memberPhoneResponseDTO);
         return new ResponseEntity<MemberPhoneResponseDTO>(memberPhoneResponseDTO, HttpStatus.OK);
     }
 
     //회원가입 시 아이디 중복 검사
     @GetMapping("/idcheck")
     public ResponseEntity<?> idCheck(@ModelAttribute MemberIdCheckRequestDTO memberIdCheckRequestDTO){
+        log.info("호출된 API: {}", memberIdCheckRequestDTO);
+
         Boolean isIdCheck = memberService.memberIdCheck(memberIdCheckRequestDTO);
+        log.info("호출된 API: {}", isIdCheck);
         return new ResponseEntity<>(isIdCheck, HttpStatus.OK);
     }
 
     //ID 찾기
     @PostMapping("/idfind") //response에서 받아서! request로 전해준다.
     public ResponseEntity<?> idfind(@RequestBody MemberIdFindRequestDTO memberIdFindRequestDTO){
+        log.info("호출된 API: {}", memberIdFindRequestDTO);
         List<MemberIdFindResponseDTO> memberIdFindResponseDTO = memberService.idFind(memberIdFindRequestDTO);
 
         //id 있을 수도 있고, 없을수도 있지 정보가 있으면 보내고, 정보가 없으면 안보내겠다.
         if (memberIdFindResponseDTO.isEmpty()) {
             return new ResponseEntity<>("회원정보가 없습니다.",HttpStatus.BAD_REQUEST);
         }else{
+            log.info("호출된 API: {}", memberIdFindResponseDTO);
             return new ResponseEntity<>(memberIdFindResponseDTO, HttpStatus.OK);
         }
     }
@@ -105,11 +114,13 @@ public class MemberController {
     //pw 찾기
     @PostMapping("/pwfind")
     public ResponseEntity<?> pwfind(@RequestBody MemberPwFindRequestDTO memberPwFindRequestDTO){
+        log.info("호출된 API: {}", memberPwFindRequestDTO);
         MemberPwFindResponseDTO memberPwFindResponseDTO = memberService.pwFind(memberPwFindRequestDTO);
 
         if (memberPwFindResponseDTO == null){
             return new ResponseEntity<>("일치하는 정보가 없습니다.", HttpStatus.BAD_REQUEST);
         }else{
+            log.info("호출된 API: {}", memberPwFindResponseDTO);
              return new ResponseEntity<>(memberPwFindResponseDTO, HttpStatus.OK);
         }
     }
@@ -125,6 +136,7 @@ public class MemberController {
     // 일반 로그인
     @PostMapping("/login")
     public ResponseEntity<?> normalLogin(@RequestBody MemberLoginRequestDTO memberLoginRequestDTO){
+        log.info("호출된 API: {}", memberLoginRequestDTO);
 
         Long login = memberService.login(memberLoginRequestDTO.getMemberID(), memberLoginRequestDTO.getMemberPass());
 
@@ -156,6 +168,7 @@ public class MemberController {
             MemberLoginResponseDTO memberLoginResponseDTO = new MemberLoginResponseDTO();
             memberLoginResponseDTO.setMessage("Success");
 
+            log.info("호출된 API: {}", memberLoginResponseDTO);
             return new ResponseEntity<>(memberLoginResponseDTO, headers, HttpStatus.OK);
         }else{
             return new ResponseEntity<>("ID와 비밀번호를 확인해주세요", HttpStatus.BAD_REQUEST);
@@ -192,6 +205,7 @@ public class MemberController {
         if (memberInfoResponseDTO == null){
             return new ResponseEntity<>("잘못된 정보입니다.", HttpStatus.BAD_REQUEST);
         }else{
+            log.info("호출된 API: {}", memberInfoResponseDTO);
             return new ResponseEntity<>(memberInfoResponseDTO, HttpStatus.OK);
         }
     }
@@ -199,12 +213,14 @@ public class MemberController {
     //다른유저 프로필 조회
     @PostMapping("/others")
     public ResponseEntity<?> others(@RequestBody MemberOthersRequestDTO memberOthersRequestDTO){
+        log.info("호출된 API: {}", memberOthersRequestDTO);
         //나도 로그인이 되어 있는 상태기 때문에 token을 가지고 있다.
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()); //나 토큰을 가져오겠다. 쓰겠어!
         MemberOthersResponseDTO memberOthersResponseDTO = memberService.others(memberOthersRequestDTO);
         if (memberOthersResponseDTO == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }else {
+            log.info("호출된 API: {}", memberOthersResponseDTO);
             return new ResponseEntity<>(memberOthersResponseDTO, HttpStatus.OK);
         }
     }
@@ -212,32 +228,41 @@ public class MemberController {
     //프로필변경:휴대폰
     @PutMapping("/modify-phone")
     public ResponseEntity<?> modifyPhone(@RequestBody MemberModifyPhoneRequestDTO memberModifyPhoneRequestDTO){
+        log.info("호출된 API: {}", memberModifyPhoneRequestDTO);
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         MemberModifyPhoneResponseDTO memberModifyPhoneResponseDTO = memberService.modifyPhone(memberModifyPhoneRequestDTO, memberNo);
+        log.info("호출된 API: {}", memberModifyPhoneResponseDTO);
         return new ResponseEntity<>(memberModifyPhoneResponseDTO, HttpStatus.OK);
     }
 
     //프로필변경: 메일
     @PutMapping("/modify-mail")
     public ResponseEntity<?> modifyMail(@RequestBody MemberModifyMailRequestDTO memberModifyMailRequestDTO){
+        log.info("호출된 API: {}", memberModifyMailRequestDTO);
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         MemberModifyMailResponseDTO memberModifyMailResponseDTO = memberService.modifyMail(memberModifyMailRequestDTO, memberNo);
+        log.info("호출된 API: {}", memberModifyMailResponseDTO);
         return new ResponseEntity<>(memberModifyMailResponseDTO ,HttpStatus.OK);
     }
 
     //프로필변경: 비밀번호
     @PutMapping("/modify-pass")
     public ResponseEntity<?> modifyPass(@RequestBody MemberModifyPassRequestDTO memberModifyPassRequestDTO){
+        log.info("호출된 API: {}", memberModifyPassRequestDTO);
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         MemberModifyPassResponseDTO memberModifyPassResponseDTO = memberService.modifyPass(memberModifyPassRequestDTO, memberNo);
+
+        log.info("호출된 API: {}", memberModifyPassResponseDTO);
         return new ResponseEntity<>(memberModifyPassResponseDTO ,HttpStatus.OK);
     }
 
     //프로필변경: 닉네임 이름 및 이미지 변경
     @PutMapping("/modify-nickname")
     public ResponseEntity<?> modifyNickName(@ModelAttribute MemberModifyNickNameRequestDTO memberModifyNickNameRequestDTO){
+        log.info("호출된 API: {}", memberModifyNickNameRequestDTO);
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         MemberModifyNickNameResponseDTO memberModifyNickNameResponseDTO = memberService.modifyNick(memberModifyNickNameRequestDTO, memberNo);
+        log.info("호출된 API: {}", memberModifyNickNameResponseDTO);
         return new ResponseEntity<>(memberModifyNickNameResponseDTO ,HttpStatus.OK);
     }
 
@@ -252,7 +277,7 @@ public class MemberController {
     // Access Token 값 만료 되었을 경우 Refresh Token 전달 후 새로운 Access Token 생성
     @PostMapping("/token")
     public ResponseEntity<?> accessToken(@RequestBody SendTokenRequestDTO sendTokenRequestDTO) {
-        log.info("{}", sendTokenRequestDTO);
+        log.info("호출된 API: {}", sendTokenRequestDTO);
 
         Long newAccessToken = memberService.isRefreshTokenAndIdOk(sendTokenRequestDTO);
 
@@ -267,6 +292,7 @@ public class MemberController {
             sendTokenResponseDTO.setMessage("Success");
 
             log.info("{}", sendTokenResponseDTO);
+            log.info("호출된 API: {}", sendTokenResponseDTO);
             return new ResponseEntity<>(sendTokenResponseDTO, headers, HttpStatus.OK);
         }
     }
