@@ -74,8 +74,8 @@ public class RoadController {
         if (whatsUrResult.isEmpty()) {
 
             return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (whatsUrResult.get(0).getDistance() >= 40000) {
-            return new ResponseEntity<>("조회하려는 거리가 40km 이상입니다.", HttpStatus.BAD_REQUEST);
+        } else if (whatsUrResult.get(0).getDistance() >= 20000) {
+            return new ResponseEntity<>("조회하려는 거리가 20km 이상입니다.", HttpStatus.BAD_REQUEST);
         } else {
 
             OkHttpClient client = new OkHttpClient();
@@ -84,7 +84,7 @@ public class RoadController {
             RequestBody body = RequestBody.create(mediaType, "{\"startX\":"
                     + goStationRequestDTO.getCurrentLongitude() + ",\"startY\":" + goStationRequestDTO.getCurrentLatitude() +
                     ",\"endX\":" + whatsUrResult.get(0).getLongitude() + ",\"endY\":" + whatsUrResult.get(0).getLatitude() +
-                    ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
+                    ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + "도착지 : " + "\"," +
                     "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
             Request request = new Request.Builder()
                     .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
@@ -145,8 +145,8 @@ public class RoadController {
         if (whatsUrResult.isEmpty()) {
 
             return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (whatsUrResult.get(0).getDistance() >= 40000) {
-            return new ResponseEntity<>("조회하려는 거리가 40km 이상입니다.", HttpStatus.BAD_REQUEST);
+        } else if (whatsUrResult.get(0).getDistance() >= 20000) {
+            return new ResponseEntity<>("조회하려는 거리가 20km 이상입니다.", HttpStatus.BAD_REQUEST);
         } else {
 
             OkHttpClient client = new OkHttpClient();
@@ -251,34 +251,29 @@ public class RoadController {
         // 현재 위치에서 역 까지 도보순으로 계산 후 비교하기 위해 선언 후 채워줌
         // 도보: 현재 위치 > 역의 거리와  현재 위치 > 자전거 보관소의 거리를 비교한다.
         // 비교 후, 도보로 목적지 역 까지의 거리가 더 멀면 띄우지 않기 위해서
-        GoStationRequestDTO goStationRequestDTO = new GoStationRequestDTO();
-        goStationRequestDTO.setGoStation(seoulBikeDTO.getGoStation());
-        goStationRequestDTO.setGoRegion(seoulBikeDTO.getGoRegion());
-        goStationRequestDTO.setCurrentLatitude(new BigDecimal("" + seoulBikeDTO.getCurrentLatitude()));
-        goStationRequestDTO.setCurrentLongitude(new BigDecimal("" + seoulBikeDTO.getCurrentLongitude()));
 
-        // 현재 위치 > 역 까지의 거리를 도보로도 계산한다.
-        SkResponseDTO skResponseDTOtotalStation = subwayService.walkStation(goStationRequestDTO);
-        double homeToStation = skResponseDTOtotalStation.getDistance();
-        double homeToBike = distance(Double.parseDouble(seoulRow.get(0).getStationLatitude()), Double.parseDouble(seoulRow.get(0).getStationLongitude())
+        double currentToGo = distance(seoulBikeDTO.getCurrentLatitude(), seoulBikeDTO.getCurrentLongitude()
+                , seoulBikeDTO.getGoLatitude(),seoulBikeDTO.getGoLongitude());
+        double currentToBike = distance(Double.parseDouble(seoulRow.get(0).getStationLatitude()), Double.parseDouble(seoulRow.get(0).getStationLongitude())
                 , seoulBikeDTO.getCurrentLatitude(), seoulBikeDTO.getCurrentLongitude());
 
         // 도보로 가는게 더 빠르면 BAD_REQUEST를 보낸다.
-        if (skResponseDTOtotalStation == null) {
-
-            return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (homeToStation <= homeToBike) {
-            return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
+//        if (skResponseDTOtotalStation == null) {
+//
+//            return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
+//        } else
+        if (currentToGo <= currentToBike) {
+            return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 목적지 까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
         } else {
 
 
-            GoRoad pathFromHomeToBike = skApiMethod(Double.toString(seoulBikeDTO.getCurrentLatitude()),Double.toString(seoulBikeDTO.getCurrentLongitude())
-                    ,seoulRow.get(0).getStationLatitude(), seoulRow.get(0).getStationLongitude());
+            GoRoad pathFromHomeToBike = skApiMethod(Double.toString(seoulBikeDTO.getCurrentLatitude()), Double.toString(seoulBikeDTO.getCurrentLongitude())
+                    , seoulRow.get(0).getStationLatitude(), seoulRow.get(0).getStationLongitude());
 
             GoRoad pathFromBikeToStation = skApiMethod(seoulRow.get(0).getStationLatitude(), seoulRow.get(0).getStationLongitude()
-                    ,skResponseDTOtotalStation.getLatitude().toString(),skResponseDTOtotalStation.getLongitude().toString());
+                    , "" + seoulBikeDTO.getGoLatitude(), "" + seoulBikeDTO.getCurrentLongitude());
 
-            pathFromHomeToBike.getFeatures().addAll( pathFromBikeToStation.getFeatures());
+            pathFromHomeToBike.getFeatures().addAll(pathFromBikeToStation.getFeatures());
             log.info("호출된 API: {}", pathFromHomeToBike);
             return new ResponseEntity<>(pathFromHomeToBike, HttpStatus.OK);
         }
@@ -366,36 +361,28 @@ public class RoadController {
             }
         });
 
-        // 현재 위치에서 역 까지 도보순으로 계산 후 비교하기 위해 선언 후 채워줌
-        // 도보: 현재 위치 > 역의 거리와  현재 위치 > 자전거 보관소의 거리를 비교한다.
-        // 비교 후, 도보로 목적지 역 까지의 거리가 더 멀면 띄우지 않기 위해서
-        GoStationRequestDTO goStationRequestDTO = new GoStationRequestDTO();
-        goStationRequestDTO.setGoStation(daejeonBikeDTO.getGoStation());
-        goStationRequestDTO.setGoRegion(daejeonBikeDTO.getGoRegion());
-        goStationRequestDTO.setCurrentLatitude(new BigDecimal("" + daejeonBikeDTO.getCurrentLatitude()));
-        goStationRequestDTO.setCurrentLongitude(new BigDecimal("" + daejeonBikeDTO.getCurrentLongitude()));
-
         // 현재 위치 > 역 까지의 거리를 도보로도 계산한다.
-        SkResponseDTO skResponseDTOtotalStation = subwayService.walkStation(goStationRequestDTO);
-        double homeToStation = skResponseDTOtotalStation.getDistance();
-        double homeToBike = distance(Double.parseDouble(daejeonRow.get(0).getX_pos()), Double.parseDouble(daejeonRow.get(0).getY_pos())
+        double currentToGo = distance(daejeonBikeDTO.getCurrentLatitude() , daejeonBikeDTO.getCurrentLongitude()
+                ,daejeonBikeDTO.getGoLatitude(), daejeonBikeDTO.getGoLongitude());
+        double currentToBike = distance(Double.parseDouble(daejeonRow.get(0).getX_pos()), Double.parseDouble(daejeonRow.get(0).getY_pos())
                 , daejeonBikeDTO.getCurrentLatitude(), daejeonBikeDTO.getCurrentLongitude());
 
         // 도보로 가는게 더 빠르면 BAD_REQUEST를 보낸다.
-        if (skResponseDTOtotalStation == null) {
-
-            return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
-        } else if (homeToStation <= homeToBike) {
-            return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
+//        if (skResponseDTOtotalStation == null) {
+//
+//            return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
+//        } else
+        if (currentToGo <= currentToBike) {
+            return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 목적지 까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
         } else {
 
-            GoRoad pathFromHomeToBike = skApiMethod(Double.toString(daejeonBikeDTO.getCurrentLatitude()),Double.toString(daejeonBikeDTO.getCurrentLongitude())
-                    ,daejeonRow.get(0).getX_pos(), daejeonRow.get(0).getY_pos());
+            GoRoad pathFromHomeToBike = skApiMethod(Double.toString(daejeonBikeDTO.getCurrentLatitude()), Double.toString(daejeonBikeDTO.getCurrentLongitude())
+                    , daejeonRow.get(0).getX_pos(), daejeonRow.get(0).getY_pos());
 
             GoRoad pathFromBikeToStation = skApiMethod(daejeonRow.get(0).getX_pos(), daejeonRow.get(0).getY_pos()
-                    ,skResponseDTOtotalStation.getLatitude().toString(),skResponseDTOtotalStation.getLongitude().toString());
+                    , ""+daejeonBikeDTO.getGoLatitude(), ""+daejeonBikeDTO.getGoLongitude());
 
-            pathFromHomeToBike.getFeatures().addAll( pathFromBikeToStation.getFeatures());
+            pathFromHomeToBike.getFeatures().addAll(pathFromBikeToStation.getFeatures());
             log.info("호출된 API: {}", pathFromHomeToBike);
             return new ResponseEntity<>(pathFromHomeToBike, HttpStatus.OK);
 
@@ -424,7 +411,7 @@ public class RoadController {
                     .addHeader("accept", "application/json")
                     .addHeader("content-type", "application/json")
                     .build();
-            log.info("{}" , end);
+            log.info("{}", end);
             Response response = client.newCall(request).execute();
 
             String changeResponse = response.body().string();
@@ -451,7 +438,7 @@ public class RoadController {
         log.info("호출된 API: {}", goListRequestDTO);
         StationListDTOX stationListDTOX = subwayService.station(goListRequestDTO);
         List<GoListResponseDTO> goListResponseDTOList = new ArrayList<>();
-        if (stationListDTOX == null){
+        if (stationListDTOX == null) {
             return new ResponseEntity<>("잘못된 접근입니다. 다시 시도하세요", HttpStatus.BAD_REQUEST);
         }
 
@@ -460,7 +447,7 @@ public class RoadController {
         MediaType walkMediaType = MediaType.parse("application/json");
         RequestBody walkBody = RequestBody.create(walkMediaType, "{\"startX\":"
                 + goListRequestDTO.getCurrentLongitude()
-                + ",\"startY\":" +  goListRequestDTO.getCurrentLatitude()+
+                + ",\"startY\":" + goListRequestDTO.getCurrentLatitude() +
                 ",\"endX\":" + stationListDTOX.getLongitude() + ",\"endY\":" + stationListDTOX.getLatitude() +
                 ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goListRequestDTO.getGoStation() + "\"," +
                 "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
@@ -492,9 +479,7 @@ public class RoadController {
         goListResponseDTOList.add(walkGoListResponseDTO);
 
 
-
-
-        if (goListRequestDTO.getGoRegion().equals("수도권")){
+        if (goListRequestDTO.getGoRegion().equals("수도권")) {
 
             List<Row> seoulRow = new ArrayList<>();
 
@@ -570,7 +555,7 @@ public class RoadController {
 
                 return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
             } else if (homeToStation <= homeToBike) {
-                return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 목적지 까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
             } else {
                 // 자전거 보관소가 더 가까울 경우 SK API를 이용해 보관소까지의 도보 거리를 보낸다
                 OkHttpClient client = new OkHttpClient();
@@ -617,13 +602,13 @@ public class RoadController {
                 // ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤
                 // 이제 자전거 보관소 > 역
                 OkHttpClient bikeClient = new OkHttpClient();
-                ArrayList<Double> list = (ArrayList<Double>) skBikePath.getFeatures().get(skBikePath.getFeatures().size()-1).getGeometry().getCoordinates().get(0);
+                ArrayList<Double> list = (ArrayList<Double>) skBikePath.getFeatures().get(skBikePath.getFeatures().size() - 1).getGeometry().getCoordinates().get(0);
                 double[] doubles = list.stream().mapToDouble(Double::doubleValue).toArray();
 
                 MediaType bikeMediaType = MediaType.parse("application/json");
                 RequestBody bikeBody = RequestBody.create(bikeMediaType, "{\"startX\":"
                         + doubles[0]
-                        + ",\"startY\":" +  doubles[1]  +
+                        + ",\"startY\":" + doubles[1] +
                         ",\"endX\":" + stationListDTOX.getLongitude() + ",\"endY\":" + stationListDTOX.getLatitude() +
                         ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
                         "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
@@ -656,9 +641,9 @@ public class RoadController {
 
 
             }
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        // 이제 대전 할 거임~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            // 이제 대전 할 거임~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         } else if (goListRequestDTO.getGoRegion().equals("대전")) {
             OkHttpClient client = new OkHttpClient();
 
@@ -728,7 +713,7 @@ public class RoadController {
 
                 return new ResponseEntity<>("조회할 수 없습니다. 다시 시도해주세요", HttpStatus.BAD_REQUEST);
             } else if (homeToStation <= homeToBike) {
-                return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 역까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("자전거 보관소 까지의 거리가 도보로 목적지 까지의 거리보다 멉니다.", HttpStatus.BAD_REQUEST);
             } else {
                 // 자전거 보관소가 더 가까울 경우 SK API를 이용해 보관소까지의 도보 거리를 보낸다
                 OkHttpClient daeClient = new OkHttpClient();
@@ -775,13 +760,13 @@ public class RoadController {
                 // ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤
                 // 이제 자전거 보관소 > 역
                 OkHttpClient bikeClient = new OkHttpClient();
-                ArrayList<Double> list = (ArrayList<Double>) skBikePath.getFeatures().get(skBikePath.getFeatures().size()-1).getGeometry().getCoordinates().get(0);
+                ArrayList<Double> list = (ArrayList<Double>) skBikePath.getFeatures().get(skBikePath.getFeatures().size() - 1).getGeometry().getCoordinates().get(0);
                 double[] doubles = list.stream().mapToDouble(Double::doubleValue).toArray();
 
                 MediaType bikeMediaType = MediaType.parse("application/json");
                 RequestBody bikeBody = RequestBody.create(bikeMediaType, "{\"startX\":"
                         + doubles[0]
-                        + ",\"startY\":" + doubles[1]  +
+                        + ",\"startY\":" + doubles[1] +
                         ",\"endX\":" + stationListDTOX.getLongitude() + ",\"endY\":" + stationListDTOX.getLatitude() +
                         ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
                         "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
@@ -812,10 +797,10 @@ public class RoadController {
                 log.info("호출된 API: {}", goListResponseDTOList);
                 return new ResponseEntity<>(goListResponseDTOList, HttpStatus.OK);
             }
-        }else{
+        } else {
 
             log.info("호출된 API: {}", goListResponseDTOList);
-            return new ResponseEntity<>(goListResponseDTOList,HttpStatus.OK);
+            return new ResponseEntity<>(goListResponseDTOList, HttpStatus.OK);
         }
     }
 
@@ -825,22 +810,22 @@ public class RoadController {
         log.info("호출된 API: {}", bikeMarkerDTO);
         BikeMarkerDTO daejeon = daejeonBike(bikeMarkerDTO);
         BikeMarkerDTO seoul = seoulBike(bikeMarkerDTO);
-        if(daejeon == null && seoul == null) {
+        if (daejeon == null && seoul == null) {
             return new ResponseEntity<>("오류가 발생하였습니다.", HttpStatus.BAD_REQUEST);
-        }else if(daejeon == null){
-            return new ResponseEntity<>(seoul,HttpStatus.OK);
-        }else if(seoul == null){
-            return new ResponseEntity<>(daejeon,HttpStatus.OK);
+        } else if (daejeon == null) {
+            return new ResponseEntity<>(seoul, HttpStatus.OK);
+        } else if (seoul == null) {
+            return new ResponseEntity<>(daejeon, HttpStatus.OK);
         }
 
         double daejeonLength = distance(daejeon.getLatitude().doubleValue(), daejeon.getLongitude().doubleValue()
-                , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+                , bikeMarkerDTO.getLatitude().doubleValue(), bikeMarkerDTO.getLongitude().doubleValue());
 
         double seoulLength = distance(seoul.getLatitude().doubleValue(), seoul.getLongitude().doubleValue()
-                , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+                , bikeMarkerDTO.getLatitude().doubleValue(), bikeMarkerDTO.getLongitude().doubleValue());
 
-        log.info("호출된 API: {}", daejeonLength > seoulLength ? seoul : daejeon );
-       return new ResponseEntity<>(daejeonLength > seoulLength ? seoul : daejeon  ,HttpStatus.OK);
+        log.info("호출된 API: {}", daejeonLength > seoulLength ? seoul : daejeon);
+        return new ResponseEntity<>(daejeonLength > seoulLength ? seoul : daejeon, HttpStatus.OK);
 
     }
 
@@ -887,11 +872,11 @@ public class RoadController {
             }
         });
 
-        if(daejeonRow.isEmpty()){
+        if (daejeonRow.isEmpty()) {
             return null;
         }
 
-        return new BikeMarkerDTO(new BigDecimal(daejeonRow.get(0).getX_pos()),new BigDecimal(daejeonRow.get(0).getY_pos()));
+        return new BikeMarkerDTO(new BigDecimal(daejeonRow.get(0).getX_pos()), new BigDecimal(daejeonRow.get(0).getY_pos()));
     }
 
     public BikeMarkerDTO seoulBike(BikeMarkerDTO bikeMarkerDTO) throws IOException {
@@ -934,25 +919,26 @@ public class RoadController {
             public int compare(Row o1, Row o2) {
 
                 double whereIsMyBike = distance(Double.parseDouble(o1.getStationLatitude()), Double.parseDouble(o1.getStationLongitude())
-                        , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+                        , bikeMarkerDTO.getLatitude().doubleValue(), bikeMarkerDTO.getLongitude().doubleValue());
 
                 double whereIsMyBike2 = distance(Double.parseDouble(o2.getStationLatitude()), Double.parseDouble(o2.getStationLongitude())
-                        , bikeMarkerDTO.getLatitude().doubleValue(),bikeMarkerDTO.getLongitude().doubleValue());
+                        , bikeMarkerDTO.getLatitude().doubleValue(), bikeMarkerDTO.getLongitude().doubleValue());
 
                 return Double.compare(whereIsMyBike, whereIsMyBike2);
             }
         });
 
 
-        if(seoulRow.isEmpty()){
+        if (seoulRow.isEmpty()) {
             return null;
         }
 
-        return new BikeMarkerDTO(new BigDecimal(seoulRow.get(0).getStationLatitude()),new BigDecimal(seoulRow.get(0).getStationLongitude()));
+        return new BikeMarkerDTO(new BigDecimal(seoulRow.get(0).getStationLatitude()), new BigDecimal(seoulRow.get(0).getStationLongitude()));
     }
-    
-    
-    public GoRoad skApiMethod(String startLatitude, String startLongitude,String endLatitude, String endLongitude) throws IOException {
+
+
+    // 출발 위도, 경도 && 도착 위도, 경도를 넣으면 goRoad Class를 호출함~ (위도와 경도는 모두 String)
+    public GoRoad skApiMethod(String startLatitude, String startLongitude, String endLatitude, String endLongitude) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.parse("application/json");
@@ -988,5 +974,13 @@ public class RoadController {
         }
 
         return goRoad;
+    }
+
+    // 출발 위치 > 도착지 (둘 다 위, 경도) 도보
+    @PostMapping("/walk")
+    public ResponseEntity<?> walk(@org.springframework.web.bind.annotation.RequestBody WalkRequestDTO walkRequestDTO) throws IOException {
+        GoRoad goRoad = skApiMethod(""+walkRequestDTO.getCurrentLatitude(), ""+walkRequestDTO.getCurrentLongitude()
+                                , ""+walkRequestDTO.getGoLatitude(),""+ walkRequestDTO.getGoLongitude());
+        return new ResponseEntity<>(goRoad,HttpStatus.OK);
     }
 }

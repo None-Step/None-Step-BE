@@ -8,6 +8,6 @@ import lombok.ToString;
 public class DaejeonBikeDTO {
     private double currentLatitude;
     private double currentLongitude;
-    private String goRegion;
-    private String goStation;
+    private double goLatitude;
+    private double goLongitude;
 }
