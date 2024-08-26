@@ -88,5 +88,5 @@
      - 원하는 지역을 클릭하면 전체 혹은 각 호선 선택하여 대화 참여 가능
 
 ### <ERD 다이어그램>
+<img src="https://github.com/None-Step/None-Step-BE/blob/main/ERD.png" />
 
-https://github.com/None-Step/None-Step-BE/blob/main/ERD.png
