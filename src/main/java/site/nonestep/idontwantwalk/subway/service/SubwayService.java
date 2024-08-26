@@ -1,9 +1,6 @@
 package site.nonestep.idontwantwalk.subway.service;
 
-import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationResponseDTO;
-import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.subway.dto.*;
 
 import java.math.BigDecimal;
@@ -67,4 +64,13 @@ public interface SubwayService {
 
     // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 가장 가까운 엘리베이터의 위도, 경도를 return 하는 것
     SkResponseDTO goRoadElevator(GoRoadRequestDTO goRoadRequestDTO);
+
+    // [목록] 지역, 호선, 역 명을 넣으면 해당 역의 위도, 경도 return
+    StationListDTOX station(GoListRequestDTO goListRequestDTO);
+
+    // 상행선 시간표 조회
+    List<SubwayUpTimeResponseDTO> upTime(SubwayUpTimeRequestDTO subwayUpTimeRequestDTO);
+
+    // 하행선 시간표 조회
+    List<SubwayDownTimeResponseDTO> downTime(SubwayDownTimeRequestDTO subwayDownTimeRequestDTO);
 }

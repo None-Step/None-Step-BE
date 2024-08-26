@@ -5,5 +5,8 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class GoStationResponseDTO {
+public class GoListResponseDTO {
+    private String type;
+    private Long time;
+    private Long distance;
 }

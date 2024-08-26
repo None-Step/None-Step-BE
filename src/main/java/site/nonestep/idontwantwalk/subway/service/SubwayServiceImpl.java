@@ -3,12 +3,10 @@ package site.nonestep.idontwantwalk.subway.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationResponseDTO;
-import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.subway.dto.*;
 import site.nonestep.idontwantwalk.subway.entity.Info;
+import site.nonestep.idontwantwalk.subway.entity.UpTime;
 import site.nonestep.idontwantwalk.subway.repository.*;
 
 import java.math.BigDecimal;
@@ -48,6 +46,12 @@ public class SubwayServiceImpl implements SubwayService {
 
     @Autowired
     SubwayLiftRepository subwayLiftRepository;
+
+    @Autowired
+    SubwayUpTimeRepository subwayUpTimeRepository;
+
+    @Autowired
+    SubwayDownTimeRepository subwayDownTimeRepository;
 
     @Autowired
     private SubwayChargerRepository subwayChargerRepository;
@@ -299,5 +303,41 @@ public class SubwayServiceImpl implements SubwayService {
         }
     }
 
+    // [목록] 지역, 호선, 역 명을 넣으면 해당 역의 위도, 경도 return
+    @Override
+    public StationListDTOX station(GoListRequestDTO goListRequestDTO) {
+        Optional<StationListDTOX> latitudeAndLongitude = subwayInfoRepository.selectLatitudeAndLongitude(goListRequestDTO);
+
+        if (latitudeAndLongitude.isEmpty()) {
+            return null;
+        } else {
+            return latitudeAndLongitude.get();
+        }
+    }
+
+    // 상행선 시간표 조회
+    @Override
+    public List<SubwayUpTimeResponseDTO> upTime(SubwayUpTimeRequestDTO subwayUpTimeRequestDTO) {
+        List<SubwayUpTimeResponseDTO> upTime = subwayUpTimeRepository.selectUpTime(subwayUpTimeRequestDTO);
+
+        if (upTime.isEmpty()) {
+            return null;
+        } else {
+            return upTime;
+        }
+    }
+
+
+    // 하행선 시간표 조회
+    @Override
+    public List<SubwayDownTimeResponseDTO> downTime(SubwayDownTimeRequestDTO subwayDownTimeRequestDTO) {
+        List<SubwayDownTimeResponseDTO> downTime = subwayDownTimeRepository.selectDownTime(subwayDownTimeRequestDTO);
+
+        if (downTime.isEmpty()) {
+            return null;
+        }else{
+            return downTime;
+        }
+    }
 
 }

@@ -3,7 +3,6 @@ package site.nonestep.idontwantwalk.subway.repository;
 import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
 import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
-import site.nonestep.idontwantwalk.road.gsonClass.GoRoad;
 import site.nonestep.idontwantwalk.subway.dto.InfoElevator;
 import site.nonestep.idontwantwalk.subway.dto.SubwayElevatorResponseDTO;
 

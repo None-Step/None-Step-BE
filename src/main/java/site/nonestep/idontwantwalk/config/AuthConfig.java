@@ -24,4 +24,6 @@ public class AuthConfig {
     private String coolsmssecretkey;
     private String sk;
     private String seoulbike;
+    private String daejeonbike;
+    private String odsay;
 }

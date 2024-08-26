@@ -59,4 +59,10 @@ public class Info {
     @Column(name = "info_holiday_end", length = 50)
     private String infoHolidayEnd;
 
+    @Column(name = "info_cid", nullable = false)
+    private int infoCID;
+
+    @Column(name = "info_sid", nullable = false)
+    private int infoSID;
+
 }

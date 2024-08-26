@@ -37,7 +37,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 //	// ELK - ec2 끄면 주석 해야 함
-//	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
 	// 회원가입 - 휴대폰 인증
 	implementation 'net.nurigo:sdk:4.3.0'

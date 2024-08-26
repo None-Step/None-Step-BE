@@ -1,8 +1,6 @@
 package site.nonestep.idontwantwalk.subway.repository;
 
-import site.nonestep.idontwantwalk.road.dto.GoRoadRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.GoStationRequestDTO;
-import site.nonestep.idontwantwalk.road.dto.SkResponseDTO;
+import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayNowResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.Info;
@@ -28,4 +26,10 @@ public interface SubwayInfoRepositoryCustom {
 
     // [길 찾기: 역 > 목적지] 지역, 역 명을 넣으면 기본 역의 위도, 경도를 return
     Optional<SkResponseDTO> selectGoRoadStation(GoRoadRequestDTO goRoadRequestDTO);
+
+    // [지하철 경로 찾기] 지역, 호선, 역 명으로 sid, cid 추출
+    Optional<SubwayPathResponseDTOX> selectSidAndCid(String region, String line, String station);
+
+    // [목록] 지역, 호선, 역 명을 넣으면 해당 역의 위도, 경도 return
+    Optional<StationListDTOX> selectLatitudeAndLongitude(GoListRequestDTO goListRequestDTO);
 }

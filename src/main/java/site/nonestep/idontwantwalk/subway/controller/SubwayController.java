@@ -201,4 +201,25 @@ public class SubwayController {
         return new ResponseEntity<>(subwayNowResponseDTO, HttpStatus.OK);
     }
 
+    // 상행선 시간표
+    @GetMapping("/up-time")
+    public ResponseEntity<?> upTime(@ModelAttribute SubwayUpTimeRequestDTO subwayUpTimeRequestDTO){
+        log.info("호출된 API: {}", subwayUpTimeRequestDTO);
+
+        List<SubwayUpTimeResponseDTO> upTime = subwayService.upTime(subwayUpTimeRequestDTO);
+
+        log.info("호출된 API: {}", upTime);
+        return new ResponseEntity<>(upTime, HttpStatus.OK);
+    }
+
+    // 하해선 시간표
+    @GetMapping("/down-time")
+    private ResponseEntity<?> downTime(@ModelAttribute SubwayDownTimeRequestDTO subwayDownTimeRequestDTO){
+        log.info("호출된 API: {}", subwayDownTimeRequestDTO);
+
+        List<SubwayDownTimeResponseDTO> downTime = subwayService.downTime(subwayDownTimeRequestDTO);
+
+        log.info("호출된 API: {}", downTime);
+        return new ResponseEntity<>(downTime, HttpStatus.OK);
+    }
 }
