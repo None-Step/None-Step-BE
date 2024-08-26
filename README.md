@@ -1,5 +1,6 @@
+ 
 # 한 발자국도 걸을 수 없다
-![main_img](https://github.com/None-Step/None-Step-BE/blob/main/main_img.png)
+<img src="https://github.com/None-Step/None-Step-BE/blob/main/main_img.png" width="600" height="400"/>
 
 ### < 기획 의도 >
 * 한 발자국도 걸을 수 없다.
@@ -16,7 +17,6 @@
 
 ### < 팀원 구성 및 프로젝트 기간 >
 * 기간 : 2024.07.02 ~ 2024.08.28
-
 * 팀원 구성
   
   |정은아|임혜연|김보민|권윤슬|
@@ -24,3 +24,20 @@
   |팀장, BE|BE|FE|FE|
 
 ### < 기술 스택 >
+#### ✔️Frond-end
+        * Library : React
+        * Styling : styled-components
+        * Data Fetching : axios
+        * State Management : redux js toolkit
+        * State Form : React Hook Form
+        * Module Bundler : Vite
+
+#### ✔️Back-end
+        * Framework : Spring
+        * Library : SpringBoot, Lombok, Spring Web, Validation, Spring Security, jwt, Oauth2.0, jbcrypt, AWS
+        * Databse : Oracle
+        * Language : Java 17 
+
+### < 아키텍쳐 >
+
+
