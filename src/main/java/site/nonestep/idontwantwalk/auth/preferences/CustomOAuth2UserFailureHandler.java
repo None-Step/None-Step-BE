@@ -88,7 +88,7 @@ public class CustomOAuth2UserFailureHandler extends SimpleUrlAuthenticationFailu
         member.changeToken(jsonWebToken.getRefreshToken());
 
         //cookie에서 redirectUrl을 추출하고, redirect 주소를 생성한다.
-        String baseUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).getValue();
+        String baseUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).getValue() + "?Authorization=" + jsonWebToken.getAccessToken();
 
         //쿠키를 삭제한다.
         CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
@@ -113,8 +113,10 @@ public class CustomOAuth2UserFailureHandler extends SimpleUrlAuthenticationFailu
         response.addHeader("Authorization", jsonWebToken.getAccessToken());
 
         request.getSession().setMaxInactiveInterval(180); //second
-        request.getSession().setAttribute("Authorization", jsonWebToken.getAccessToken());
-        request.getSession().setAttribute("Sequence", userSeq);
+
+        //원래 Header에 넣던 Access Token을 제거하고 url에 함께 넣어준다.
+//        request.getSession().setAttribute("Authorization", jsonWebToken.getAccessToken());
+//        request.getSession().setAttribute("Sequence", userSeq);
         //리다이렉트 시킨다.
         getRedirectStrategy().sendRedirect(request, response, baseUrl);
 
