@@ -1,6 +1,6 @@
  
 # 한 발자국도 걸을 수 없다
-<img src="https://github.com/None-Step/None-Step-BE/blob/main/main_img.png" width="600" height="400"/>
+<img src="https://github.com/None-Step/None-Step-BE/blob/main/main_img.png" width="700" height="500"/>
 
 ### < 기획 의도 >
 * 한 발자국도 걸을 수 없다.
@@ -88,3 +88,5 @@
      - 원하는 지역을 클릭하면 전체 혹은 각 호선 선택하여 대화 참여 가능
 
 ### <ERD 다이어그램>
+
+https://github.com/None-Step/None-Step-BE/blob/main/ERD.png
