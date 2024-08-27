@@ -45,7 +45,7 @@
 
 **1. 회원 가입 및 로그인**
 
-![MMember](https://github.com/user-attachments/assets/3fb08e36-4b45-4ba6-8b4c-cf4f9ec3078e)
+![member](https://github.com/user-attachments/assets/89776a24-4c20-4573-a373-a1bfac49c7bc)
 
    * 카카오, 네이버 소셜 로그인
    * 일반 로그인
@@ -53,8 +53,8 @@
 
 **2. 지하철 탑승 후 정차시 역 조회**
 
-![bobo](https://github.com/user-attachments/assets/d7c3c652-250d-4722-8ced-0548e88392f0)
-![guro](https://github.com/user-attachments/assets/bc6d3704-8a98-42b5-8d12-f4ef528dcf53)
+![bong](https://github.com/user-attachments/assets/f0e574cd-421c-4212-b6e6-95776fb18a6e)
+![guro](https://github.com/user-attachments/assets/dedd063a-1c6d-42f8-b170-31b0483c1b0b)
 
    * 구형 좌표계를 이용하여 사용자 위치에서 가장 가까운 역 1개 추출
    * 프론트에서 A방식 → B방식으로 변경하여 IPhone에서도 역 조회 가능
@@ -63,7 +63,7 @@
   
 **3. 지도(편의시설 바로가기)**
 
-![Subway](https://github.com/user-attachments/assets/dd57cc07-c944-4a21-8484-cb1f75e3e397)
+![subsub](https://github.com/user-attachments/assets/46ab2bdd-a76c-4725-839f-542835c084f8)
 
 - 구형좌표계를 이용하여 지도의 일정 반경 내 위치한 역 조회 가능
     - 지도에서 마커 선택 시, 마커 별 정보 조회 가능
@@ -83,7 +83,7 @@
         
 **4. 길 찾기**
 
-![Road](https://github.com/user-attachments/assets/870bdb58-9964-4348-935c-f45879d612ca)
+![roadroad](https://github.com/user-attachments/assets/eb7696cf-80d8-414f-8fb4-d686a6b9726a)
 
 - 출발지, 도착지 입력 시 최단 거리 + 계단 없는 경로로 SK API를 활용하여 도보 길 안내
     - 목적지가 역일 경우 가까운 엘리베이터, 에스컬레이터 출구로 안내
@@ -94,7 +94,7 @@
   
 **5. 채팅(WebSocket STOMP)**
 
-![chat](https://github.com/user-attachments/assets/a923ab5e-1680-4144-add6-a494a8ddf2e2)
+![chatchat](https://github.com/user-attachments/assets/bffd2948-3e45-40ba-abb2-e31bb8e607bc)
 
    - 메인 화면에서 해당 지역을 클릭하여 실시간 채팅 참여 가능
      - 지역 별 전체 탭에서는 지역 내 모든 호선의 실시간 채팅 조회 가능
