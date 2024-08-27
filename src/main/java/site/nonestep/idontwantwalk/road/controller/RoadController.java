@@ -271,7 +271,7 @@ public class RoadController {
                     , seoulRow.get(0).getStationLatitude(), seoulRow.get(0).getStationLongitude());
 
             GoRoad pathFromBikeToStation = skApiMethod(seoulRow.get(0).getStationLatitude(), seoulRow.get(0).getStationLongitude()
-                    , "" + seoulBikeDTO.getGoLatitude(), "" + seoulBikeDTO.getCurrentLongitude());
+                    , "" + seoulBikeDTO.getGoLatitude(), "" + seoulBikeDTO.getGoLongitude());
 
             pathFromHomeToBike.getFeatures().addAll(pathFromBikeToStation.getFeatures());
             log.info("호출된 API: {}", pathFromHomeToBike);
