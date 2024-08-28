@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -407,7 +408,7 @@ public class RoadController {
 //             obsay API 호출
             Request request = new Request.Builder()
                     .url("https://api.odsay.com/v1/api/subwayPath?apiKey=" + authConfig.getOdsay() + "&CID=" + start.getCid()
-                            + "&SID=" + start.getSid() + "&EID=" + end.getSid() + "&lang=0")
+                            + "&SID=" + start.getSid() + "&EID=" + end.getSid() + "&lang=0" )
                     .addHeader("accept", "application/json")
                     .addHeader("content-type", "application/json")
                     .build();
@@ -487,7 +488,12 @@ public class RoadController {
             // 서울시 자전거 보관소 갯수 약 2641개로 추정
             for (int i = 1; i <= 1800; i += 900) {
 
-                OkHttpClient client = new OkHttpClient();
+                // 서울 자전거에서 timeout error가 나서 10초 > 15초로 늘림
+                OkHttpClient client = new OkHttpClient().newBuilder()
+                        .connectTimeout(15, TimeUnit.SECONDS)
+                        .writeTimeout(15, TimeUnit.SECONDS)
+                        .readTimeout(15, TimeUnit.SECONDS)
+                        .build();
 
                 // 서울시 자전거 API 호출
                 Request request = new Request.Builder()
