@@ -1,6 +1,8 @@
  
 # 한 발자국도 걸을 수 없다
-<img src="https://github.com/None-Step/None-Step-BE/blob/main/main_img.png" width="700" height="500"/>
+[![한발자국도걸을수없다](https://github.com/user-attachments/assets/6c1bdf55-08f5-4769-8788-1735d0542f14)](https://youtu.be/BvrthoCxl5M)
+- 이미지 클릭 시, 이번역 소개 영상 페이지로 이동합니다.(youtube)
+
 
 ### < 기획 의도 >
 * 한 발자국도 걸을 수 없다.
@@ -91,6 +93,14 @@
     - 현재 위치 조회 가능
     - 빠른 경로 탭(명칭 변경 예정)을 통해 주변에 가장 가까운 역 안내
     - 출발 위치와 도착 위치를 작성하면 빠른 지하철 역으로 안내
+
+
+**4-1. 지하철 경로 안내**
+
+![subwayPath](https://github.com/user-attachments/assets/5d3acd08-8a4a-4540-a4c5-dcbec2c6dd2a)
+
+- 출발지와 도착지에 역이 존재할 경우 가까운 지하철 역의 경로를 함께 제공
+- 최단거리 경로로 안내
   
 **5. 채팅(WebSocket STOMP)**
 
