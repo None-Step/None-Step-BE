@@ -6,4 +6,4 @@ services:
       - "8081:8080"
     volumes:
       - /spring:/image
-    restart: on-failure
+    restart: always
