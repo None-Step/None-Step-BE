@@ -4,12 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import site.nonestep.idontwantwalk.bookmark.dto.PlaceRegisterRequestDTO;
-import site.nonestep.idontwantwalk.bookmark.dto.PlaceRegisterResponseDTO;
+import site.nonestep.idontwantwalk.bookmark.dto.*;
 import site.nonestep.idontwantwalk.bookmark.entity.PlaceMark;
 import site.nonestep.idontwantwalk.bookmark.repository.PlaceMarkRepository;
 import site.nonestep.idontwantwalk.member.entity.Member;
 import site.nonestep.idontwantwalk.member.repository.MemberRepository;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -49,4 +50,29 @@ public class PlaceMarkServiceImpl implements PlaceMarkService {
             return placeRegisterResponseDTO;
         }
     }
+
+    // [장소] 즐겨 찾기 조회
+    @Override
+    public List<PlaceListResponseDTO> placeList(Long memberNo) {
+        List<PlaceListResponseDTO> placeList =  placeMarkRepository.selectPlaceList(memberNo);
+
+        return placeList;
+    }
+
+    // [장소] 즐겨 찾기 삭제
+    @Override
+    public PlaceDeleteResponseDTO placeDelete(PlaceDeleteRequestDTO placeDeleteRequestDTO, Long memberNo) {
+        PlaceMark placeMark = placeMarkRepository.getReferenceById(placeDeleteRequestDTO.getPlaceNo());
+
+        if (placeMark.getMemberNo().getMemberNo() != memberNo){
+            return null;
+        }else {
+            placeMarkRepository.deletePlace(placeDeleteRequestDTO.getPlaceNo());
+            PlaceDeleteResponseDTO placeDeleteResponseDTO = new PlaceDeleteResponseDTO();
+            placeDeleteResponseDTO.setMessage("Success");
+
+            return placeDeleteResponseDTO;
+        }
+    }
+
 }
