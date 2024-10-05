@@ -70,21 +70,36 @@ public class BookMarkController {
         }
     }
 
-//    // [경로] 즐겨 찾기 등록
-//    @PostMapping("/path-register")
-//    public ResponseEntity<?> pathRegister(@RequestBody){
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
-//    // [경로] 즐겨 찾기 조회
-//    @GetMapping("/path-list")
-//    public ResponseEntity<?> pathList(@ModelAttribute){
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    // [경로] 즐겨 찾기 등록
+    @PostMapping("/path-register")
+    public ResponseEntity<?> pathRegister(@RequestBody PathRegisterRequestDTO pathRegisterRequestDTO){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+
+        PathRegisterResponseDTO pathRegister = pathMarkService.pathRegister(pathRegisterRequestDTO,memberNo);
+
+        if (pathRegister == null) {
+            return new ResponseEntity<>("즐겨 찾기 등록 갯수 초과입니다. 다시 시도해주세요.", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(pathRegister, HttpStatus.OK);
+        }
+    }
+
+    // [경로] 즐겨 찾기 조회
+    @GetMapping("/path-list")
+    public ResponseEntity<?> pathList(){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+
+        List<PathListResponseDTO> pathList = pathMarkService.pathList(memberNo);
+
+        if (pathList == null){
+            return new ResponseEntity<>("잘못된 접근입니다. 다시 시도하세요", HttpStatus.BAD_REQUEST);
+        }else{
+            return new ResponseEntity<>(pathList, HttpStatus.OK);
+        }
+    }
 
     // [경로] 즐겨 찾기 삭제
+    @DeleteMapping("/path-delete")
     public ResponseEntity<?> pathDelete(@ModelAttribute PathDeleteRequestDTO pathDeleteRequestDTO) {
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
 

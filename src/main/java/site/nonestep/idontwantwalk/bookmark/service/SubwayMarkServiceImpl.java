@@ -9,7 +9,7 @@ import site.nonestep.idontwantwalk.bookmark.repository.SubwayMarkRepository;
 @Slf4j
 @Service
 @Transactional
-public class SubwayMarkServiceImpl {
+public class SubwayMarkServiceImpl implements SubwayMarkService {
 
     @Autowired
     private SubwayMarkRepository subwayMarkRepository;
