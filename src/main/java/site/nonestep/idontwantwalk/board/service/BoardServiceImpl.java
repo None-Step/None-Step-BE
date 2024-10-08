@@ -57,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
 
     //게시글 수정
     @Override
-    public BoardModifyResponseDTO boardModify(BoardModifyRequestDTO boardModifyRequestDTO, Long boardNo) {
+    public BoardModifyResponseDTO boardModify(BoardModifyRequestDTO boardModifyRequestDTO, Long memberNo) {
 
         Board board = boardRepository.getReferenceById(boardModifyRequestDTO.getBoardNo());
 
@@ -72,5 +72,45 @@ public class BoardServiceImpl implements BoardService {
 
     }
 
+    //게시글 삭제
+    @Override
+    public BoardDeleteResponseDTO boardDelete(BoardDeleteRequestDTO boardDeleteRequestDTO, Long memberNo) {
+        Board board = boardRepository.getReferenceById(boardDeleteRequestDTO.getBoardNo());
+        //Member member = memberRepository.getReferenceById(memberNo);
+        // 게시판 글쓴이랑 member랑 비교해서 다른 사람이면 잘못된 접근이므로 null을 return한다. 관리자만 사용할거라면?
+
+        // 삭제는 하위 테이블 먼저 삭제한다. 마지막으로 상위테이블을 삭제해야한다.
+        boardRepository.deleteBoard(board.getBoardNo());
+
+        BoardDeleteResponseDTO boardDeleteResponseDTO = new BoardDeleteResponseDTO();
+        boardDeleteResponseDTO.setMessage("Success");
+
+        return boardDeleteResponseDTO;
+    }
+
+
+    // 게시글 삭제
+//    @Override
+//    public BoardDeleteResponseDTO boardDelete(BoardDeleteRequestDTO boardDeleteRequestDTO, Long memberNo) {
+//        Board board = boardRepository.getReferenceById(boardDeleteRequestDTO.getBoardNo());
+//        Member member = memberRepository.getReferenceById(memberNo);
+//
+////        //
+////        // 더 좋은 코드로 replace 가능하지만 내가 해석 못하니까 그냥 이대로 둔다 ^^
+////        // 더 좋은 코드 = !Objects.equals(board.getMember_no().getMemberNo(), memberNo)
+//        if (board.getMember_no().getMemberNo() != memberNo) {
+//            return null;
+//        }
+//
+//        imgRepository.deleteBoard(board);
+//        tagRepository.deleteBoard(board);
+//        boardRepository.deleteBoard(board.getBoardNo());
+//
+//        BoardDeleteResponseDTO boardDeleteResponseDTO = new BoardDeleteResponseDTO();
+//        boardDeleteResponseDTO.setMessage("Success");
+//
+//        return boardDeleteResponseDTO;
+//    }
+//
 
 }

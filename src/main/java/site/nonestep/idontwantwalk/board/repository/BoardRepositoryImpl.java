@@ -25,4 +25,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .fetch();
     }
 
+    //게시판 삭제
+    @Override
+    public void deleteBoard(Long boardNo) {
+        queryFactory.delete(board)
+                .where(board.boardNo.eq(boardNo))
+                .execute();
+    }
+
 }

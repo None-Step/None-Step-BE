@@ -14,5 +14,10 @@ public interface BoardService {
     List<BoardListResponseDTO> boardList(BoardListRequestDTO boardListRequestDTO);
 
     //게시글 수정
-    BoardModifyResponseDTO boardModify(BoardModifyRequestDTO boardModifyRequestDTO, Long boardNo);
+    BoardModifyResponseDTO boardModify(BoardModifyRequestDTO boardModifyRequestDTO, Long memberNo);
+
+    //게시글 삭제
+    BoardDeleteResponseDTO boardDelete(BoardDeleteRequestDTO boardDeleteRequestDTO, Long memberNo);
+
+
 }

@@ -51,4 +51,16 @@ public class BoardController {
 
         return new ResponseEntity<>(boardModifyResponseDTO, HttpStatus.OK);
     }
+
+    //게시글 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@ModelAttribute BoardDeleteRequestDTO boardDeleteRequestDTO){
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+
+        BoardDeleteResponseDTO boardDeleteResponseDTO = boardService.boardDelete(boardDeleteRequestDTO, memberNo);
+
+        return new ResponseEntity<>(boardDeleteResponseDTO, HttpStatus.OK);
+
+    };
+
 }
