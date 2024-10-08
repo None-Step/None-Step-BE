@@ -15,7 +15,9 @@ public class Constants {
             "/nonestep/webjars/**", "/nonestep/swagger-ui/**", "/nonestep/subway/**",
             "/nonestep/v3/api-docs/**", "/nonestep/swagger-ui/**", "/nonestep/swagger-resources/**",
             "/nonestep/connect", "/connect", "/nonestep/sub/**",  "/sub/**","/nonestep/pub/**",  "/pub/**",
-            "/nonestep/road/**", "/nonestep/chat/all", "/nonestep/chat/list", "/nonestep/chat/subscribe"};
+            "/nonestep/road/**", "/nonestep/chat/all", "/nonestep/chat/list", "/nonestep/chat/subscribe",
+            "/nonestep/board/list"
+    };
 
     //Authorization == JWT 사용을 위함
     // 해더에서 허용할 부분 설정
