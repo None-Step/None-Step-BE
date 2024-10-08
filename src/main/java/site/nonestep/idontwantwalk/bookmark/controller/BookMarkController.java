@@ -115,4 +115,43 @@ public class BookMarkController {
         }
     }
 
+    // [지하철 역] 즐겨 찾기 등록
+    @PostMapping("/subway-register")
+    public ResponseEntity<?> subwayRegister(@RequestBody SubwayRegisterRequestDTO subwayRegisterRequestDTO) {
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        SubwayRegisterResponseDTO subwayRegisterResponseDTO = subwayMarkService.subwayRegister(subwayRegisterRequestDTO, memberNo);
+
+        if (subwayRegisterResponseDTO == null) {
+            return new ResponseEntity<>("즐겨 찾기 등록 갯수 초과이거나 이미 등록한 장소 입니다. 다시 시도해주세요.", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(subwayRegisterResponseDTO, HttpStatus.OK);
+        }
+    }
+
+    // [지하철 역] 즐겨 찾기 조회
+    @GetMapping("subway-list")
+    public ResponseEntity<?> subwayList() {
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        List<SubwayListResponseDTO> subwayList = subwayMarkService.subwayList(memberNo);
+
+        if (subwayList == null) {
+            return new ResponseEntity<>("잘못된 접근입니다. 다시 시도하세요", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(subwayList, HttpStatus.OK);
+        }
+    }
+
+    // [지하철 역] 즐겨 찾기 삭제
+    @DeleteMapping("subway-delete")
+    public ResponseEntity<?> subwayDelete(@ModelAttribute SubwayDeleteRequestDTO subwayDeleteRequestDTO) {
+        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        SubwayDeleteResponseDTO subwayDeleteResponseDTO = subwayMarkService.subwayDelete(subwayDeleteRequestDTO, memberNo);
+
+        if (subwayDeleteResponseDTO == null) {
+            return new ResponseEntity<>("잘못된 접근입니다. 삭제할 수 없습니다.", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(subwayDeleteResponseDTO, HttpStatus.OK);
+        }
+    }
+
 }
