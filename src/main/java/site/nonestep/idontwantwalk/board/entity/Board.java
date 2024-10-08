@@ -37,4 +37,11 @@ public class Board {
     @ManyToOne
     @JoinColumn(name = "member_no", nullable = false)
     private Member memberNo;
+
+    //게시글 수정
+    public void modifyBoard(String boardTitle, String boardContent) {
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.boardModifyDate = LocalDateTime.now();
+    }
 }
