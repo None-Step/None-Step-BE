@@ -340,4 +340,17 @@ public class SubwayServiceImpl implements SubwayService {
         }
     }
 
+    // 기후동행카드 승, 하차 지원 여부
+    @Override
+    public SubwayClimateCardResponseDTO climateCard(SubwayClimateCardRequestDTO subwayClimateCardRequestDTO) {
+        Optional<SubwayClimateCardResponseDTO> selectClimate = subwayInfoRepository.selectClimate(subwayClimateCardRequestDTO.getRegion(),
+                subwayClimateCardRequestDTO.getLine(), subwayClimateCardRequestDTO.getStation());
+
+        if (selectClimate.isEmpty()){
+            return null;
+        }else{
+            return selectClimate.get();
+        }
+    }
+
 }
