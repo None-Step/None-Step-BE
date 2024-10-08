@@ -9,4 +9,9 @@ import java.util.Optional;
 public interface BoardRepositoryCustom {
     //전체글 조회
     List<BoardListResponseDTO> boardList(Long page);
+
+    //게시글 삭제
+    void deleteBoard(Long boardNo);
+
+
 }
