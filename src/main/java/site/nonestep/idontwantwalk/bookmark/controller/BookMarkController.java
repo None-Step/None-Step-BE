@@ -30,16 +30,17 @@ public class BookMarkController {
 
     // [장소] 즐겨 찾기 등록
     @PostMapping("/place-register")
-    public ResponseEntity<?> placeRegister(@RequestBody PlaceRegisterRequestDTO placeRegisterRequestDTO) {
+    public ResponseEntity<?> placeRegister(@RequestBody PlaceRegisterRequestDTO placeRegisterRequestDTO) throws Exception {
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
 
         PlaceRegisterResponseDTO placeRegisterResponseDTO = placeMarkService.placeRegister(placeRegisterRequestDTO, memberNo);
 
         if (placeRegisterResponseDTO == null) {
-            return new ResponseEntity<>("즐겨 찾기 등록 갯수 초과입니다. 다시 시도해주세요.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("즐겨 찾기 등록 갯수 초과이거나 이미 등록한 장소 입니다. 다시 시도해주세요.", HttpStatus.BAD_REQUEST);
         } else {
             return new ResponseEntity<>(placeRegisterResponseDTO, HttpStatus.OK);
         }
+
     }
 
     // [장소] 즐겨 찾기 조회
@@ -72,28 +73,29 @@ public class BookMarkController {
 
     // [경로] 즐겨 찾기 등록
     @PostMapping("/path-register")
-    public ResponseEntity<?> pathRegister(@RequestBody PathRegisterRequestDTO pathRegisterRequestDTO){
+    public ResponseEntity<?> pathRegister(@RequestBody PathRegisterRequestDTO pathRegisterRequestDTO) throws Exception {
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
 
-        PathRegisterResponseDTO pathRegister = pathMarkService.pathRegister(pathRegisterRequestDTO,memberNo);
+        PathRegisterResponseDTO pathRegister = pathMarkService.pathRegister(pathRegisterRequestDTO, memberNo);
 
         if (pathRegister == null) {
-            return new ResponseEntity<>("즐겨 찾기 등록 갯수 초과입니다. 다시 시도해주세요.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("즐겨 찾기 등록 갯수 초과 혹은 동일한 경로를 등록하셨습니다. 다시 시도해주세요.", HttpStatus.BAD_REQUEST);
         } else {
             return new ResponseEntity<>(pathRegister, HttpStatus.OK);
         }
+
     }
 
     // [경로] 즐겨 찾기 조회
     @GetMapping("/path-list")
-    public ResponseEntity<?> pathList(){
+    public ResponseEntity<?> pathList() {
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
 
         List<PathListResponseDTO> pathList = pathMarkService.pathList(memberNo);
 
-        if (pathList == null){
+        if (pathList == null) {
             return new ResponseEntity<>("잘못된 접근입니다. 다시 시도하세요", HttpStatus.BAD_REQUEST);
-        }else{
+        } else {
             return new ResponseEntity<>(pathList, HttpStatus.OK);
         }
     }

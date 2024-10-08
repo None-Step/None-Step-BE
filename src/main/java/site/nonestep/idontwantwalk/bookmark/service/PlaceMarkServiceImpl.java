@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(rollbackOn = {Exception.class})
 public class PlaceMarkServiceImpl implements PlaceMarkService {
 
     @Autowired
@@ -25,12 +25,16 @@ public class PlaceMarkServiceImpl implements PlaceMarkService {
 
     // [장소] 즐겨 찾기 등록
     @Override
-    public PlaceRegisterResponseDTO placeRegister(PlaceRegisterRequestDTO placeRegisterRequestDTO, Long memberNo) {
-
-        Long selectPlaceMarkCount = placeMarkRepository.selectPlaceMarkCount(memberNo);
+    public PlaceRegisterResponseDTO placeRegister(PlaceRegisterRequestDTO placeRegisterRequestDTO, Long memberNo) throws Exception {
         Member member = memberRepository.getReferenceById(memberNo);
 
-        if (selectPlaceMarkCount > 4){
+        Long selectPlaceMarkCount = placeMarkRepository.selectPlaceMarkCount(memberNo);
+        Long selectSamePlace = placeMarkRepository.selectSamePlace(placeRegisterRequestDTO.getLatitude(),
+                placeRegisterRequestDTO.getLongitude(), memberNo);
+
+        // selectSameplace가 0이 아니라면 이미 등록을 했다는 것이므로 null 반환처리
+        // try catch로 처리하지 않은 이유 : 모든 오류 값을 catch로 보내기 때문에 어떤 오류 발생인지 정확히 알 수 없으므로 이렇게 처리함
+        if (selectPlaceMarkCount > 4 || selectSamePlace != 0){
             return null;
         }else{
             placeMarkRepository.save(

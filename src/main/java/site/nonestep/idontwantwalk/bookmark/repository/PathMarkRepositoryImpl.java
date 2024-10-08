@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import site.nonestep.idontwantwalk.bookmark.dto.PathListResponseDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 import static site.nonestep.idontwantwalk.member.entity.QMember.*;
 import static site.nonestep.idontwantwalk.bookmark.entity.QPathMark.*;
@@ -40,5 +41,15 @@ public class PathMarkRepositoryImpl implements PathMarkRepositoryCustom{
         queryFactory.delete(pathMark)
                 .where(pathMark.pathNo.eq(pathNo))
                 .execute();
+    }
+
+    // [경로] 동일한 경로 즐겨 찾기가 있는지 조회
+    @Override
+    public Long selectSamePath(BigDecimal startLatitude, BigDecimal startLongitude, BigDecimal endLatitude, BigDecimal endLongitude, Long memberNo) {
+        return queryFactory.select(pathMark.pathNo.count())
+                .from(pathMark)
+                .where(pathMark.pathStartLatitude.eq(startLatitude).and(pathMark.pathStartLongitude.eq(startLongitude).and(pathMark.pathEndLatitude.eq(endLatitude)
+                        .and(pathMark.pathEndLongitude.eq(endLongitude).and(pathMark.memberNo.memberNo.eq(memberNo))))))
+                .fetchFirst();
     }
 }

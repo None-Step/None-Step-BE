@@ -10,6 +10,14 @@ import java.math.BigDecimal;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+// 한 사람이 한 장소를 한 번만 즐겨 찾기 등록하게끔 다중 유니크 설정
+// 중복으로 등록하는 것을 방지하기 위함
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uniqueStartPointAndEndPointAndMemberNo",
+                columnNames = {"place_latitude", "place_longitude", "member_no"})
+        }
+)
 @Builder
 @AllArgsConstructor
 public class PlaceMark {
