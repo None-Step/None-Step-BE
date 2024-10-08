@@ -30,7 +30,5 @@ public class SubwayMark {
     @Column(name = "member_no")
     private Long memberNo;
 
-    @Column(name = "subway_mark_nickname", length = 50, nullable = false)
-    private String subwayMarkNickName;
 
 }
