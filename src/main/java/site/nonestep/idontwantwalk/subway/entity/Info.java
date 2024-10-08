@@ -65,7 +65,10 @@ public class Info {
     @Column(name = "info_sid", nullable = false)
     private int infoSID;
 
-    @Column(name = "info_climate_cart", length = 10)
-    private String infoClimateCard;
+    @Column(name = "info_climate_get_on", length = 10)
+    private String infoClimateGetOn;
+
+    @Column(name = "info_climate_get_off", length = 10)
+    private String infoClimateGetOff;
 
 }
