@@ -73,4 +73,7 @@ public interface SubwayService {
 
     // 하행선 시간표 조회
     List<SubwayDownTimeResponseDTO> downTime(SubwayDownTimeRequestDTO subwayDownTimeRequestDTO);
+
+    // 기후동행카드 승, 하차 지원 여부
+    SubwayClimateCardResponseDTO climateCard(SubwayClimateCardRequestDTO subwayClimateCardRequestDTO);
 }

@@ -1,6 +1,7 @@
 package site.nonestep.idontwantwalk.subway.repository;
 
 import site.nonestep.idontwantwalk.road.dto.*;
+import site.nonestep.idontwantwalk.subway.dto.SubwayClimateCardResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayNowResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.Info;
@@ -32,4 +33,7 @@ public interface SubwayInfoRepositoryCustom {
 
     // [목록] 지역, 호선, 역 명을 넣으면 해당 역의 위도, 경도 return
     Optional<StationListDTOX> selectLatitudeAndLongitude(GoListRequestDTO goListRequestDTO);
+
+    // 기후동행카드 승, 하차 지원 여부
+    Optional<SubwayClimateCardResponseDTO> selectClimate(String region, String line, String station);
 }
