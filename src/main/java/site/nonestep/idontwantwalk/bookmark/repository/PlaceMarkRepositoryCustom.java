@@ -2,6 +2,7 @@ package site.nonestep.idontwantwalk.bookmark.repository;
 
 import site.nonestep.idontwantwalk.bookmark.dto.PlaceListResponseDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PlaceMarkRepositoryCustom {
@@ -14,5 +15,9 @@ public interface PlaceMarkRepositoryCustom {
 
     // [장소] 즐겨 찾기 삭제
     void deletePlace(Long placeNo);
+
+    // [장소] 동일한 장소를 즐겨 찾기 했는지 조회
+    // Count로 조회해서 0이 아니라면 중복으로 등록하려는 경우이기 때문에 null을 return한다.
+    Long selectSamePlace (BigDecimal latitude, BigDecimal longitude, Long memberNo);
 
 }

@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import site.nonestep.idontwantwalk.bookmark.dto.PlaceListResponseDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static site.nonestep.idontwantwalk.bookmark.entity.QPlaceMark.*;
@@ -40,6 +41,16 @@ public class PlaceMarkRepositoryImpl implements PlaceMarkRepositoryCustom{
         queryFactory.delete(placeMark)
                 .where(placeMark.placeNo.eq(placeNo))
                 .execute();
+    }
+
+    // [장소] 동일한 장소를 즐겨 찾기 했는지 조회
+    // Count로 조회해서 0이 아니라면 중복으로 등록하려는 경우이기 때문에 null을 return한다.
+    @Override
+    public Long selectSamePlace(BigDecimal latitude, BigDecimal longitude, Long memberNo) {
+        return queryFactory.select(placeMark.placeNo.count())
+                .from(placeMark)
+                .where(placeMark.placeLatitude.eq(latitude).and(placeMark.placeLongitude.eq(longitude).and(placeMark.memberNo.memberNo.eq(memberNo))))
+                .fetchFirst();
     }
 
 

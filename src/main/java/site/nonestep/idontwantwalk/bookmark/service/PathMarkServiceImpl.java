@@ -29,8 +29,12 @@ public class PathMarkServiceImpl implements PathMarkService{
         Member member = memberRepository.getReferenceById(memberNo);
 
         Long selectPathMarkCount = pathMarkRepository.selectPathMarkCount(memberNo);
+        Long selectSamePath = pathMarkRepository.selectSamePath(pathRegisterRequestDTO.getStartLatitude(), pathRegisterRequestDTO.getStartLongitude(), pathRegisterRequestDTO.getEndLatitude(),
+                pathRegisterRequestDTO.getEndLongitude(), memberNo);
 
-        if (selectPathMarkCount > 4){
+        // selectSamePath가 0이 아니라면 이미 등록을 했다는 것이므로 null 반환처리
+        // try catch로 처리하지 않은 이유 : 모든 오류 값을 catch로 보내기 때문에 어떤 오류 발생인지 정확히 알 수 없으므로 이렇게 처리함
+        if (selectPathMarkCount > 4 || selectSamePath != 0){
             return null;
         }else{
             pathMarkRepository.save(

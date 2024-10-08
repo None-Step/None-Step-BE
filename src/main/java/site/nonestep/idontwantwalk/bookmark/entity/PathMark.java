@@ -12,6 +12,13 @@ import java.math.BigDecimal;
 @Getter
 @Builder
 @AllArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uniquePathAndMemberNo",
+                columnNames = {"path_start_latitude", "path_start_longitude", "path_end_latitude", "path_end_longitude", "member_no"}
+                )
+        }
+)
 public class PathMark {
 
     @Id
