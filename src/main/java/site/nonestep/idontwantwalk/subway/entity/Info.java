@@ -65,4 +65,7 @@ public class Info {
     @Column(name = "info_sid", nullable = false)
     private int infoSID;
 
+    @Column(name = "info_climate_cart", length = 10)
+    private String infoClimateCard;
+
 }

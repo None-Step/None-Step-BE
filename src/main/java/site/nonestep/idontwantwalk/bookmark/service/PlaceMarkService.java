@@ -7,7 +7,7 @@ import java.util.List;
 public interface PlaceMarkService {
 
     // [장소] 즐겨 찾기 등록
-    PlaceRegisterResponseDTO placeRegister(PlaceRegisterRequestDTO placeRegisterRequestDTO, Long memberNo);
+    PlaceRegisterResponseDTO placeRegister(PlaceRegisterRequestDTO placeRegisterRequestDTO, Long memberNo) throws Exception;
 
     // [장소] 즐겨 찾기 조회
     List<PlaceListResponseDTO> placeList(Long memberNo);

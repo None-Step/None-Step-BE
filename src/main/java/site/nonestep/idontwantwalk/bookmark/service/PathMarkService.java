@@ -7,7 +7,7 @@ import java.util.List;
 public interface PathMarkService {
 
     // [경로] 즐겨 찾기 등록
-    PathRegisterResponseDTO pathRegister(PathRegisterRequestDTO pathRegisterRequestDTO, Long memberNo);
+    PathRegisterResponseDTO pathRegister(PathRegisterRequestDTO pathRegisterRequestDTO, Long memberNo) throws Exception;
 
     // [경로] 즐겨 찾기 조회
     List<PathListResponseDTO> pathList(Long memberNo);
