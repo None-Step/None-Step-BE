@@ -13,5 +13,6 @@ public interface BoardRepositoryCustom {
     //게시글 삭제
     void deleteBoard(Long boardNo);
 
+    //상세조회
 
 }

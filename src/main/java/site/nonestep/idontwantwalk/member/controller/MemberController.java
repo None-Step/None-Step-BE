@@ -249,11 +249,14 @@ public class MemberController {
     @PutMapping("/modify-pass")
     public ResponseEntity<?> modifyPass(@RequestBody MemberModifyPassRequestDTO memberModifyPassRequestDTO){
         log.info("호출된 API: {}", memberModifyPassRequestDTO);
-        Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        MemberModifyPassResponseDTO memberModifyPassResponseDTO = memberService.modifyPass(memberModifyPassRequestDTO, memberNo);
+        MemberModifyPassResponseDTO memberModifyPassResponseDTO = memberService.modifyPass(memberModifyPassRequestDTO);
 
-        log.info("호출된 API: {}", memberModifyPassResponseDTO);
-        return new ResponseEntity<>(memberModifyPassResponseDTO ,HttpStatus.OK);
+        if (memberModifyPassResponseDTO == null){
+            return null;
+        }else{
+            log.info("호출된 API: {}", memberModifyPassResponseDTO);
+            return new ResponseEntity<>(memberModifyPassResponseDTO ,HttpStatus.OK);
+        }
     }
 
     //프로필변경: 닉네임 이름 및 이미지 변경

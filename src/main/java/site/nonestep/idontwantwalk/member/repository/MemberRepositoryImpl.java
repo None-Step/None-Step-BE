@@ -108,4 +108,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
         );
     }
 
+    // 비밀번호 변경, 혹은 찾을 때 받는 정보로 Member 조회
+    @Override
+    public Optional<Member> selectPass(String memberID, String memberName, String memberPhone) {
+        return Optional.ofNullable(
+                queryFactory.select(member)
+                        .from(member)
+                        .where(member.memberID.eq(memberID).and(member.memberName.eq(memberName).and(member.memberPhone.eq(memberPhone))))
+                        .fetchFirst()
+        );
+    }
+
 }
