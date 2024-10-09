@@ -10,7 +10,7 @@ public class Constants {
     // 회원가입 전이라 Token값이 없어서 일부러 보안을 풀어둔 링크들 모음
     public static final String[] SECURITY_HTTP_EXCLUDE_URIS = {"/nonestep/member/access-token", "/nonestep/member/signup",
             "/nonestep/member/phone", "/nonestep/member/login/callback/**", "/nonestep/member/idcheck",
-            "/nonestep/member/login", "/nonestep/member/idfind", "/nonestep/member/pwfind",
+            "/nonestep/member/login", "/nonestep/member/idfind", "/nonestep/member/pwfind", "/nonestep/member/modify-pass",
             "/nonestep/member/login/**", "/nonestep/resources/**", "/nonestep/swagger*/**", "favicon.ico",
             "/nonestep/webjars/**", "/nonestep/swagger-ui/**", "/nonestep/subway/**",
             "/nonestep/v3/api-docs/**", "/nonestep/swagger-ui/**", "/nonestep/swagger-resources/**",
