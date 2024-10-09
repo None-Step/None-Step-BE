@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import site.nonestep.idontwantwalk.board.dto.*;
 import site.nonestep.idontwantwalk.board.service.BoardService;
+import site.nonestep.idontwantwalk.board.service.ImgService;
+import site.nonestep.idontwantwalk.member.service.S3UploadService;
 
 import java.util.List;
 
@@ -18,6 +20,13 @@ import java.util.List;
 public class BoardController {
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private S3UploadService s3UploadService;
+
+    @Autowired
+    private ImgService imgService;
+
 
     //공지 게시물 작성
     @PostMapping("/write")
@@ -54,13 +63,39 @@ public class BoardController {
 
     //게시글 삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@ModelAttribute BoardDeleteRequestDTO boardDeleteRequestDTO){
+    public ResponseEntity<?> delete(@ModelAttribute BoardDeleteRequestDTO boardDeleteRequestDTO) {
         Long memberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
 
         BoardDeleteResponseDTO boardDeleteResponseDTO = boardService.boardDelete(boardDeleteRequestDTO, memberNo);
 
         return new ResponseEntity<>(boardDeleteResponseDTO, HttpStatus.OK);
 
-    };
+    }
+
+    ;
+
+    //게시글 상세조회
+    @GetMapping("/detail")
+    public ResponseEntity<?> detail(@ModelAttribute BoardDetailRequestDTO boardDetailRequestDTO) {
+        BoardDetailResponseDTO boardDetailResponseDTO = boardService.boardDetail(boardDetailRequestDTO);
+
+        return new ResponseEntity<>(boardDetailResponseDTO, HttpStatus.OK);
+    }
+
+    // 이미지 보내기
+    @PostMapping("/img")
+    public ResponseEntity<?> postImg(@ModelAttribute ImgRequestDTO imgRequestDTO){
+
+        // 이미지를 s3를 거쳐서 보낸다
+        String postImg = s3UploadService.upload(imgRequestDTO.getImg(), "nonestepBoardImg");
+
+        // 그걸 다시 responsebody에 담아서 보낸다.
+        ImgResponseDTO imgResponseDTO = new ImgResponseDTO();
+        imgResponseDTO.setImg(postImg);
+
+
+        return new ResponseEntity<>(imgResponseDTO, HttpStatus.OK);
+    }
+
 
 }

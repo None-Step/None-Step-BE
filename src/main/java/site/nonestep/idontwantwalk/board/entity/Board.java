@@ -25,8 +25,8 @@ public class Board {
     @Column(name = "board_content", length = 5000, nullable = false)
     private String boardContent;
 
-    @Column(name = "board_img", length = 3000)
-    private String boardImg;
+//    @Column(name = "board_img", length = 3000)
+//    private String boardImg;
 
     @Column(name = "board_write_date")
     private LocalDateTime boardWriteDate;

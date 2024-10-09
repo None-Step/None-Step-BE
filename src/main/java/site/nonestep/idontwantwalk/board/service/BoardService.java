@@ -19,5 +19,8 @@ public interface BoardService {
     //게시글 삭제
     BoardDeleteResponseDTO boardDelete(BoardDeleteRequestDTO boardDeleteRequestDTO, Long memberNo);
 
+    //게시글 상세조회
+    BoardDetailResponseDTO boardDetail(BoardDetailRequestDTO boardDetailRequestDTO);
+
 
 }
