@@ -37,4 +37,7 @@ public interface MemberRepositoryCustom {
 
     // Refresh Token과 ID가 같은지 확인
     Optional<Long> memberRefreshTokenAndID(String memberID, String memberToken);
+
+    // 비밀번호 변경, 혹은 찾을 때 받는 정보로 Member 조회
+    Optional<Member> selectPass(String memberID, String memberName, String memberPhone);
 }
