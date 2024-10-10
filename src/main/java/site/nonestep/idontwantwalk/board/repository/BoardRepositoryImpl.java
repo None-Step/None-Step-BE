@@ -4,10 +4,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import site.nonestep.idontwantwalk.board.dto.BoardListResponseDTO;
+import site.nonestep.idontwantwalk.board.dto.BoardMainNoticeResponseDTO;
 import site.nonestep.idontwantwalk.board.entity.Board;
 
 import java.util.List;
-import java.util.Optional;
 
 import static site.nonestep.idontwantwalk.board.entity.QBoard.board;
 
@@ -23,6 +23,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .from(board)
                 .orderBy(board.boardNo.desc())
                 .limit(5)
+                .offset(page*5)
                 .fetch();
     }
 
@@ -34,6 +35,23 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .execute();
     }
 
-    //게시판 상세조회
+
+    //게시글이 몇 페이지까지 있는지
+    @Override
+    public Long selectBoardPage() {
+        return queryFactory.select(board.boardNo.count())
+                .from(board)
+                .fetchFirst();
+    }
+
+    //게시글조회 최상단
+    @Override
+    public BoardMainNoticeResponseDTO notice() {
+        return queryFactory.select(Projections.constructor(BoardMainNoticeResponseDTO.class, board.boardNo, board.boardTitle))
+                .from(board)
+                .orderBy(board.boardNo.desc())
+                .fetchFirst();
+    }
+
 
 }

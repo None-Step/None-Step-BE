@@ -22,5 +22,9 @@ public interface BoardService {
     //게시글 상세조회
     BoardDetailResponseDTO boardDetail(BoardDetailRequestDTO boardDetailRequestDTO);
 
+    //게시글이 몇 페이지까지 있는지
+    BoardPageResponseDTO selectBoardPage();
 
+    //글조회 최상단
+    BoardMainNoticeResponseDTO boardMainNotice();
 }
