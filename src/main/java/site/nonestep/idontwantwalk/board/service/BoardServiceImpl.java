@@ -116,6 +116,24 @@ public class BoardServiceImpl implements BoardService {
         return boardDetailResponseDTO;
     }
 
+    //게시글이 몇 페이지가 있는지
+    @Override
+    public BoardPageResponseDTO selectBoardPage() {
+        Long selectBoardPage = boardRepository.selectBoardPage();
+        selectBoardPage /= 5;
+        selectBoardPage++;
+
+        BoardPageResponseDTO boardPageResponseDTO = new BoardPageResponseDTO();
+        boardPageResponseDTO.setPage(selectBoardPage);
+        return boardPageResponseDTO;
+    }
+
+    //게시글조회 최상단
+    @Override
+    public BoardMainNoticeResponseDTO boardMainNotice() {
+        BoardMainNoticeResponseDTO notice = boardRepository.notice();
+        return notice ;
+    }
 
 
 }
