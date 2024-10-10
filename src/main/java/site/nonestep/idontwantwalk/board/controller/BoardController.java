@@ -12,6 +12,7 @@ import site.nonestep.idontwantwalk.board.service.ImgService;
 import site.nonestep.idontwantwalk.member.service.S3UploadService;
 
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 
 @Slf4j
 @RestController
@@ -97,5 +98,19 @@ public class BoardController {
         return new ResponseEntity<>(imgResponseDTO, HttpStatus.OK);
     }
 
+    //게시글이 몇 페이지까지 있는지
+    @GetMapping("/page")
+    public ResponseEntity<?> page(){
+        BoardPageResponseDTO boardPageResponseDTO = boardService.selectBoardPage();
+
+        return new ResponseEntity<>(boardPageResponseDTO, HttpStatus.OK);
+    }
+
+    //목록 조회 최상단
+    @GetMapping("/main-notice")
+    public ResponseEntity<?> mainNotice(){
+        BoardMainNoticeResponseDTO boardMainNoticeResponseDTO = boardService.boardMainNotice();
+        return new ResponseEntity<>(boardMainNoticeResponseDTO,HttpStatus.OK);
+    }
 
 }
