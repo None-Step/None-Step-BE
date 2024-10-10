@@ -36,7 +36,7 @@ public interface MemberService {
     MemberModifyMailResponseDTO modifyMail(MemberModifyMailRequestDTO memberModifyMailRequestDTO, Long memberNo);
 
     //프로필편집: 비밀번호
-    MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO, Long memberNo);
+    MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO);
 
     //프로필편집: 닉네임 및 이미지 변경
     MemberModifyNickNameResponseDTO modifyNick(MemberModifyNickNameRequestDTO memberModifyNickNameRequestDTO, Long memberNo);

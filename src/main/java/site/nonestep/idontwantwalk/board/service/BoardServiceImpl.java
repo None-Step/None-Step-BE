@@ -4,11 +4,15 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import site.nonestep.idontwantwalk.board.dto.*;
 import site.nonestep.idontwantwalk.board.entity.Board;
+import site.nonestep.idontwantwalk.board.entity.BoardImg;
 import site.nonestep.idontwantwalk.board.repository.BoardRepository;
+import site.nonestep.idontwantwalk.board.repository.ImgRepository;
 import site.nonestep.idontwantwalk.member.entity.Member;
 import site.nonestep.idontwantwalk.member.repository.MemberRepository;
+import site.nonestep.idontwantwalk.member.service.S3UploadService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,11 +23,18 @@ import java.util.Optional;
 @Transactional
 
 public class BoardServiceImpl implements BoardService {
+
     @Autowired
     private BoardRepository boardRepository;
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ImgRepository imgRepository;
+
+    @Autowired
+    private S3UploadService s3UploadService;
 
     //공지게시글 작성
     @Override
@@ -38,6 +49,7 @@ public class BoardServiceImpl implements BoardService {
                         .memberNo(member)
                         .build()
         );
+
 
         BoardWriteResponseDTO boardWriteResponseDTO = new BoardWriteResponseDTO();
         boardWriteResponseDTO.setBoardNo(write.getBoardNo());
@@ -79,7 +91,6 @@ public class BoardServiceImpl implements BoardService {
         //Member member = memberRepository.getReferenceById(memberNo);
         // 게시판 글쓴이랑 member랑 비교해서 다른 사람이면 잘못된 접근이므로 null을 return한다. 관리자만 사용할거라면?
 
-        // 삭제는 하위 테이블 먼저 삭제한다. 마지막으로 상위테이블을 삭제해야한다.
         boardRepository.deleteBoard(board.getBoardNo());
 
         BoardDeleteResponseDTO boardDeleteResponseDTO = new BoardDeleteResponseDTO();
@@ -88,29 +99,23 @@ public class BoardServiceImpl implements BoardService {
         return boardDeleteResponseDTO;
     }
 
+    //게시글 상세조회
+    @Override
+    public BoardDetailResponseDTO boardDetail(BoardDetailRequestDTO boardDetailRequestDTO) {
+        Board board = boardRepository.getReferenceById(boardDetailRequestDTO.getBoardNo());
+        //Member member = board.getMemberNo();
 
-    // 게시글 삭제
-//    @Override
-//    public BoardDeleteResponseDTO boardDelete(BoardDeleteRequestDTO boardDeleteRequestDTO, Long memberNo) {
-//        Board board = boardRepository.getReferenceById(boardDeleteRequestDTO.getBoardNo());
-//        Member member = memberRepository.getReferenceById(memberNo);
-//
-////        //
-////        // 더 좋은 코드로 replace 가능하지만 내가 해석 못하니까 그냥 이대로 둔다 ^^
-////        // 더 좋은 코드 = !Objects.equals(board.getMember_no().getMemberNo(), memberNo)
-//        if (board.getMember_no().getMemberNo() != memberNo) {
-//            return null;
-//        }
-//
-//        imgRepository.deleteBoard(board);
-//        tagRepository.deleteBoard(board);
-//        boardRepository.deleteBoard(board.getBoardNo());
-//
-//        BoardDeleteResponseDTO boardDeleteResponseDTO = new BoardDeleteResponseDTO();
-//        boardDeleteResponseDTO.setMessage("Success");
-//
-//        return boardDeleteResponseDTO;
-//    }
-//
+        // List<String> boardImg = imgRepository.findAllBoardDetailImg(board);
+
+        BoardDetailResponseDTO boardDetailResponseDTO = new BoardDetailResponseDTO();
+        boardDetailResponseDTO.setBoardNo(board.getBoardNo());
+        boardDetailResponseDTO.setBoardTitle(board.getBoardTitle());
+        boardDetailResponseDTO.setBoardContent(board.getBoardContent());
+        boardDetailResponseDTO.setBoardWriteDate(board.getBoardWriteDate());
+        boardDetailResponseDTO.setBoardModifyDate(board.getBoardModifyDate());
+        return boardDetailResponseDTO;
+    }
+
+
 
 }

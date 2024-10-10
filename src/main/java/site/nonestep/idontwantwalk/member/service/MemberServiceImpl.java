@@ -205,13 +205,19 @@ public class MemberServiceImpl implements MemberService {
 
     //프로필편집: 비밀번호변경
     @Override
-    public MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO, Long memberNo) {
-        Member member = memberRepository.getReferenceById(memberNo);
-        member.modifyPass(BCrypt.hashpw(memberModifyPassRequestDTO.getMemberPass(), BCrypt.gensalt()));
-        MemberModifyPassResponseDTO memberModifyPassResponseDTO = new MemberModifyPassResponseDTO();
-        memberModifyPassResponseDTO.setMessage("Success");
+    public MemberModifyPassResponseDTO modifyPass(MemberModifyPassRequestDTO memberModifyPassRequestDTO) {
+        Optional<Member> selectPass = memberRepository.selectPass(memberModifyPassRequestDTO.getMemberID(),
+                memberModifyPassRequestDTO.getMemberName(), memberModifyPassRequestDTO.getMemberPhone());
 
-        return memberModifyPassResponseDTO;
+        if (selectPass.isEmpty()){
+            return null;
+        }else{
+            selectPass.get().modifyPass(BCrypt.hashpw(memberModifyPassRequestDTO.getMemberPass(), BCrypt.gensalt()));
+            MemberModifyPassResponseDTO memberModifyPassResponseDTO = new MemberModifyPassResponseDTO();
+            memberModifyPassResponseDTO.setMessage("Success");
+
+            return memberModifyPassResponseDTO;
+        }
     }
 
     //프로필편집: 닉네임, 이미지 변경

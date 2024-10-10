@@ -7,6 +7,7 @@ import site.nonestep.idontwantwalk.board.dto.BoardListResponseDTO;
 import site.nonestep.idontwantwalk.board.entity.Board;
 
 import java.util.List;
+import java.util.Optional;
 
 import static site.nonestep.idontwantwalk.board.entity.QBoard.board;
 
@@ -32,5 +33,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
                 .where(board.boardNo.eq(boardNo))
                 .execute();
     }
+
+    //게시판 상세조회
 
 }
