@@ -200,7 +200,13 @@ public class RoadController {
         // 서울시 자전거 보관소 갯수 약 2641개로 추정
         for (int i = 1; i <= 1800; i += 900) {
 
-            OkHttpClient client = new OkHttpClient();
+            // 서울 자전거에서 timeout error가 나서 10초 > 15초로 늘림 > 오류 미해결
+            // API가 정상적으로 작동할 때 0.5 ~ 1.5초 사이 내에 호출 되기 때문에 4초 이상 호출되면 무조건 error 나게 코드를 수정한다.
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .connectTimeout(4, TimeUnit.SECONDS)
+                    .writeTimeout(4, TimeUnit.SECONDS)
+                    .readTimeout(4, TimeUnit.SECONDS)
+                    .build();
 
             // 서울시 자전거 API 호출
             Request request = new Request.Builder()
@@ -489,10 +495,11 @@ public class RoadController {
             for (int i = 1; i <= 1800; i += 900) {
 
                 // 서울 자전거에서 timeout error가 나서 10초 > 15초로 늘림
+                // API가 정상적으로 작동할 때 0.5 ~ 1.5초 사이 내에 호출 되기 때문에 4초 이상 호출되면 무조건 error 나게 코드를 수정한다.
                 OkHttpClient client = new OkHttpClient().newBuilder()
-                        .connectTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS)
-                        .readTimeout(15, TimeUnit.SECONDS)
+                        .connectTimeout(4, TimeUnit.SECONDS)
+                        .writeTimeout(4, TimeUnit.SECONDS)
+                        .readTimeout(4, TimeUnit.SECONDS)
                         .build();
 
                 // 서울시 자전거 API 호출
