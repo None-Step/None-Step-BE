@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import site.nonestep.idontwantwalk.board.dto.BoardListResponseDTO;
 import site.nonestep.idontwantwalk.board.dto.BoardMainNoticeResponseDTO;
+import site.nonestep.idontwantwalk.board.dto.BoardSearchResponseDTO;
 import site.nonestep.idontwantwalk.board.entity.Board;
 
 import java.util.List;
@@ -47,11 +48,22 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
     //게시글조회 최상단
     @Override
     public BoardMainNoticeResponseDTO notice() {
-        return queryFactory.select(Projections.constructor(BoardMainNoticeResponseDTO.class, board.boardNo, board.boardTitle))
+        return queryFactory.select(Projections.constructor(BoardMainNoticeResponseDTO.class, board.boardNo, board.boardTitle, board.boardWriteDate, board.boardModifyDate))
                 .from(board)
                 .orderBy(board.boardNo.desc())
                 .fetchFirst();
     }
+    //게시글 검색
+    @Override
+    public List<BoardSearchResponseDTO> selectBoardSearch(String keyword) {
+        return queryFactory.select(Projections.constructor(BoardSearchResponseDTO.class, board.boardNo, board.boardTitle, board.boardContent, board.boardWriteDate, board.boardModifyDate))
+                .from(board)
+                .where(board.boardTitle.like("%" + keyword + "%").or(board.boardContent.like("%" + keyword + "%")))
+                .orderBy(board.boardNo.desc())
+                .fetch();
+    }
+
+
 
 
 }
