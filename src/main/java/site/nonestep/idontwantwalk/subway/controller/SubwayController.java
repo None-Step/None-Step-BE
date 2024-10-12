@@ -231,4 +231,13 @@ public class SubwayController {
 
         return new ResponseEntity<>(subwayClimateCardResponseDTO, HttpStatus.OK);
     }
+
+    // 지하철 침수 피해 여부
+    @GetMapping("/flooding")
+    private ResponseEntity<?> flooding(@ModelAttribute SubwayFloodingRequestDTO subwayFloodingRequestDTO){
+
+        SubwayFloodingResponseDTO subwayFloodingResponseDTO = subwayService.flooding(subwayFloodingRequestDTO);
+
+        return new ResponseEntity<>(subwayFloodingResponseDTO, HttpStatus.OK);
+    }
 }

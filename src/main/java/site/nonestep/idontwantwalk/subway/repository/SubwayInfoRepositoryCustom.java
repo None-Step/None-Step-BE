@@ -2,6 +2,7 @@ package site.nonestep.idontwantwalk.subway.repository;
 
 import site.nonestep.idontwantwalk.road.dto.*;
 import site.nonestep.idontwantwalk.subway.dto.SubwayClimateCardResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.SubwayFloodingResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayNowResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.Info;
@@ -36,4 +37,7 @@ public interface SubwayInfoRepositoryCustom {
 
     // 기후동행카드 승, 하차 지원 여부
     Optional<SubwayClimateCardResponseDTO> selectClimate(String region, String line, String station);
+
+    // 지하철 역 침수 피해 여부 조회
+    Optional<SubwayFloodingResponseDTO> selectFlooding(String region, String line, String station);
 }

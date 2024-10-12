@@ -71,4 +71,7 @@ public class Info {
     @Column(name = "info_climate_get_off", length = 10)
     private String infoClimateGetOff;
 
+    @Column(name = "info_flooding", length = 10)
+    private String infoFlooding;
+
 }

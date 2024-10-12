@@ -76,4 +76,7 @@ public interface SubwayService {
 
     // 기후동행카드 승, 하차 지원 여부
     SubwayClimateCardResponseDTO climateCard(SubwayClimateCardRequestDTO subwayClimateCardRequestDTO);
+
+    // 지하철 역 침수 피해 여부
+    SubwayFloodingResponseDTO flooding(SubwayFloodingRequestDTO subwayFloodingRequestDTO);
 }
