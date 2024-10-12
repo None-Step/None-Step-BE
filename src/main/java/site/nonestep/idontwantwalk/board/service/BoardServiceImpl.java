@@ -135,5 +135,20 @@ public class BoardServiceImpl implements BoardService {
         return notice ;
     }
 
+    //게시글 검색
+    @Override
+    public List<BoardSearchResponseDTO>boardSearch(BoardSearchRequestDTO boardSearchRequestDTO){
+        List<BoardSearchResponseDTO> boardSearch = boardRepository.selectBoardSearch(boardSearchRequestDTO.getKeyword());
+        boardSearch = boardSearch.stream().map(this::searchOtherThings).toList();
+        return boardSearch;
+    }
+
+    //검색 이어서
+    public BoardSearchResponseDTO searchOtherThings(BoardSearchResponseDTO boardSearchResponseDTO){
+        Board board = boardRepository.getReferenceById(boardSearchResponseDTO.getBoardNo());
+        Member member = board.getMemberNo();
+
+        return boardSearchResponseDTO;
+    }
 
 }
