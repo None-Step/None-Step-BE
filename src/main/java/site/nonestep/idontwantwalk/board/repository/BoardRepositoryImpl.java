@@ -48,7 +48,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom{
     //게시글조회 최상단
     @Override
     public BoardMainNoticeResponseDTO notice() {
-        return queryFactory.select(Projections.constructor(BoardMainNoticeResponseDTO.class, board.boardNo, board.boardTitle, board.boardWriteDate, board.boardModifyDate))
+        return queryFactory.select(Projections.constructor(BoardMainNoticeResponseDTO.class, board.boardNo, board.boardTitle))
                 .from(board)
                 .orderBy(board.boardNo.desc())
                 .fetchFirst();
