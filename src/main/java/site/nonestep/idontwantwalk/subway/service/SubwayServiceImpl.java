@@ -335,7 +335,7 @@ public class SubwayServiceImpl implements SubwayService {
 
         if (downTime.isEmpty()) {
             return null;
-        }else{
+        } else {
             return downTime;
         }
     }
@@ -346,10 +346,24 @@ public class SubwayServiceImpl implements SubwayService {
         Optional<SubwayClimateCardResponseDTO> selectClimate = subwayInfoRepository.selectClimate(subwayClimateCardRequestDTO.getRegion(),
                 subwayClimateCardRequestDTO.getLine(), subwayClimateCardRequestDTO.getStation());
 
-        if (selectClimate.isEmpty()){
+        if (selectClimate.isEmpty()) {
+            return null;
+        } else {
+            return selectClimate.get();
+        }
+    }
+
+    // 지하철 역 침수 피해 여부
+    @Override
+    public SubwayFloodingResponseDTO flooding(SubwayFloodingRequestDTO subwayFloodingRequestDTO) {
+
+        Optional<SubwayFloodingResponseDTO> selectFlooding = subwayInfoRepository.selectFlooding(subwayFloodingRequestDTO.getRegion(),
+                subwayFloodingRequestDTO.getLine(), subwayFloodingRequestDTO.getStation());
+
+        if (selectFlooding.isEmpty()) {
             return null;
         }else{
-            return selectClimate.get();
+            return selectFlooding.get();
         }
     }
 
