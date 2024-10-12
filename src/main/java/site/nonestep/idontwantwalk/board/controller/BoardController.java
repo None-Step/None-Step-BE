@@ -113,4 +113,12 @@ public class BoardController {
         return new ResponseEntity<>(boardMainNoticeResponseDTO,HttpStatus.OK);
     }
 
+    //게시글 검색
+    @PostMapping("/search")
+    public ResponseEntity<?> search(@RequestBody BoardSearchRequestDTO boardSearchRequestDTO){
+
+        List<BoardSearchResponseDTO> boardSearchResponseDTO = boardService.boardSearch(boardSearchRequestDTO);
+        return new ResponseEntity<>(boardSearchResponseDTO, HttpStatus.OK);
+    }
+
 }

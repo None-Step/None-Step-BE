@@ -27,4 +27,7 @@ public interface BoardService {
 
     //글조회 최상단
     BoardMainNoticeResponseDTO boardMainNotice();
+
+    //게시글 검색
+    List<BoardSearchResponseDTO>boardSearch(BoardSearchRequestDTO boardSearchRequestDTO);
 }

@@ -2,6 +2,7 @@ package site.nonestep.idontwantwalk.board.repository;
 
 import site.nonestep.idontwantwalk.board.dto.BoardListResponseDTO;
 import site.nonestep.idontwantwalk.board.dto.BoardMainNoticeResponseDTO;
+import site.nonestep.idontwantwalk.board.dto.BoardSearchResponseDTO;
 import site.nonestep.idontwantwalk.board.entity.Board;
 
 import java.util.List;
@@ -18,4 +19,7 @@ public interface BoardRepositoryCustom {
 
     //글조회 최상단
     BoardMainNoticeResponseDTO notice ();
+
+    //게시글 검색
+    List<BoardSearchResponseDTO>selectBoardSearch(String keyword);
 }
