@@ -29,10 +29,10 @@ public class SubwayMarkRepositoryImpl implements SubwayMarkRepositoryCustom{
     // [지하철 역] 동일한 즐겨 찾기가 있는지 조회
     // Count로 조회해서 0이 아니라면 중복으로 등록하려는 경우이기 때문에 null을 return한다.
     @Override
-    public Long selectSameSubway(String region, String line, String station) {
+    public Long selectSameSubway(String region, String line, String station, Long memberNo) {
         return queryFactory.select(subwayMark.station.count())
                 .from(subwayMark)
-                .where(subwayMark.region.eq(region).and(subwayMark.line.eq(line).and(subwayMark.station.eq(station))))
+                .where(subwayMark.region.eq(region).and(subwayMark.line.eq(line).and(subwayMark.station.eq(station).and(subwayMark.memberNo.eq(memberNo)))))
                 .fetchFirst();
     }
 

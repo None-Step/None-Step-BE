@@ -30,7 +30,7 @@ public class SubwayMarkServiceImpl implements SubwayMarkService {
         Member member = memberRepository.getReferenceById(memberNo);
         Long selectSubwayMarkCount = subwayMarkRepository.selectSubwayMarkCount(memberNo);
         Long selectSameSubway = subwayMarkRepository.selectSameSubway(subwayRegisterRequestDTO.getRegion(), subwayRegisterRequestDTO.getLine(),
-                subwayRegisterRequestDTO.getStation());
+                subwayRegisterRequestDTO.getStation(), memberNo);
 
         if (selectSubwayMarkCount > 4 || selectSameSubway != 0) {
             return null;
