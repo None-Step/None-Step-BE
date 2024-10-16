@@ -9,6 +9,8 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import site.nonestep.idontwantwalk.road.dto.*;
+import site.nonestep.idontwantwalk.subway.dto.SubwayClimateCardResponseDTO;
+import site.nonestep.idontwantwalk.subway.dto.SubwayFloodingResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayLocationResponseDTO;
 import site.nonestep.idontwantwalk.subway.dto.SubwayNowResponseDTO;
 import site.nonestep.idontwantwalk.subway.entity.Info;
@@ -143,6 +145,28 @@ public class SubwayInfoRepositoryImpl implements SubwayInfoRepositoryCustom{
                         .from(info)
                         .where(info.region.eq(goListRequestDTO.getGoRegion()).and(info.line.eq(goListRequestDTO.getGoLine())
                                 .and(info.station.eq(goListRequestDTO.getGoStation()))))
+                        .fetchFirst()
+        );
+    }
+
+    // 기후동행카드 승, 하차 지원 여부
+    @Override
+    public Optional<SubwayClimateCardResponseDTO> selectClimate(String region, String line, String station) {
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(SubwayClimateCardResponseDTO.class, info.infoClimateGetOn, info.infoClimateGetOff))
+                        .from(info)
+                        .where(info.region.eq(region).and(info.line.eq(line).and(info.station.eq(station))))
+                        .fetchFirst()
+        );
+    }
+
+    // 지하철 역 침수 피해 여부 조회
+    @Override
+    public Optional<SubwayFloodingResponseDTO> selectFlooding(String region, String line, String station) {
+        return Optional.ofNullable(
+                queryFactory.select(Projections.constructor(SubwayFloodingResponseDTO.class, info.infoFlooding))
+                        .from(info)
+                        .where(info.region.eq(region).and(info.line.eq(line).and(info.station.eq(station))))
                         .fetchFirst()
         );
     }

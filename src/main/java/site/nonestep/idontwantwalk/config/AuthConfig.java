@@ -26,4 +26,5 @@ public class AuthConfig {
     private String seoulbike;
     private String daejeonbike;
     private String odsay;
+    private String weather;
 }

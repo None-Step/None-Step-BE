@@ -212,7 +212,7 @@ public class SubwayController {
         return new ResponseEntity<>(upTime, HttpStatus.OK);
     }
 
-    // 하해선 시간표
+    // 하행선 시간표
     @GetMapping("/down-time")
     private ResponseEntity<?> downTime(@ModelAttribute SubwayDownTimeRequestDTO subwayDownTimeRequestDTO){
         log.info("호출된 API: {}", subwayDownTimeRequestDTO);
@@ -221,5 +221,23 @@ public class SubwayController {
 
         log.info("호출된 API: {}", downTime);
         return new ResponseEntity<>(downTime, HttpStatus.OK);
+    }
+
+    // 기후 동행 카드 승차, 하차 여부
+    @GetMapping("/climate-card")
+    private ResponseEntity<?> climateCard(@ModelAttribute SubwayClimateCardRequestDTO subwayClimateCardRequestDTO){
+
+        SubwayClimateCardResponseDTO subwayClimateCardResponseDTO = subwayService.climateCard(subwayClimateCardRequestDTO);
+
+        return new ResponseEntity<>(subwayClimateCardResponseDTO, HttpStatus.OK);
+    }
+
+    // 지하철 침수 피해 여부
+    @GetMapping("/flooding")
+    private ResponseEntity<?> flooding(@ModelAttribute SubwayFloodingRequestDTO subwayFloodingRequestDTO){
+
+        SubwayFloodingResponseDTO subwayFloodingResponseDTO = subwayService.flooding(subwayFloodingRequestDTO);
+
+        return new ResponseEntity<>(subwayFloodingResponseDTO, HttpStatus.OK);
     }
 }
