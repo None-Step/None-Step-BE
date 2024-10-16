@@ -116,6 +116,39 @@ public class BoardServiceImpl implements BoardService {
         return boardDetailResponseDTO;
     }
 
+    //게시글이 몇 페이지가 있는지
+    @Override
+    public BoardPageResponseDTO selectBoardPage() {
+        Long selectBoardPage = boardRepository.selectBoardPage();
+        selectBoardPage /= 5;
+        selectBoardPage++;
 
+        BoardPageResponseDTO boardPageResponseDTO = new BoardPageResponseDTO();
+        boardPageResponseDTO.setPage(selectBoardPage);
+        return boardPageResponseDTO;
+    }
+
+    //게시글조회 최상단
+    @Override
+    public BoardMainNoticeResponseDTO boardMainNotice() {
+        BoardMainNoticeResponseDTO notice = boardRepository.notice();
+        return notice ;
+    }
+
+    //게시글 검색
+    @Override
+    public List<BoardSearchResponseDTO>boardSearch(BoardSearchRequestDTO boardSearchRequestDTO){
+        List<BoardSearchResponseDTO> boardSearch = boardRepository.selectBoardSearch(boardSearchRequestDTO.getKeyword());
+        boardSearch = boardSearch.stream().map(this::searchOtherThings).toList();
+        return boardSearch;
+    }
+
+    //검색 이어서
+    public BoardSearchResponseDTO searchOtherThings(BoardSearchResponseDTO boardSearchResponseDTO){
+        Board board = boardRepository.getReferenceById(boardSearchResponseDTO.getBoardNo());
+        Member member = board.getMemberNo();
+
+        return boardSearchResponseDTO;
+    }
 
 }
