@@ -17,7 +17,7 @@ public class Constants {
             "/nonestep/connect", "/connect", "/nonestep/sub/**",  "/sub/**","/nonestep/pub/**",  "/pub/**",
             "/nonestep/road/**", "/nonestep/chat/all", "/nonestep/chat/list", "/nonestep/chat/subscribe",
             "/nonestep/board/list", "/nonestep/board/detail","/nonestep/board/page","/nonestep/board/main-notice",
-            "/nonestep/board/search"
+            "/nonestep/board/search", "/nonestep/weather/current"
 
     };
 
