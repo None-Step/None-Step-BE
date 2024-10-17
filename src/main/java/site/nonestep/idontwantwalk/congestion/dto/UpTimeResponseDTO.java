@@ -9,4 +9,5 @@ public class UpTimeResponseDTO {
     private String currentTime;
     private String after30;
     private String after60;
+    private String nextStation;
 }

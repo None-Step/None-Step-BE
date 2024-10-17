@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import site.nonestep.idontwantwalk.congestion.dto.DownTimeRequestDTO;
-import site.nonestep.idontwantwalk.congestion.dto.DownTimeResponseDTO;
-import site.nonestep.idontwantwalk.congestion.dto.UpTimeRequestDTO;
-import site.nonestep.idontwantwalk.congestion.dto.UpTimeResponseDTO;
+import site.nonestep.idontwantwalk.congestion.dto.*;
 import site.nonestep.idontwantwalk.congestion.service.CongestionService;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -41,5 +40,39 @@ public class CongestionController {
         } else {
             return new ResponseEntity<>(downTime, HttpStatus.OK);
         }
+    }
+
+    // 역 상행선 이격 거리 및 추가 정보 API
+    @GetMapping("/up-info")
+    public ResponseEntity<?> upInfo(@ModelAttribute UpInfoRequestDTO upInfoRequestDTO) {
+
+        List<UpInfoResponseDTO> upInfo = congestionService.upInfo(upInfoRequestDTO);
+
+        if (upInfo.isEmpty()) {
+            return new ResponseEntity<>("해당 데이터가 존재하지 않거나 오류입니다.", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(upInfo, HttpStatus.OK);
+        }
+    }
+
+    // 역 하행선 이격 거리 및 추가 정보 API
+    @GetMapping("/down-info")
+    public ResponseEntity<?> downInfo(@ModelAttribute DownInfoRequestDTO downInfoRequestDTO) {
+
+        List<DownInfoResponseDTO> downInfo = congestionService.downInfo(downInfoRequestDTO);
+
+        if (downInfo.isEmpty()) {
+            return new ResponseEntity<>("해당 데이터가 존재하지 않거나 오류입니다.", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(downInfo, HttpStatus.OK);
+        }
+    }
+
+    // 역 혼잡도 API - 지도 마커용
+    @GetMapping("/subway-marker")
+    public ResponseEntity<?> subwayMarker(@ModelAttribute SubwayMarkerRequestDTO subwayMarkerRequestDTO) {
+        List<SubwayMarkerResponseDTO> subwayMark = congestionService.subwayMark(subwayMarkerRequestDTO);
+
+        return new ResponseEntity<>(subwayMark,HttpStatus.OK);
     }
 }

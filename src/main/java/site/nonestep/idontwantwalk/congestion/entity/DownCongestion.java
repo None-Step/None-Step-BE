@@ -186,4 +186,7 @@ public class DownCongestion {
     @Digits(integer = 4, fraction = 3)
     @Column(name = "down_congestion_0030")
     private BigDecimal downCongestion0030;
+
+    @Column(name = "down_next_station")
+    private String downNextStation;
 }
