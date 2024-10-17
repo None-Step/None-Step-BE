@@ -1,17 +1,24 @@
 package site.nonestep.idontwantwalk.congestion.service;
 
+import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import site.nonestep.idontwantwalk.congestion.dto.DownTimeRequestDTO;
-import site.nonestep.idontwantwalk.congestion.dto.DownTimeResponseDTO;
-import site.nonestep.idontwantwalk.congestion.dto.UpTimeRequestDTO;
-import site.nonestep.idontwantwalk.congestion.dto.UpTimeResponseDTO;
+import site.nonestep.idontwantwalk.congestion.dto.*;
 import site.nonestep.idontwantwalk.congestion.entity.DownCongestion;
+import site.nonestep.idontwantwalk.congestion.entity.QUpCongestion;
 import site.nonestep.idontwantwalk.congestion.entity.UpCongestion;
+import site.nonestep.idontwantwalk.congestion.entity.UpEtc;
 import site.nonestep.idontwantwalk.congestion.repository.DownCongestionRepository;
+import site.nonestep.idontwantwalk.congestion.repository.DownEtcRepository;
 import site.nonestep.idontwantwalk.congestion.repository.UpCongestionRepository;
+import site.nonestep.idontwantwalk.congestion.repository.UpEtcRepository;
+import site.nonestep.idontwantwalk.subway.entity.Info;
+
+import static site.nonestep.idontwantwalk.congestion.entity.QDownCongestion.*;
+import static site.nonestep.idontwantwalk.subway.entity.QInfo.*;
+import static site.nonestep.idontwantwalk.congestion.entity.QUpCongestion.upCongestion;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -21,6 +28,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,6 +41,13 @@ public class CongestionServiceImpl implements CongestionService {
 
     @Autowired
     private DownCongestionRepository downCongestionRepository;
+
+    @Autowired
+    private UpEtcRepository upEtcRepository;
+
+    @Autowired
+    private DownEtcRepository downEtcRepository;
+
 
     // 해당 역의 상행선 혼잡도 흐름, 현재 시간부터 30분 뒤, 60분 뒤
     @Override
@@ -47,6 +64,7 @@ public class CongestionServiceImpl implements CongestionService {
 
             LocalTime start = LocalTime.of(0, 0);
             LocalTime currentTime = LocalTime.parse(upTimeRequestDTO.getTime(), timeFormatter);
+            currentTime = currentTime.minus(1,ChronoUnit.MINUTES);
 
             long howMany = Duration.between(start, currentTime).dividedBy(unit);
             LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
@@ -58,6 +76,7 @@ public class CongestionServiceImpl implements CongestionService {
             upTimeResponseDTO.setAfter30(localTimeToData(requireTime, up));
             requireTime = requireTime.plus(30, ChronoUnit.MINUTES);
             upTimeResponseDTO.setAfter60(localTimeToData(requireTime, up));
+            upTimeResponseDTO.setNextStation(up.getUpNextStation());
 
             return upTimeResponseDTO;
         }
@@ -71,13 +90,14 @@ public class CongestionServiceImpl implements CongestionService {
 
         if (down == null) {
             return null;
-        }else{
+        } else {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
 
             Duration unit = Duration.ofMinutes(30);
 
             LocalTime start = LocalTime.of(0, 0);
             LocalTime currentTime = LocalTime.parse(downTimeRequestDTO.getTime(), timeFormatter);
+            currentTime = currentTime.minus(1,ChronoUnit.MINUTES);
 
             long howMany = Duration.between(start, currentTime).dividedBy(unit);
             LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
@@ -89,6 +109,7 @@ public class CongestionServiceImpl implements CongestionService {
             downTimeResponseDTO.setAfter30(localTimeToData(requireTime, down));
             requireTime = requireTime.plus(30, ChronoUnit.MINUTES);
             downTimeResponseDTO.setAfter60(localTimeToData(requireTime, down));
+            downTimeResponseDTO.setNextStation(down.getDownNextStation());
 
             return downTimeResponseDTO;
         }
@@ -285,6 +306,53 @@ public class CongestionServiceImpl implements CongestionService {
         } else {
             return "혼잡";
         }
+    }
+
+    // 해당 역의 상행선 이격거리 및 추가 정보
+    @Override
+    public List<UpInfoResponseDTO> upInfo(UpInfoRequestDTO upInfoRequestDTO) {
+        List<UpInfoResponseDTO> selectUpInfo = upEtcRepository.selectUpInfo(upInfoRequestDTO.getRegion(),
+                upInfoRequestDTO.getLine(), upInfoRequestDTO.getStation());
+
+        return selectUpInfo;
+    }
+
+    // 해당 역의 하행선 이격거리 및 추가 정보
+    @Override
+    public List<DownInfoResponseDTO> downInfo(DownInfoRequestDTO downInfoRequestDTO) {
+
+        List<DownInfoResponseDTO> selectDownInfo = downEtcRepository.selectDownInfo(downInfoRequestDTO.getRegion(),
+                downInfoRequestDTO.getLine(), downInfoRequestDTO.getStation());
+
+        return selectDownInfo;
+    }
+
+    // 역 혼잡도 - 마커용
+    @Override
+    public List<SubwayMarkerResponseDTO> subwayMark(SubwayMarkerRequestDTO subwayMarkerRequestDTO) {
+        List<Tuple> selectSubwayInfoAndCongestion = downCongestionRepository.selectSubwayInfoAndCongestion(subwayMarkerRequestDTO.getLatitude(),
+                subwayMarkerRequestDTO.getLongitude(),subwayMarkerRequestDTO.getRadius(),subwayMarkerRequestDTO.getType());
+        List<SubwayMarkerResponseDTO> results = selectSubwayInfoAndCongestion.stream()
+                .map( o -> tupleConvertToSubwayMarkerResponseDTO(o,subwayMarkerRequestDTO.getTime())).collect(Collectors.toList());
+        return results;
+    }
+    public SubwayMarkerResponseDTO tupleConvertToSubwayMarkerResponseDTO(Tuple tuple,String currentTime){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
+        LocalTime localTime = LocalTime.parse(currentTime, formatter);
+        Info curInfo = tuple.get(info);
+        SubwayMarkerResponseDTO subwayMarkerResponseDTO = new SubwayMarkerResponseDTO();
+        if(curInfo != null) {
+            subwayMarkerResponseDTO.setRegion(curInfo.getRegion());
+            subwayMarkerResponseDTO.setLine(curInfo.getLine());
+            subwayMarkerResponseDTO.setStation(curInfo.getStation());
+        }
+        subwayMarkerResponseDTO.setUpCongestion(localTimeToData(localTime,tuple.get(upCongestion)));
+        subwayMarkerResponseDTO.setDownCongestion(localTimeToData(localTime,tuple.get(downCongestion)));
+        subwayMarkerResponseDTO.setUpNextStation(tuple.get(upCongestion.upNextStation));
+        subwayMarkerResponseDTO.setDownNextStation(tuple.get(downCongestion.downNextStation));
+
+        return subwayMarkerResponseDTO;
     }
 
 }

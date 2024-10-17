@@ -185,4 +185,7 @@ public class UpCongestion {
     @Digits(integer = 4, fraction = 3)
     @Column(name = "up_congestion_0030")
     private BigDecimal upCongestion0030;
+
+    @Column(name = "up_next_station")
+    private String upNextStation;
 }
