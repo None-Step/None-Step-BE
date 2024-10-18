@@ -3,6 +3,8 @@ package site.nonestep.idontwantwalk.congestion.dto;
 import lombok.Data;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Data
 @ToString
 public class SubwayMarkerResponseDTO {
@@ -13,5 +15,7 @@ public class SubwayMarkerResponseDTO {
     private String downCongestion;
     private String upNextStation;
     private String downNextStation;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
 
 }
