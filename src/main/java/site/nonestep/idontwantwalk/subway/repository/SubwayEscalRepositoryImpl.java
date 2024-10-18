@@ -45,6 +45,7 @@ public class SubwayEscalRepositoryImpl implements SubwayEscalRepositoryCustom {
                         escal.info.line, escal.info.station, escal.escalComment, escal.escalAddress,
                         escal.escalLatitude, escal.escalLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(escal)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }
