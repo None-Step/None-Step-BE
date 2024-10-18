@@ -346,6 +346,8 @@ public class CongestionServiceImpl implements CongestionService {
             subwayMarkerResponseDTO.setRegion(curInfo.getRegion());
             subwayMarkerResponseDTO.setLine(curInfo.getLine());
             subwayMarkerResponseDTO.setStation(curInfo.getStation());
+            subwayMarkerResponseDTO.setLatitude(curInfo.getInfoLatitude());
+            subwayMarkerResponseDTO.setLongitude(curInfo.getInfoLongitude());
         }
         subwayMarkerResponseDTO.setUpCongestion(localTimeToData(localTime,tuple.get(upCongestion)));
         subwayMarkerResponseDTO.setDownCongestion(localTimeToData(localTime,tuple.get(downCongestion)));
