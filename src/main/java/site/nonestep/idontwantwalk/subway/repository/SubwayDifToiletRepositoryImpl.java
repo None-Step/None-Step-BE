@@ -42,6 +42,7 @@ public class SubwayDifToiletRepositoryImpl implements SubwayDifToiletRepositoryC
                 difToilet.difToiletAddress, difToilet.difToiletLatitude, difToilet.difToiletLongitude,
                 Expressions.as(distanceExpression, distancePath)))
                 .from(difToilet)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

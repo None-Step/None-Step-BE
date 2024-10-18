@@ -27,6 +27,7 @@ public class SubwayInfoRepositoryImpl implements SubwayInfoRepositoryCustom{
     @Autowired
     private JPAQueryFactory queryFactory;
 
+    // 위치기반 역 조회 및 검색
     @Override
     public List<SubwayLocationResponseDTO> selectInfoLatitudeAndInfoLongitudeAndRadius(BigDecimal latitude, BigDecimal longitude, Long radius) {
 
@@ -42,6 +43,7 @@ public class SubwayInfoRepositoryImpl implements SubwayInfoRepositoryCustom{
         return queryFactory.select(Projections.constructor(SubwayLocationResponseDTO.class, info.region, info.line, info.station,
                 info.infoAddress, info.infoLatitude, info.infoLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(info)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

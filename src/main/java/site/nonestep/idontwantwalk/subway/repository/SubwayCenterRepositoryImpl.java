@@ -23,6 +23,7 @@ public class SubwayCenterRepositoryImpl implements SubwayCenterRepositoryCustom{
     @Autowired
     private JPAQueryFactory queryFactory;
 
+    // 역 내 고객센터 조회
     @Override
     public List<SubwayCenterResponseDTO> selectCenter(BigDecimal latitude, BigDecimal longitude, Long radius) {
 
@@ -40,6 +41,7 @@ public class SubwayCenterRepositoryImpl implements SubwayCenterRepositoryCustom{
                 center.centerTel, center.centerAddress, center.centerLatitude, center.centerLongitude,
                 Expressions.as(distanceExpression, distancePath)))
                 .from(center)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

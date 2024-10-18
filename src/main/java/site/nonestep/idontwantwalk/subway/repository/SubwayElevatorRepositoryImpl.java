@@ -45,6 +45,7 @@ public class SubwayElevatorRepositoryImpl implements SubwayElevatorRepositoryCus
                         elevator.info.station, elevator.elevatorComment, elevator.elevatorAddress, elevator.elevatorLatitude,
                         elevator.elevatorLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(elevator)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

@@ -40,6 +40,7 @@ public class SubwayATMRepositoryImpl implements SubwayATMRepositoryCustom {
                 atm.info.line, atm.info.station, atm.atmComment, atm.atmAddress, atm.atmLatitude,
                 atm.atmLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(atm)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

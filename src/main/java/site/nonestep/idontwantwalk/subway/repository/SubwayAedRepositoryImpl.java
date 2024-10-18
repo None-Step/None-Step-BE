@@ -42,6 +42,7 @@ public class SubwayAedRepositoryImpl implements SubwayAedRepositoryCustom{
                 aed.info.station, aed.aedComment, aed.aedAddress, aed.aedLatitude, aed.aedLongitude,
                 Expressions.as(distanceExpression, distancePath)))
                 .from(aed)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }
