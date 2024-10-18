@@ -36,6 +36,14 @@ public class DownCongestionRepositoryImpl implements DownCongestionRepositoryCus
                 .fetchFirst();
     }
 
+    // 혼잡도 마커용 API (해당 역의 실시간 상, 하행선 혼잡도 조회)
+    // join > leftJoin으로 변경함 : Info table에는 값이 있지만 다른 table에는 값이 없을 경우 그래도 출력하기 위해서
+    // 그냥 join의 경우 양쪽 다 값이 있어야만 뜨는 반면, left join은 한 쪽에만 값이 있어도 뜨기 때문
+    // 그래서 혼잡도가 없더라도 region, line, station, latitude, longitude가 뜨게끔 설정함
+    // 조건문에는 WEEKDAY, SAT, HOLIDAY등을 하게 되면 left join을 하게 되면 info에는 있는 data지만 혼잡도가 없는 table의 경우 출력되지 않는다.
+    // 만약 DayType에 값이 없더라도 출력되게끔 로직 설정 완료함.
+    // .or(upCongestion.upCongestionType.isNull())), .or(downCongestion.downCongestionType.isNull())) << 해당 쿼리
+    // 쿼리문 =  where ( upCongestion.type == WEEKDAY or  upCongestion.type is null )  AND ( downCongestion.type == WEEKDAY or  downCongestion.type is null );
     @Override
     public List<Tuple>  selectSubwayInfoAndCongestion(BigDecimal latitude, BigDecimal longitude, Long radius, DayType type) {
 
@@ -49,11 +57,14 @@ public class DownCongestionRepositoryImpl implements DownCongestionRepositoryCus
 
         return queryFactory.select(info,upCongestion,downCongestion, distanceExpression )
                 .from(info)
-                .join(upCongestion)
+                .leftJoin(upCongestion)
                 .on(upCongestion.info.eq(info))
-                .join(downCongestion)
+                .leftJoin(downCongestion)
                 .on(downCongestion.info.eq(info))
-                .where(upCongestion.upCongestionType.eq(type).and(downCongestion.downCongestionType.eq(type))
+                .where((upCongestion.upCongestionType.eq(type)
+                                .or(upCongestion.upCongestionType.isNull()))
+                        .and(downCongestion.downCongestionType.eq(type)
+                                .or(downCongestion.downCongestionType.isNull()))
                         .and(distanceExpression.loe(radius)))
                 .fetch();
     }
