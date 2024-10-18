@@ -50,6 +50,8 @@ public class CongestionServiceImpl implements CongestionService {
 
 
     // 해당 역의 상행선 혼잡도 흐름, 현재 시간부터 30분 뒤, 60분 뒤
+    // 어떤 시간이든 30분 단위로 나눔 그럼 나머지가 사라짐 그 후, 30을 곱함
+    // ex. 1031 입력 > 1030 data 출력 , 1100 입력 > 1100 data 출력
     @Override
     public UpTimeResponseDTO upTime(UpTimeRequestDTO upTimeRequestDTO) {
         UpCongestion up = upCongestionRepository.selectCurrentTimeTo1Hours(upTimeRequestDTO.getRegion(), upTimeRequestDTO.getLine(),
@@ -83,6 +85,8 @@ public class CongestionServiceImpl implements CongestionService {
     }
 
     // 해당 역의 하행선 혼잡도 흐름, 현재 시간부터 30분 뒤, 60분 뒤
+    // 어떤 시간이든 30분 단위로 나눔 그럼 나머지가 사라짐 그 후, 30을 곱함
+    // ex. 1031 입력 > 1030 data 출력 , 1100 입력 > 1100 data 출력
     @Override
     public DownTimeResponseDTO downTime(DownTimeRequestDTO downTimeRequestDTO) {
         DownCongestion down = downCongestionRepository.selectCurrentTimeTo1Hours(downTimeRequestDTO.getRegion(),
@@ -116,6 +120,8 @@ public class CongestionServiceImpl implements CongestionService {
 
     }
 
+    // 시간단위를 HHmm으로 설정
+    // 원하는 시간에 맞춰 data 출력하기 위한 함수 (상행선 용)
     private String localTimeToData(LocalTime time, UpCongestion upCongestion) {
 
         String localTimeStr = time.format(DateTimeFormatter.ofPattern("HHmm"));
@@ -204,6 +210,8 @@ public class CongestionServiceImpl implements CongestionService {
         return "";
     }
 
+    // 시간단위를 HHmm으로 설정
+    // 원하는 시간에 맞춰 data 출력하기 위한 함수 (하행선 용)
     private String localTimeToData(LocalTime time, DownCongestion downCongestion) {
 
         String localTimeStr = time.format(DateTimeFormatter.ofPattern("HHmm"));
@@ -292,6 +300,7 @@ public class CongestionServiceImpl implements CongestionService {
         return "";
     }
 
+    // 출력한 data 값을 아래 if문의 조건에 따라 여유, 보통, 주의, 혼잡 단계로 나눠 return
     public String congestionToState(BigDecimal num) {
         int spare = num.compareTo(BigDecimal.valueOf(20));
         int normal = num.compareTo(BigDecimal.valueOf(40));
@@ -357,10 +366,17 @@ public class CongestionServiceImpl implements CongestionService {
             subwayMarkerResponseDTO.setLatitude(curInfo.getInfoLatitude());
             subwayMarkerResponseDTO.setLongitude(curInfo.getInfoLongitude());
         }
-        subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime,tuple.get(upCongestion)));
-        subwayMarkerResponseDTO.setDownCongestion(localTimeToData(requireTime,tuple.get(downCongestion)));
-        subwayMarkerResponseDTO.setUpNextStation(tuple.get(upCongestion.upNextStation));
-        subwayMarkerResponseDTO.setDownNextStation(tuple.get(downCongestion.downNextStation));
+
+        // left join에 의해서 null일 경우가 존재하기 때문에 조건문 안에 넣어줌
+        if(tuple.get(upCongestion) != null){
+            subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime,tuple.get(upCongestion)));
+            subwayMarkerResponseDTO.setUpNextStation(tuple.get(upCongestion.upNextStation));
+        }
+
+        if(tuple.get(downCongestion) != null) {
+            subwayMarkerResponseDTO.setDownCongestion(localTimeToData(requireTime, tuple.get(downCongestion)));
+            subwayMarkerResponseDTO.setDownNextStation(tuple.get(downCongestion.downNextStation));
+        }
 
         return subwayMarkerResponseDTO;
     }
