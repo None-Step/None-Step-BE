@@ -336,10 +336,18 @@ public class CongestionServiceImpl implements CongestionService {
                 .map( o -> tupleConvertToSubwayMarkerResponseDTO(o,subwayMarkerRequestDTO.getTime())).collect(Collectors.toList());
         return results;
     }
-    public SubwayMarkerResponseDTO tupleConvertToSubwayMarkerResponseDTO(Tuple tuple,String currentTime){
+    public SubwayMarkerResponseDTO tupleConvertToSubwayMarkerResponseDTO(Tuple tuple,String currentTimeString){
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-        LocalTime localTime = LocalTime.parse(currentTime, formatter);
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
+        Duration unit = Duration.ofMinutes(30);
+        LocalTime start = LocalTime.of(0, 0);
+        LocalTime currentTime = LocalTime.parse(currentTimeString, timeFormatter);
+        currentTime = currentTime.minus(30,ChronoUnit.MINUTES);
+
+        long howMany = Duration.between(start, currentTime).dividedBy(unit);
+        LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
+        requireTime = requireTime.plus(30, ChronoUnit.MINUTES);
+
         Info curInfo = tuple.get(info);
         SubwayMarkerResponseDTO subwayMarkerResponseDTO = new SubwayMarkerResponseDTO();
         if(curInfo != null) {
@@ -349,8 +357,8 @@ public class CongestionServiceImpl implements CongestionService {
             subwayMarkerResponseDTO.setLatitude(curInfo.getInfoLatitude());
             subwayMarkerResponseDTO.setLongitude(curInfo.getInfoLongitude());
         }
-        subwayMarkerResponseDTO.setUpCongestion(localTimeToData(localTime,tuple.get(upCongestion)));
-        subwayMarkerResponseDTO.setDownCongestion(localTimeToData(localTime,tuple.get(downCongestion)));
+        subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime,tuple.get(upCongestion)));
+        subwayMarkerResponseDTO.setDownCongestion(localTimeToData(requireTime,tuple.get(downCongestion)));
         subwayMarkerResponseDTO.setUpNextStation(tuple.get(upCongestion.upNextStation));
         subwayMarkerResponseDTO.setDownNextStation(tuple.get(downCongestion.downNextStation));
 
