@@ -64,7 +64,7 @@ public class CongestionServiceImpl implements CongestionService {
 
             LocalTime start = LocalTime.of(0, 0);
             LocalTime currentTime = LocalTime.parse(upTimeRequestDTO.getTime(), timeFormatter);
-            currentTime = currentTime.minus(1,ChronoUnit.MINUTES);
+            currentTime = currentTime.minus(30,ChronoUnit.MINUTES);
 
             long howMany = Duration.between(start, currentTime).dividedBy(unit);
             LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
@@ -97,7 +97,7 @@ public class CongestionServiceImpl implements CongestionService {
 
             LocalTime start = LocalTime.of(0, 0);
             LocalTime currentTime = LocalTime.parse(downTimeRequestDTO.getTime(), timeFormatter);
-            currentTime = currentTime.minus(1,ChronoUnit.MINUTES);
+            currentTime = currentTime.minus(30,ChronoUnit.MINUTES);
 
             long howMany = Duration.between(start, currentTime).dividedBy(unit);
             LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
@@ -354,5 +354,4 @@ public class CongestionServiceImpl implements CongestionService {
 
         return subwayMarkerResponseDTO;
     }
-
 }

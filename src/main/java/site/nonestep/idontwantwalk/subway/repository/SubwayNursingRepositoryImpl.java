@@ -42,6 +42,7 @@ public class SubwayNursingRepositoryImpl implements SubwayNursingRepositoryCusto
                 nursingRoom.info.line, nursingRoom.info.station, nursingRoom.nursingComment, nursingRoom.nursingAddress,
                 nursingRoom.nursingLatitude, nursingRoom.nursingLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(nursingRoom)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

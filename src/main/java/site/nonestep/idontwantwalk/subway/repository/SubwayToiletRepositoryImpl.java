@@ -41,6 +41,7 @@ public class SubwayToiletRepositoryImpl implements SubwayToiletRepositoryCustom{
                 toilet.info.line, toilet.info.station, toilet.toiletExit, toilet.toiletComment,
                 toilet.toiletAddress, toilet.toiletLatitude, toilet.toiletLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(toilet)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

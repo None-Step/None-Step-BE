@@ -63,7 +63,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayLocationResponseDTO> location(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayLocationResponseDTO> subwayLocationResponseDTO = subwayInfoRepository.selectInfoLatitudeAndInfoLongitudeAndRadius(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayLocationResponseDTO;
     }
@@ -72,7 +72,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayElevatorResponseDTO> elevator(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayElevatorResponseDTO> subwayElevatorResponseDTO = subwayElevatorRepository.selectElevator(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayElevatorResponseDTO;
     }
@@ -81,7 +81,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayEscalResponseDTO> escal(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayEscalResponseDTO> subwayEscalResponseDTO = subwayEscalRepository.selectEscal(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayEscalResponseDTO;
     }
@@ -90,7 +90,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayLiftResponseDTO> lift(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayLiftResponseDTO> subwayLiftResponseDTO = subwayLiftRepository.selectLift(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayLiftResponseDTO;
     }
@@ -99,7 +99,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayToiletResponseDTO> toilet(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayToiletResponseDTO> subwayToiletResponseDTO = subwayToiletRepository.selectToilet(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayToiletResponseDTO;
     }
@@ -108,7 +108,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayDifToiletResponseDTO> difToilet(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayDifToiletResponseDTO> subwayDifToiletResponseDTO = subwayDifToiletRepository.selectDifToilet(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayDifToiletResponseDTO;
     }
@@ -117,7 +117,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayNursingResponseDTO> nursingRoom(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayNursingResponseDTO> subwayNursingResponseDTO = subwayNursingRepository.selectNursingRoom(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayNursingResponseDTO;
     }
@@ -126,7 +126,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayATMResponseDTO> atm(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayATMResponseDTO> subwayATMResponseDTO = subwayATMRepository.selectATM(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayATMResponseDTO;
     }
@@ -135,7 +135,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayAEDResponseDTO> aed(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayAEDResponseDTO> subwayAEDResponseDTO = subwayAedRepository.selectAED(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayAEDResponseDTO;
     }
@@ -144,7 +144,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayChargerResponseDTO> charger(BigDecimal latitude, BigDecimal longitude, Long radius) {
         List<SubwayChargerResponseDTO> subwayChargerResponseDTO = subwayChargerRepository.selectCharger(latitude,
-                longitude, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitude, radius);
 
         return subwayChargerResponseDTO;
     }
@@ -153,7 +153,7 @@ public class SubwayServiceImpl implements SubwayService {
     @Override
     public List<SubwayCenterResponseDTO> center(BigDecimal latitude, BigDecimal longitue, Long radius) {
         List<SubwayCenterResponseDTO> subwayCenterResponseDTO = subwayCenterRepository.selectCenter(latitude,
-                longitue, radius).stream().filter(a -> a.getDistance() <= radius).toList();
+                longitue, radius);
 
         return subwayCenterResponseDTO;
     }

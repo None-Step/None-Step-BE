@@ -24,6 +24,7 @@ public class SubwayLiftRepositoryImpl implements SubwayLiftRepositoryCustom {
     @Autowired
     private JPAQueryFactory queryFactory;
 
+    // 휠체어 리프트 조회
     @Override
     public List<SubwayLiftResponseDTO> selectLift(BigDecimal latitude, BigDecimal longitude, Long radius) {
         NumberExpression<Double> distanceExpression = acos(sin(radians(Expressions.constant(latitude)))
@@ -40,6 +41,7 @@ public class SubwayLiftRepositoryImpl implements SubwayLiftRepositoryCustom {
                 lift.liftLongitude, lift.liftStartFloor, lift.liftStartComment, lift.liftEndFloor, lift.liftEndComment,
                 lift.liftHeight, lift.liftWidth, lift.liftKG, Expressions.as(distanceExpression, distancePath)))
                 .from(lift)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }

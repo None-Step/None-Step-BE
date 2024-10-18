@@ -41,6 +41,7 @@ public class SubwayChargerRepositoryImpl implements SubwayChargerRepositoryCusto
                 charger.info.line, charger.info.station, charger.chargerComment, charger.chargerAddress,
                 charger.chargerLatitude, charger.chargerLongitude, Expressions.as(distanceExpression, distancePath)))
                 .from(charger)
+                .where(distanceExpression.loe(radius))
                 .orderBy(((ComparableExpressionBase<Double>) distancePath).asc())
                 .fetch();
     }
