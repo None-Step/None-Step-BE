@@ -52,13 +52,18 @@ public class CongestionServiceImpl implements CongestionService {
     // 해당 역의 상행선 혼잡도 흐름, 현재 시간부터 30분 뒤, 60분 뒤
     // 어떤 시간이든 30분 단위로 나눔 그럼 나머지가 사라짐 그 후, 30을 곱함
     // ex. 1031 입력 > 1030 data 출력 , 1100 입력 > 1100 data 출력
+    // 해당 역의 data가 없을 경우 return null 하지 않고, 그냥 빈 ResponseDTO를 보낸다.
+    // Controller에서 null일 경우 BAD_REQUEST를 보내기 때문이다.
+    // 그 외의 오류를 대비하기 위해서 Controller는 그냥 둔다.(null이 들어가지 않게끔 짰는데도 null이 들어갈 경우를 대비해서)
     @Override
     public UpTimeResponseDTO upTime(UpTimeRequestDTO upTimeRequestDTO) {
         UpCongestion up = upCongestionRepository.selectCurrentTimeTo1Hours(upTimeRequestDTO.getRegion(), upTimeRequestDTO.getLine(),
                 upTimeRequestDTO.getStation(), upTimeRequestDTO.getType());
 
         if (up == null) {
-            return null;
+            UpTimeResponseDTO upTimeResponseDTO = new UpTimeResponseDTO();
+
+            return upTimeResponseDTO;
         } else {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
 
@@ -87,13 +92,18 @@ public class CongestionServiceImpl implements CongestionService {
     // 해당 역의 하행선 혼잡도 흐름, 현재 시간부터 30분 뒤, 60분 뒤
     // 어떤 시간이든 30분 단위로 나눔 그럼 나머지가 사라짐 그 후, 30을 곱함
     // ex. 1031 입력 > 1030 data 출력 , 1100 입력 > 1100 data 출력
+    // 해당 역의 data가 없을 경우 return null 하지 않고, 그냥 빈 ResponseDTO를 보낸다.
+    // Controller에서 null일 경우 BAD_REQUEST를 보내기 때문이다.
+    // 그 외의 오류를 대비하기 위해서 Controller는 그냥 둔다.(null이 들어가지 않게끔 짰는데도 null이 들어갈 경우를 대비해서)
     @Override
     public DownTimeResponseDTO downTime(DownTimeRequestDTO downTimeRequestDTO) {
         DownCongestion down = downCongestionRepository.selectCurrentTimeTo1Hours(downTimeRequestDTO.getRegion(),
                 downTimeRequestDTO.getLine(), downTimeRequestDTO.getStation(), downTimeRequestDTO.getType());
 
         if (down == null) {
-            return null;
+            DownTimeResponseDTO downTimeResponseDTO = new DownTimeResponseDTO();
+
+            return downTimeResponseDTO;
         } else {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
 

@@ -27,12 +27,18 @@ public class DownCongestionRepositoryImpl implements DownCongestionRepositoryCus
     private JPAQueryFactory queryFactory;
 
     // 해당 역의 하행선 혼잡도 흐름, 현재 시간부터 30분 뒤, 60분 뒤
+    // downCongestion table에는 없는 역들이 존재하기 때문에 right join 한다.
+    // 정보가 없는 역들은 null로 보낸다.
     @Override
     public DownCongestion selectCurrentTimeTo1Hours(String region, String line, String station, DayType type) {
         return queryFactory.select(downCongestion)
                 .from(downCongestion)
-                .where(downCongestion.info.region.eq(region).and(downCongestion.info.line.eq(line)
-                        .and(downCongestion.info.station.eq(station).and(downCongestion.downCongestionType.eq(type)))))
+                .rightJoin(info)
+                .on(info.eq(downCongestion.info))
+                .where(info.region.eq(region).and(info.line.eq(line)
+                        .and(info.station.eq(station).and(
+                                downCongestion.downCongestionType.eq(type)
+                                        .or(downCongestion.downCongestionType.isNull())))))
                 .fetchFirst();
     }
 
