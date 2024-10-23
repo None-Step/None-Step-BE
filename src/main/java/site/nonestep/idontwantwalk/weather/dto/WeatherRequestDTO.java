@@ -10,6 +10,4 @@ import java.time.LocalDateTime;
 public class WeatherRequestDTO {
     private Long x;
     private Long y;
-    private String baseDate;
-    private String baseTime;
 }
