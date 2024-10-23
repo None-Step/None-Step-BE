@@ -73,16 +73,15 @@ public class WeatherController {
         // 기상청 API에서 요구하는 baseTime(시간대)로 형식을 맞춰준다.
         DateTimeFormatter zoneDateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-        // UTF+8로 설정한다.
-        ZoneId zoneId = ZoneId.of("Asia/Seoul");
-        LocalDateTime localDateTime = LocalDateTime.now();
-        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+        // UTC로 설정 되어있으므로, 우리 시간에 맞춰 9시간을 더한다.
+        ZoneOffset zoneOffSet= ZoneOffset.of("+09:00");
+        OffsetDateTime date = OffsetDateTime.now(zoneOffSet);
 
         // 사용자가 호출하는 시간이 18시 30분 이라면 18시부터 날씨를 보여주기 위해 한 시간을 빼준다.
-        zdt = zdt.minusHours(1);
+        date = date.minusHours(1);
 
-        String baseTime = zdt.format(zoneTimeFormat);
-        String baseDate = zdt.format(zoneDateFormat);
+        String baseTime = date.format(zoneTimeFormat);
+        String baseDate = date.format(zoneDateFormat);
 
 
         // 캐시 설정(위치, 사이즈)
@@ -291,16 +290,15 @@ public class WeatherController {
         // 기상청 API에서 요구하는 baseTime(시간대)로 형식을 맞춰준다.
         DateTimeFormatter zoneDateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-        // UTF+8로 설정한다.
-        ZoneId zoneId = ZoneId.of("Asia/Seoul");
-        LocalDateTime localDateTime = LocalDateTime.now();
-        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+        // UTC로 설정 되어있으므로, 우리 시간에 맞춰 9시간을 더한다.
+        ZoneOffset zoneOffSet= ZoneOffset.of("+09:00");
+        OffsetDateTime date = OffsetDateTime.now(zoneOffSet);
 
         // 사용자가 호출하는 시간이 18시 30분 이라면 18시부터 날씨를 보여주기 위해 한 시간을 빼준다.
-        zdt = zdt.minusHours(1);
+        date = date.minusHours(1);
 
-        String baseTime = zdt.format(zoneTimeFormat);
-        String baseDate = zdt.format(zoneDateFormat);
+        String baseTime = date.format(zoneTimeFormat);
+        String baseDate = date.format(zoneDateFormat);
 
 
         // 캐시 설정(위치, 사이즈)
