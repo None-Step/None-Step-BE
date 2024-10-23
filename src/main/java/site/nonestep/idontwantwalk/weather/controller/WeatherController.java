@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,7 @@ import java.lang.reflect.Type;
 
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +65,25 @@ public class WeatherController {
             cacheDirectory.mkdirs();
         }
 
+        // 캐싱에 저장이 용이하게 baseTime은 시간만 맞추고 분은 00으로 고정한다.
+        // 기상청 API에서는 한 시간 단위로 값을 보내주기 때문이다.
+        DateTimeFormatter zoneTimeFormat = DateTimeFormatter.ofPattern("HH00");
+
+        // 기상청 API에서 요구하는 baseTime(시간대)로 형식을 맞춰준다.
+        DateTimeFormatter zoneDateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        // UTF+8로 설정한다.
+        ZoneId zoneId = ZoneId.of("Asia/Seoul");
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+
+        // 사용자가 호출하는 시간이 18시 30분 이라면 18시부터 날씨를 보여주기 위해 한 시간을 빼준다.
+        zdt = zdt.minusHours(1);
+
+        String baseTime = zdt.format(zoneTimeFormat);
+        String baseDate = zdt.format(zoneDateFormat);
+
+
         // 캐시 설정(위치, 사이즈)
         Cache cache = new Cache(cacheDirectory, cacheSize);
 
@@ -72,11 +91,11 @@ public class WeatherController {
         String url = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?";
         url += "serviceKey=" + authConfig.getWeather();
         url += "&pageNo=1&numOfRows=1000&dataType=JSON";
-        url += "&base_date=" + weatherRequestDTO.getBaseDate();
-        url += "&base_time=" + weatherRequestDTO.getBaseTime();
+        url += "&base_date=" + baseDate;
+        url += "&base_time=" + baseTime;
         url += "&nx=" + weatherRequestDTO.getX();
         url += "&ny=" + weatherRequestDTO.getY();
-//        log.info("url : {}",url);
+        log.info("url : {}",url);
 
         // new OkHttpClient() > new OkHttpClient.Builder()로 변환
         // cache를 넣기 위해 builder()로 변경함
@@ -114,7 +133,6 @@ public class WeatherController {
 
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
 
             Map<String, List<WeatherResponseDTO>> groupedByCategory = result.stream()
                     .collect(Collectors.groupingBy(WeatherResponseDTO::getCategory)); // category로 그룹화
