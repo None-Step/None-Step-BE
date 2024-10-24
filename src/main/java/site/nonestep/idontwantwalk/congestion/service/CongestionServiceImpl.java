@@ -71,7 +71,7 @@ public class CongestionServiceImpl implements CongestionService {
 
             LocalTime start = LocalTime.of(0, 0);
             LocalTime currentTime = LocalTime.parse(upTimeRequestDTO.getTime(), timeFormatter);
-            currentTime = currentTime.minus(30,ChronoUnit.MINUTES);
+            currentTime = currentTime.minus(30, ChronoUnit.MINUTES);
 
             long howMany = Duration.between(start, currentTime).dividedBy(unit);
             LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
@@ -111,7 +111,7 @@ public class CongestionServiceImpl implements CongestionService {
 
             LocalTime start = LocalTime.of(0, 0);
             LocalTime currentTime = LocalTime.parse(downTimeRequestDTO.getTime(), timeFormatter);
-            currentTime = currentTime.minus(30,ChronoUnit.MINUTES);
+            currentTime = currentTime.minus(30, ChronoUnit.MINUTES);
 
             long howMany = Duration.between(start, currentTime).dividedBy(unit);
             LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
@@ -312,18 +312,25 @@ public class CongestionServiceImpl implements CongestionService {
 
     // 출력한 data 값을 아래 if문의 조건에 따라 여유, 보통, 주의, 혼잡 단계로 나눠 return
     public String congestionToState(BigDecimal num) {
-        int spare = num.compareTo(BigDecimal.valueOf(20));
-        int normal = num.compareTo(BigDecimal.valueOf(40));
-        int caution = num.compareTo(BigDecimal.valueOf(60));
 
-        if (spare < 0) {
-            return "여유";
-        } else if (normal < 0) {
-            return "보통";
-        } else if (caution < 0) {
-            return "주의";
+        // 정보가 없는 역들도 존재하기 때문에, null인 경우를 크게 감싼다.
+        if (num == null) {
+            return "정보없음";
         } else {
-            return "혼잡";
+
+            int spare = num.compareTo(BigDecimal.valueOf(20));
+            int normal = num.compareTo(BigDecimal.valueOf(40));
+            int caution = num.compareTo(BigDecimal.valueOf(60));
+
+            if (spare < 0) {
+                return "여유";
+            } else if (normal < 0) {
+                return "보통";
+            } else if (caution < 0) {
+                return "주의";
+            } else {
+                return "혼잡";
+            }
         }
     }
 
@@ -350,18 +357,19 @@ public class CongestionServiceImpl implements CongestionService {
     @Override
     public List<SubwayMarkerResponseDTO> subwayMark(SubwayMarkerRequestDTO subwayMarkerRequestDTO) {
         List<Tuple> selectSubwayInfoAndCongestion = downCongestionRepository.selectSubwayInfoAndCongestion(subwayMarkerRequestDTO.getLatitude(),
-                subwayMarkerRequestDTO.getLongitude(),subwayMarkerRequestDTO.getRadius(),subwayMarkerRequestDTO.getType());
+                subwayMarkerRequestDTO.getLongitude(), subwayMarkerRequestDTO.getRadius(), subwayMarkerRequestDTO.getType());
         List<SubwayMarkerResponseDTO> results = selectSubwayInfoAndCongestion.stream()
-                .map( o -> tupleConvertToSubwayMarkerResponseDTO(o,subwayMarkerRequestDTO.getTime())).collect(Collectors.toList());
+                .map(o -> tupleConvertToSubwayMarkerResponseDTO(o, subwayMarkerRequestDTO.getTime())).collect(Collectors.toList());
         return results;
     }
-    public SubwayMarkerResponseDTO tupleConvertToSubwayMarkerResponseDTO(Tuple tuple,String currentTimeString){
+
+    public SubwayMarkerResponseDTO tupleConvertToSubwayMarkerResponseDTO(Tuple tuple, String currentTimeString) {
 
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
         Duration unit = Duration.ofMinutes(30);
         LocalTime start = LocalTime.of(0, 0);
         LocalTime currentTime = LocalTime.parse(currentTimeString, timeFormatter);
-        currentTime = currentTime.minus(30,ChronoUnit.MINUTES);
+        currentTime = currentTime.minus(30, ChronoUnit.MINUTES);
 
         long howMany = Duration.between(start, currentTime).dividedBy(unit);
         LocalTime requireTime = start.plus(howMany * 30, ChronoUnit.MINUTES);
@@ -369,7 +377,7 @@ public class CongestionServiceImpl implements CongestionService {
 
         Info curInfo = tuple.get(info);
         SubwayMarkerResponseDTO subwayMarkerResponseDTO = new SubwayMarkerResponseDTO();
-        if(curInfo != null) {
+        if (curInfo != null) {
             subwayMarkerResponseDTO.setRegion(curInfo.getRegion());
             subwayMarkerResponseDTO.setLine(curInfo.getLine());
             subwayMarkerResponseDTO.setStation(curInfo.getStation());
@@ -378,12 +386,12 @@ public class CongestionServiceImpl implements CongestionService {
         }
 
         // left join에 의해서 null일 경우가 존재하기 때문에 조건문 안에 넣어줌
-        if(tuple.get(upCongestion) != null){
-            subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime,tuple.get(upCongestion)));
+        if (tuple.get(upCongestion) != null) {
+            subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime, tuple.get(upCongestion)));
             subwayMarkerResponseDTO.setUpNextStation(tuple.get(upCongestion.upNextStation));
         }
 
-        if(tuple.get(downCongestion) != null) {
+        if (tuple.get(downCongestion) != null) {
             subwayMarkerResponseDTO.setDownCongestion(localTimeToData(requireTime, tuple.get(downCongestion)));
             subwayMarkerResponseDTO.setDownNextStation(tuple.get(downCongestion.downNextStation));
         }
