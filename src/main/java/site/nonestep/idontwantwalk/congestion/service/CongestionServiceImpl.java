@@ -387,13 +387,15 @@ public class CongestionServiceImpl implements CongestionService {
 
         // left join에 의해서 null일 경우가 존재하기 때문에 조건문 안에 넣어줌
         if (tuple.get(upCongestion) != null) {
-            subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime, tuple.get(upCongestion)));
-            subwayMarkerResponseDTO.setUpNextStation(tuple.get(upCongestion.upNextStation));
+            UpCongestion up = tuple.get(upCongestion);
+            subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime, up));
+            subwayMarkerResponseDTO.setUpNextStation(up.getUpNextStation());
         }
 
         if (tuple.get(downCongestion) != null) {
-            subwayMarkerResponseDTO.setDownCongestion(localTimeToData(requireTime, tuple.get(downCongestion)));
-            subwayMarkerResponseDTO.setDownNextStation(tuple.get(downCongestion.downNextStation));
+            DownCongestion down = tuple.get(downCongestion);
+            subwayMarkerResponseDTO.setDownCongestion(localTimeToData(requireTime, down));
+            subwayMarkerResponseDTO.setDownNextStation(down.getDownNextStation());
         }
 
         return subwayMarkerResponseDTO;
