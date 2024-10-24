@@ -1,0 +1,261 @@
+This product includes software developed by various open-source projects under different licenses.
+
+The following third-party components are used in this project:
+
+1. Spring Boot
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-boot
+
+2. spring-boot-starter-data-jpa
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://projects.spring.io/spring-data-jpa
+
+3. spring-boot-starter-jdbc
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-boot
+
+4. spring-boot-devtools
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-boot
+
+5. mysql:mysql-connector
+   - Version: 8.0.32
+   - License: GNU General Public License v2 (GPLv2) with FOSS License Exception
+   - URL: http://dev.mysql.com/doc/connector-j/en/
+
+6. spring-boot-starter-web
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://github.com/spring-projects/spring-framework
+
+7. Project Lombok
+   - Version: 1.18.32
+   - License: MIT
+   - URL: https://projectlombok.org
+
+8. spring-boot-starter-validation
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-boot
+
+9. spring-boot-starter-websocket
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-boot
+
+10. spring-boot-starter-test
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-boot
+
+11. junit-platform-launcher
+   - Version: 1.10.2
+   - License: EPL 2.0
+   - URL: https://junit.org/junit5/
+
+12. logstash-logback-encoder
+   - Version: 7.4
+   - License: Apache License 2.0
+   - URL: https://github.com/logfellow/logstash-logback-encoder
+
+13. Nurigo SDK
+   - Version: 4.3.0
+   - License: Apache License 2.0
+   - URL: https://github.com/coolsms/java-sdk
+
+14. jbcrypt
+   - Version: 0.4
+   - License: ISC
+   - URL: https://github.com/djmdjm/jBCrypt
+
+15. QueryDSL APT (Jakarta)
+   - Version: 5.0.0
+   - License: Apache License 2.0
+   - URL: https://github.com/querydsl/querydsl
+
+16. jakarta.annotation-api
+   - Version: 2.1.1
+   - License: Eclipse Public License 2.0
+   - URL: https://projects.eclipse.org/projects/ee4j.ca
+
+17. jakarta.persistence-api
+   - Version: 3.1.0
+   - License: Eclipse Public License 2.0
+   - URL: https://github.com/jakartaee/persistence
+
+18. jjwt
+   - Version: 0.12.3
+   - License: Apache License 2.0
+   - URL: https://github.com/jwtk/jjwt
+
+19. jaxb-runtime
+   - Version: 2.3.2
+   - License: EDL 1.0
+   - URL: https://eclipse-ee4j.github.io/jaxb-ri/
+
+20. spring-boot-starter-security
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-boot
+
+21. spring-boot-starter-oauth2-client
+   - Version: 3.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-security
+
+22. spring-security-test
+   - Version: 6.3.1
+   - License: Apache License 2.0
+   - URL: https://spring.io/projects/spring-security
+
+23. AWS Java SDK :: Services :: Amazon S3 (version 2.3.2)
+   - Version: 2.15.0
+   - License: Apache License 2.0
+   - URL: https://aws.amazon.com/sdkforjava
+
+24. docker
+   - Version: 27.0.3
+   - License: Apache License 2.0
+   - URL: https://github.com/docker/cli/blob/master/LICENSE
+
+25. docker-compose
+   - Version: 2.28.1
+   - License: Apache License 2.0
+   - URL: https://github.com/docker/compose/blob/main/LICENSE
+
+------------------------------------------------------------------------------------------------------------------------
+Note: Many components in this project use the Apache License 2.0.
+To avoid redundancy, the full text of the Apache License 2.0 is provided once,
+and only the copyright notices are included for subsequent Apache-licensed components.
+------------------------------------------------------------------------------------------------------------------------
+## LICENSE TEXT:
+
+01. Spring Boot (version 3.3.1)
+02. spring-boot-starter-data-jpa
+03. spring-boot-starter-jdbc
+04. spring-boot-devtools
+06. spring-boot-starter-web
+08. spring-boot-starter-validation
+09. spring-boot-starter-websocket
+10. spring-boot-starter-test
+12. logstash-logback-encoder
+13. Nurigo SDK
+15. QueryDSL APT (Jakarta)
+18. jjwt
+20. spring-boot-starter-security
+21. spring-boot-starter-oauth2-client
+22. spring-security-test
+23. AWS Java SDK :: Services :: Amazon S3 (version 2.3.2)
+24. docker
+25. docker-compose
+
+Copyright 2013-2024 the original author or authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+------------------------------------------------------------------------------------------------------------------------
+## LICENSE TEXT:
+
+07. Project Lombok
+Copyright (C) 2009-2021 The Project Lombok Authors.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+------------------------------------------------------------------------------------------------------------------------
+## LICENSE TEXT:
+
+14. jbcrypt
+
+Copyright (c) 2006 Damien Miller <djm@mindrot.org>
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+------------------------------------------------------------------------------------------------------------------------
+
+## LICENSE TEXT:
+
+16. jakarta.annotation-api
+17. jakarta.persistence-api
+
+Copyright 2013-2024 the original author or authors.
+
+Licensed under the Eclipse Public License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.eclipse.org/legal/epl-2.0/
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+------------------------------------------------------------------------------------------------------------------------
+
+## LICENSE TEXT:
+
+18. jjwt
+
+Copyright 2013-2024 the original author or authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+------------------------------------------------------------------------------------------------------------------------
+
+For questions about licensing please contact: eunah0507@naver.com
+
+Last updated: 2024. 10. 24
+
+The full text of each library's license is included in the project's licenses folder.
+For further details about the licenses of each component, please refer to the official documentation of each library.
