@@ -1,7 +1,6 @@
 package site.nonestep.idontwantwalk.weather.controller;
 
 
-
 import com.nimbusds.jose.shaded.gson.*;
 import com.nimbusds.jose.shaded.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +73,7 @@ public class WeatherController {
         DateTimeFormatter zoneDateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
 
         // UTC로 설정 되어있으므로, 우리 시간에 맞춰 9시간을 더한다.
-        ZoneOffset zoneOffSet= ZoneOffset.of("+09:00");
+        ZoneOffset zoneOffSet = ZoneOffset.of("+09:00");
         OffsetDateTime date = OffsetDateTime.now(zoneOffSet);
 
         // 사용자가 호출하는 시간이 18시 30분 이라면 18시부터 날씨를 보여주기 위해 한 시간을 빼준다.
@@ -95,7 +94,7 @@ public class WeatherController {
         url += "&base_time=" + baseTime;
         url += "&nx=" + weatherRequestDTO.getX();
         url += "&ny=" + weatherRequestDTO.getY();
-        log.info("url : {}",url);
+        log.info("url : {}", url);
 
         // new OkHttpClient() > new OkHttpClient.Builder()로 변환
         // cache를 넣기 위해 builder()로 변경함
@@ -266,8 +265,8 @@ public class WeatherController {
         thetaValue *= standardLatitudeRatio;
 
         // 기상청 x, y 값에 넣어줄 것을 각각 int로 변환한다.
-        int x = (int)Math.floor(tanLatX * Math.sin(thetaValue) + positionX + 0.5);
-        int y = (int)Math.floor(baseLatFactor - tanLatX * Math.cos(thetaValue) + positionY + 0.5);
+        int x = (int) Math.floor(tanLatX * Math.sin(thetaValue) + positionX + 0.5);
+        int y = (int) Math.floor(baseLatFactor - tanLatX * Math.cos(thetaValue) + positionY + 0.5);
 
         // 데이터를 캐싱하기 위한 Size 선언
         List<WeatherResponseDTO> top3MinTimes = new ArrayList<>();
@@ -291,7 +290,7 @@ public class WeatherController {
         DateTimeFormatter zoneDateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
 
         // UTC로 설정 되어있으므로, 우리 시간에 맞춰 9시간을 더한다.
-        ZoneOffset zoneOffSet= ZoneOffset.of("+09:00");
+        ZoneOffset zoneOffSet = ZoneOffset.of("+09:00");
         OffsetDateTime date = OffsetDateTime.now(zoneOffSet);
 
         // 사용자가 호출하는 시간이 18시 30분 이라면 18시부터 날씨를 보여주기 위해 한 시간을 빼준다.
@@ -312,68 +311,86 @@ public class WeatherController {
         url += "&base_time=" + baseTime;
         url += "&nx=" + x;
         url += "&ny=" + y;
-        log.info("url : {}",url);
+        log.info("url : {}", url);
 
         // new OkHttpClient() > new OkHttpClient.Builder()로 변환
         // cache를 넣기 위해 builder()로 변경함
         // 5초가 지나면 timeout error를 띄운다. (기본 10 > 5s로 변경)
         OkHttpClient client = new OkHttpClient.Builder()
                 .cache(cache)
-                .readTimeout(5, TimeUnit.SECONDS)
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
                 .build();
         Request request = new Request.Builder().url(url).build();
 
-        // 기상청 api 호출
-        try (Response response = client.newCall(request).execute()) {
+        Response response = null;
+        for (int i = 0; i < 5; i++){
+            // 현재 서버에서 timeout error가 계속 발생하고 있기 때문에
+            // 에러가 나지 않으면 호출되고 isSuccessWeather가 true인 상태에서 break;
+            // isSuccessWeather가 false이면 호출 error가 났으므로 다시 for문을 돌려 호출한다.
+            boolean isSuccessWeather = true;
 
-            // String으로 결과 수신한다.
-            // 결과를 execute로 실행한다. > String으로 body에 있는 data만 받아온다. > 그 후, JsonParser를 통해 역직렬화 한다.
+            // 기상청 api 호출
+            try {
+                response = client.newCall(request).execute();
+            } catch (Exception e) {
+                isSuccessWeather = false;
+            }
 
-            String changeResponse = response.body().string();
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(changeResponse);
-
-            // 결과를 역직렬화한다.
-            JsonObject jsonObject = element.getAsJsonObject();
-            jsonObject = jsonObject.get("response").getAsJsonObject();
-            jsonObject = jsonObject.get("body").getAsJsonObject();
-            jsonObject = jsonObject.get("items").getAsJsonObject();
-            JsonArray jsonArray = jsonObject.get("item").getAsJsonArray();
-
-            Gson gson = new Gson();
-            Type personListType = new TypeToken<List<WeatherResponseDTO>>() {
-            }.getType();
-            List<WeatherResponseDTO> result = gson.fromJson(jsonArray, personListType);
-            result = result.stream().filter(this::isCheckWeatherCode).collect(Collectors.toList());
-
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-            Map<String, List<WeatherResponseDTO>> groupedByCategory = result.stream()
-                    .collect(Collectors.groupingBy(WeatherResponseDTO::getCategory)); // category로 그룹화
-
-            top3MinTimes = groupedByCategory.values().stream()
-                    .flatMap(group -> group.stream()
-                            .sorted((o1, o2) -> {
-                                LocalDate date1 = LocalDate.parse(o1.getFcstDate(), dateFormatter);
-                                LocalDate date2 = LocalDate.parse(o2.getFcstDate(), dateFormatter);
-                                if (date1.equals(date2)) {
-                                    return LocalTime.parse(o1.getFcstTime(), timeFormatter).compareTo(LocalTime.parse(o2.getFcstTime(), timeFormatter));
-                                } else {
-                                    return LocalDate.parse(o1.getFcstDate(), dateFormatter).compareTo(LocalDate.parse(o2.getFcstDate(), dateFormatter));
-                                }
-
-                            })
-                            // fcstTime을 LocalTime으로 변환 후 비교
-                            .limit(3)) // 상위 3개만 선택
-                    .collect(Collectors.toList());
-        } finally {
-            if (cache != null) {
-                cache.close();  // Ensure the cache is properly closed
+            if (isSuccessWeather == true){
+                break;
             }
         }
+
+        // for문 끝나고 캐시가 null이 아니라면 캐시 저장을 끝낸다.
+        // 기존 try-catch-finally 구문에서 finally에 넣고 무조건 닫게 했으나
+        // 로직 변경으로 for문에 날씨 호출을 넣을 것이므로 따로 빼준다.
+        if (cache != null) {
+            cache.close();  // Ensure the cache is properly closed
+        }
+
+        // String으로 결과 수신한다.
+        // 결과를 execute로 실행한다. > String으로 body에 있는 data만 받아온다. > 그 후, JsonParser를 통해 역직렬화 한다.
+        String changeResponse = response.body().string();
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(changeResponse);
+
+        // 결과를 역직렬화한다.
+        JsonObject jsonObject = element.getAsJsonObject();
+        jsonObject = jsonObject.get("response").getAsJsonObject();
+        jsonObject = jsonObject.get("body").getAsJsonObject();
+        jsonObject = jsonObject.get("items").getAsJsonObject();
+        JsonArray jsonArray = jsonObject.get("item").getAsJsonArray();
+
+        Gson gson = new Gson();
+        Type personListType = new TypeToken<List<WeatherResponseDTO>>() {
+        }.getType();
+        List<WeatherResponseDTO> result = gson.fromJson(jsonArray, personListType);
+        result = result.stream().filter(this::isCheckWeatherCode).collect(Collectors.toList());
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmm");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        Map<String, List<WeatherResponseDTO>> groupedByCategory = result.stream()
+                .collect(Collectors.groupingBy(WeatherResponseDTO::getCategory)); // category로 그룹화
+
+        top3MinTimes = groupedByCategory.values().stream()
+                .flatMap(group -> group.stream()
+                        .sorted((o1, o2) -> {
+                            LocalDate date1 = LocalDate.parse(o1.getFcstDate(), dateFormatter);
+                            LocalDate date2 = LocalDate.parse(o2.getFcstDate(), dateFormatter);
+                            if (date1.equals(date2)) {
+                                return LocalTime.parse(o1.getFcstTime(), timeFormatter).compareTo(LocalTime.parse(o2.getFcstTime(), timeFormatter));
+                            } else {
+                                return LocalDate.parse(o1.getFcstDate(), dateFormatter).compareTo(LocalDate.parse(o2.getFcstDate(), dateFormatter));
+                            }
+
+                        })
+                        // fcstTime을 LocalTime으로 변환 후 비교
+                        .limit(3)) // 상위 3개만 선택
+                .collect(Collectors.toList());
+
 
         return new ResponseEntity<>(top3MinTimes, HttpStatus.OK);
     }
