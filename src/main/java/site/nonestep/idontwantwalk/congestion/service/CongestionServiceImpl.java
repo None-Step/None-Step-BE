@@ -318,9 +318,9 @@ public class CongestionServiceImpl implements CongestionService {
             return "정보없음";
         } else {
 
-            int spare = num.compareTo(BigDecimal.valueOf(20));
-            int normal = num.compareTo(BigDecimal.valueOf(40));
-            int caution = num.compareTo(BigDecimal.valueOf(60));
+            int spare = num.compareTo(BigDecimal.valueOf(29));
+            int normal = num.compareTo(BigDecimal.valueOf(49));
+            int caution = num.compareTo(BigDecimal.valueOf(79));
 
             if (spare < 0) {
                 return "여유";
@@ -386,6 +386,7 @@ public class CongestionServiceImpl implements CongestionService {
         }
 
         // left join에 의해서 null일 경우가 존재하기 때문에 조건문 안에 넣어줌
+        // tuple은 일단 한 번 호출한 다음에 거기서 꺼내와야한다.
         if (tuple.get(upCongestion) != null) {
             UpCongestion up = tuple.get(upCongestion);
             subwayMarkerResponseDTO.setUpCongestion(localTimeToData(requireTime, up));
