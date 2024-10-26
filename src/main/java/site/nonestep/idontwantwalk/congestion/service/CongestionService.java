@@ -20,4 +20,6 @@ public interface CongestionService {
 
     // 역 혼잡도 - 마커용
     List<SubwayMarkerResponseDTO> subwayMark(SubwayMarkerRequestDTO subwayMarkerRequestDTO);
+
+    CarResponseDTO carCongestionInfo(CarRequestDTO carRequestDTO, int dir);
 }

@@ -6,31 +6,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import site.nonestep.idontwantwalk.congestion.dto.*;
+import site.nonestep.idontwantwalk.congestion.entity.CarCongestion;
 import site.nonestep.idontwantwalk.congestion.entity.DownCongestion;
-import site.nonestep.idontwantwalk.congestion.entity.QUpCongestion;
 import site.nonestep.idontwantwalk.congestion.entity.UpCongestion;
-import site.nonestep.idontwantwalk.congestion.entity.UpEtc;
-import site.nonestep.idontwantwalk.congestion.repository.DownCongestionRepository;
-import site.nonestep.idontwantwalk.congestion.repository.DownEtcRepository;
-import site.nonestep.idontwantwalk.congestion.repository.UpCongestionRepository;
-import site.nonestep.idontwantwalk.congestion.repository.UpEtcRepository;
+import site.nonestep.idontwantwalk.congestion.repository.*;
 import site.nonestep.idontwantwalk.subway.entity.Info;
 
-import static site.nonestep.idontwantwalk.congestion.entity.QDownCongestion.*;
-import static site.nonestep.idontwantwalk.subway.entity.QInfo.*;
-import static site.nonestep.idontwantwalk.congestion.entity.QUpCongestion.upCongestion;
-
 import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static site.nonestep.idontwantwalk.congestion.entity.QDownCongestion.downCongestion;
+import static site.nonestep.idontwantwalk.congestion.entity.QUpCongestion.upCongestion;
+import static site.nonestep.idontwantwalk.subway.entity.QInfo.info;
 
 @Slf4j
 @Service
@@ -47,6 +41,9 @@ public class CongestionServiceImpl implements CongestionService {
 
     @Autowired
     private DownEtcRepository downEtcRepository;
+
+    @Autowired
+    private CarCongestionRepository carCongestionRepository;
 
 
     // 해당 역의 상행선 혼잡도 흐름, 현재 시간부터 30분 뒤, 60분 뒤
@@ -361,6 +358,26 @@ public class CongestionServiceImpl implements CongestionService {
         List<SubwayMarkerResponseDTO> results = selectSubwayInfoAndCongestion.stream()
                 .map(o -> tupleConvertToSubwayMarkerResponseDTO(o, subwayMarkerRequestDTO.getTime())).collect(Collectors.toList());
         return results;
+    }
+
+    @Override
+    public CarResponseDTO carCongestionInfo(CarRequestDTO carRequestDTO, int dir) {
+        Duration unit = Duration.ofMinutes(10);
+        LocalTime start = LocalTime.of(0, 0);
+        ZoneOffset zoneOffSet = ZoneOffset.of("+09:00");
+        OffsetDateTime currentTime = OffsetDateTime.now(zoneOffSet);
+        long howMany = Duration.between(start, currentTime).dividedBy(unit);
+        LocalTime requireTime = start.plus(howMany * 10, ChronoUnit.MINUTES);
+
+        if(carRequestDTO.getTime() != null){
+            requireTime = carRequestDTO.getTime();
+        }
+
+        List<CarCongestion> carCongestions = carCongestionRepository.selectCarCongestion(carRequestDTO.getRegion(), carRequestDTO.getLine(), carRequestDTO.getStation(), carRequestDTO.getType(), requireTime, dir);
+        CarResponseDTO carResponseDTO = new CarResponseDTO();
+        carResponseDTO.setLocalTime(requireTime);
+        carResponseDTO.setCongestion(carCongestions.stream().map(o -> o.getCarCongestion()).collect(Collectors.toList()));
+        return carResponseDTO;
     }
 
     public SubwayMarkerResponseDTO tupleConvertToSubwayMarkerResponseDTO(Tuple tuple, String currentTimeString) {

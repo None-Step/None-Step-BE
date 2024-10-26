@@ -19,6 +19,7 @@ public class Constants {
             "/nonestep/board/list", "/nonestep/board/detail","/nonestep/board/page","/nonestep/board/main-notice",
             "/nonestep/board/search", "/nonestep/weather/current",  "/nonestep/weather/current-weather", "/nonestep/congestion/up-time",
             "/nonestep/congestion/down-time", "/nonestep/congestion/up-info", "/nonestep/congestion/down-info", "/nonestep/congestion/subway-marker"
+            , "/nonestep/congestion/up-car", "/nonestep/congestion/down-car"
 
     };
 
