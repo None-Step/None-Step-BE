@@ -75,4 +75,19 @@ public class CongestionController {
 
         return new ResponseEntity<>(subwayMark,HttpStatus.OK);
     }
+
+    // 상행선 칸 별 혼잡도(10분 단위)
+    @GetMapping("/up-car")
+    public ResponseEntity<?> upCar(@ModelAttribute CarRequestDTO carRequestDTO) {
+        CarResponseDTO carCongestionInfo = congestionService.carCongestionInfo(carRequestDTO,0);
+        return new ResponseEntity<>(carCongestionInfo,HttpStatus.OK);
+    }
+
+    // 하행선 칸 별 혼잡도(10분 단위)
+    @GetMapping("/down-car")
+    public ResponseEntity<?> downCar(@ModelAttribute CarRequestDTO carRequestDTO) {
+        CarResponseDTO carCongestionInfo = congestionService.carCongestionInfo(carRequestDTO,1);
+        return new ResponseEntity<>(carCongestionInfo,HttpStatus.OK);
+    }
 }
+
