@@ -25,9 +25,6 @@ public class CarCongestion {
     })
     private Info info;
 
-    @Column(name = "car_next_station")
-    private String carNextStation;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "car_day")
     private DayType carDay;
