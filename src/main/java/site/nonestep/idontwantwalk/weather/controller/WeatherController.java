@@ -318,14 +318,14 @@ public class WeatherController {
         // 5초가 지나면 timeout error를 띄운다. (기본 10 > 5s로 변경)
         OkHttpClient client = new OkHttpClient.Builder()
                 .cache(cache)
-                .readTimeout(2, TimeUnit.SECONDS)
-                .connectTimeout(2, TimeUnit.SECONDS)
-                .writeTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(1, TimeUnit.SECONDS)
+                .connectTimeout(1, TimeUnit.SECONDS)
+                .writeTimeout(1, TimeUnit.SECONDS)
                 .build();
         Request request = new Request.Builder().url(url).build();
 
         Response response = null;
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 10; i++){
             // 현재 서버에서 timeout error가 계속 발생하고 있기 때문에
             // 에러가 나지 않으면 호출되고 isSuccessWeather가 true인 상태에서 break;
             // isSuccessWeather가 false이면 호출 error가 났으므로 다시 for문을 돌려 호출한다.
