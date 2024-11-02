@@ -86,7 +86,7 @@ public class RoadController {
                     + goStationRequestDTO.getCurrentLongitude() + ",\"startY\":" + goStationRequestDTO.getCurrentLatitude() +
                     ",\"endX\":" + whatsUrResult.get(0).getLongitude() + ",\"endY\":" + whatsUrResult.get(0).getLatitude() +
                     ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + "도착지 : " + "\"," +
-                    "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                    "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
             Request request = new Request.Builder()
                     .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                     .post(body)
@@ -157,7 +157,7 @@ public class RoadController {
                     + whatsUrResult.get(0).getLongitude() + ",\"startY\":" + whatsUrResult.get(0).getLatitude() +
                     ",\"endX\":" + goRoadRequestDTO.getGoLongitude() + ",\"endY\":" + goRoadRequestDTO.getGoLatitude() +
                     ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"" + goRoadRequestDTO.getCurrentStation() + "\",\"endName\":\"" + "도착지" + "\"," +
-                    "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                    "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
             Request request = new Request.Builder()
                     .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                     .post(body)
@@ -457,7 +457,7 @@ public class RoadController {
                 + ",\"startY\":" + goListRequestDTO.getCurrentLatitude() +
                 ",\"endX\":" + stationListDTOX.getLongitude() + ",\"endY\":" + stationListDTOX.getLatitude() +
                 ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goListRequestDTO.getGoStation() + "\"," +
-                "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
         Request walkRequest = new Request.Builder()
                 .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                 .post(walkBody)
@@ -578,7 +578,7 @@ public class RoadController {
                         + goStationRequestDTO.getCurrentLongitude() + ",\"startY\":" + goStationRequestDTO.getCurrentLatitude() +
                         ",\"endX\":" + seoulRow.get(0).getStationLongitude() + ",\"endY\":" + seoulRow.get(0).getStationLatitude() +
                         ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
-                        "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                        "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
                 Request request = new Request.Builder()
                         .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                         .post(body)
@@ -624,7 +624,7 @@ public class RoadController {
                         + ",\"startY\":" + doubles[1] +
                         ",\"endX\":" + stationListDTOX.getLongitude() + ",\"endY\":" + stationListDTOX.getLatitude() +
                         ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
-                        "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                        "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
                 Request bikeRequest = new Request.Builder()
                         .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                         .post(bikeBody)
@@ -736,7 +736,7 @@ public class RoadController {
                         + goStationRequestDTO.getCurrentLongitude() + ",\"startY\":" + goStationRequestDTO.getCurrentLatitude() +
                         ",\"endX\":" + daejeonRow.get(0).getY_pos() + ",\"endY\":" + daejeonRow.get(0).getX_pos() +
                         ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
-                        "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                        "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
                 Request daeRequest = new Request.Builder()
                         .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                         .post(body)
@@ -782,7 +782,7 @@ public class RoadController {
                         + ",\"startY\":" + doubles[1] +
                         ",\"endX\":" + stationListDTOX.getLongitude() + ",\"endY\":" + stationListDTOX.getLatitude() +
                         ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"현재 위치\",\"endName\":\"" + goStationRequestDTO.getGoStation() + "\"," +
-                        "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                        "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
                 Request bikeRequest = new Request.Builder()
                         .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                         .post(bikeBody)
@@ -959,7 +959,7 @@ public class RoadController {
                 + startLongitude + ",\"startY\":" + startLatitude +
                 ",\"endX\":" + endLongitude + ",\"endY\":" + endLatitude +
                 ",\"reqCoordType\":\"WGS84GEO\",\"startName\":\"" + "출발지" + "\",\"endName\":\"" + "도착지" + "\"," +
-                "\"searchOption\":\"30\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
+                "\"searchOption\":\"10\",\"resCoordType\":\"WGS84GEO\",\"sort\":\"index\"}");
         Request request = new Request.Builder()
                 .url("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function")
                 .post(body)
