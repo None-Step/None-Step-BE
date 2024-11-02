@@ -1,7 +1,7 @@
  
 # 한 발자국도 걸을 수 없다
 [![한발자국도걸을수없다](https://github.com/user-attachments/assets/e954930e-58cf-4382-884e-263f4b15cdea)](https://youtu.be/AVsQdcvikPM)
-💡 이미지 클릭 시, 이번역 소개 영상 페이지로 이동합니다.(youtube)
+💡 이미지 클릭 시, 이번역 소개 영상 페이지로 이동합니다. _youtube_
 
 <br>
 
@@ -111,8 +111,8 @@
     * 이격 거리 및 추가 정보(계단, 엘리베이터, 에스컬레이터, 탑승 안전칸)
        * 추가 정보는 역 내 승강장 근처의 정보에 한함.
        * 탑승 안전칸이란, 이격 거리가 10 이하이면서 가장 좁은 칸을 뜻함 
-    * 혼잡도(통계성)
-    * 기후 동행 카드 승, 하차 지원 여부(수도권 한정)
+    * 혼잡도
+    * 기후 동행 카드 승, 하차 지원 여부
     * 침수 피해 여부(길 찾기 page에서 조회 가능)
       
 <br>
@@ -122,7 +122,7 @@
 ![congestion](https://github.com/user-attachments/assets/44830087-b0bc-4e61-9d73-eb563f342d38)
 
 ### 03.1.1 혼잡도 안내
-#### 📌 지하철 칸 모양: 혼잡도 & 작은 직사각형: 이격거리
+📌 **지하철 칸 모양: 혼잡도** & **작은 직사각형: 이격거리**
 
   * 지도 page 내 혼잡도 마커 클릭 시 해당 역의 **30분 단위 혼잡도** 안내
   * 여유 - 보통 - 주의 - 혼잡 - 정보없음 5단계로 안내
@@ -131,10 +131,10 @@
 
 ### 03.1.2 지하철 탑승 시 추가 정보 안내
   * 열차와 역 **이격 거리**(안전, 주의, 위험, 정보없음으로 안내)
-  * _**엘리베이터** 위치_
-  * _**에스컬레이터** 위치_
-  * _**계단** 위치_
-  * _**탑승 안전 칸**(이격거리 10 이하, 가장 좁은 칸) 안내_
+    * _**엘리베이터** 위치_
+    * _**에스컬레이터** 위치_
+    * _**계단** 위치_
+    * _**탑승 안전 칸**(이격거리 10 이하, 가장 좁은 칸) 안내_
 
 <br>
 
@@ -142,9 +142,9 @@
 
 ![roadroad](https://github.com/user-attachments/assets/eb7696cf-80d8-414f-8fb4-d686a6b9726a)
 
-* 출발지, 도착지 입력 시 **최단 거리 + 계단 없는 경로**로 SK API를 활용하여 **도보 길 안내**
+* 출발지, 도착지 입력 시 **최단 거리 + 계단 없는 경로**로 [SK API](https://openapi.sk.com/products/detail?svcSeq=4&menuSeq=45) 를 활용하여 **도보 길 안내**
   * **목적지가 역일 경우 가까운 엘리베이터, 에스컬레이터 출구로 안내**
-  * 실시간 공공 자전거 대여 API 서울, 대전 지역 안내
+  * 실시간 공공 자전거 대여 API [서울](https://data.seoul.go.kr/dataList/OA-15493/A/1/datasetView.do) , [대전](https://bike.tashu.or.kr/noticeDetail.do?seq=28) 지역 안내
   * 현재 위치 조회 가능
   * '가까운 역 바로가기' 버튼을 통해 **주변에 가장 가까운 역 도보 안내**
   * 출발지와 목적지 입력 시 길 안내 
@@ -155,7 +155,7 @@
 
 ![weather](https://github.com/user-attachments/assets/50fe6f38-d5a4-40f8-a79d-53e7e3c9ea09)
 
-* **기상청 - 초단기 예보 API 사용**(https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15084084)
+* 기상청 [초단기 예보 API 사용](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15084084)
 * 길 찾기 page에서 현재 위치를 반영하여 좌측 아래 현재 날씨를 그림으로 안내
    * _기온 (℃)_
    * _1시간 강수량 (mm)_
@@ -166,8 +166,8 @@
 * 날씨 클릭 시, **현재 위치의** 현재 시간을 포함해 1시간 후, 2시간 후의 **날씨를 예측하여 안내**
 * 길 찾기 - 도착지 입력 시, **도착지의 현재 시간 포함  및 1시간 후, 2시간 후 날씨 안내**
 * 출발지, 목적지 둘 중 한 곳에 침수 피해가 있을 경우 **침수 피해 주의 문구 표시**
-  * _현재 위치 - 침수 피해가 있어 문구 표시O_
-  * _강릉 & 군자역 - 침수 피해가 없어 문구 표시X_
+  * ex. _현재 위치 - 침수 피해가 있어 문구 표시O_
+  * ex. _강릉 & 군자역 - 침수 피해가 없어 문구 표시X_
 
 <br>
 
@@ -175,7 +175,7 @@
 
 ![subwayPath](https://github.com/user-attachments/assets/5d3acd08-8a4a-4540-a4c5-dcbec2c6dd2a)
 
-* Odsay 경로 안내 API 사용 (https://lab.odsay.com/)
+* [ODsay 경로 안내 API](https://lab.odsay.com/) 사용 
 * 출발지와 도착지에 역이 존재할 경우 가까운 지하철 역의 경로를 함께 제공
 * **최단거리 경로**로 안내
 
@@ -183,7 +183,7 @@
   
 ## 🚇 05. 채팅(WebSocket STOMP)
 
-![chatchat](https://github.com/user-attachments/assets/bffd2948-3e45-40ba-abb2-e31bb8e607bc)
+![chat](https://github.com/user-attachments/assets/0273bd1f-0a1d-464c-b5cd-b7de3f9953c0)
 
 * 메인 화면에서 해당 지역을 클릭하여 **실시간 채팅 참여 가능** 
   * 지역 별 전체 탭에서는 **지역** 내 모든 호선의 실시간 채팅 조회 가능
@@ -197,8 +197,7 @@
        
 ## 🚇 06. 공지 게시판
 
-![notice01](https://github.com/user-attachments/assets/a4193e25-f209-4973-a67b-8408cc6a9746)
-![notice02](https://github.com/user-attachments/assets/54c04194-5733-44ab-9173-acb566014aec)
+![notice](https://github.com/user-attachments/assets/75a3732a-7910-4733-814a-1a2d1f4b7e3a)
 
 * 공지게시글 조회 및 검색 모든 회원이 가능
 * 공지게시글 **작성, 수정, 삭제는 관리자만** 가능
@@ -242,7 +241,7 @@
 
 ## 💡 사용한 공공 데이터 목록
 
-* 데이터의 경우, 공공데이터 포털(https://www.data.go.kr/) 및 철도 데이터 포털(https://data.kric.go.kr/rips/)에서 <br>
+* 데이터의 경우, [공공데이터 포털](https://www.data.go.kr/) 및 [철도 데이터 포털](https://data.kric.go.kr/rips/) 에서 <br>
   제공하는 공공 데이터를 가공하여 사용하였음
 
 <details>
