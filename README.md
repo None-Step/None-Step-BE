@@ -14,7 +14,7 @@
   * 역 까지의 **길 찾기** 기능 및 **역 정차 시 해당 역 조회** 기능, **호선 별 채팅** 서비스 등으로 지하철과 관련된 <br>
     이야기를 나눌 수 있는 공간 제공
 
- <br>
+<br>
  
  ## < 서비스 소개 >
 * 회원 가입 및 로그인 기능
@@ -400,10 +400,14 @@ logging:
 ./gradlew bootRun
 ```
 
+<br>
+
 ---
 
 ## 💡 <ERD 다이어그램>
 ![image](https://github.com/user-attachments/assets/2a30832e-cc69-40b9-bc5a-52ed69598e6e)
+
+<br>
 
 ## 💡 사용한 공공 데이터 목록
 
@@ -960,3 +964,8 @@ logging:
 * 행정안전부_침수흔적도(2020년) <br>
 
 </details>
+
+<br>
+
+## 📄 라이선스
+* Apache License 2.0, Copyright (c) 2024 NONESTEP, see this [link](https://github.com/None-Step/None-Step-BE/blob/main/LICENSE) for more details
