@@ -236,13 +236,178 @@
 
 ---
 
+## 🚇 디렉토리 구조도
+```
+├─gradle
+│  └─wrapper
+└─src
+    ├─main
+    │  └─java
+    │      └─site
+    │          └─nonestep
+    │              └─idontwantwalk
+    │                  ├─auth
+    │                  │  ├─exception
+    │                  │  ├─jwt
+    │                  │  ├─oauth
+    │                  │  ├─preferences
+    │                  │  └─util
+    │                  ├─board
+    │                  │  ├─controller
+    │                  │  ├─dto
+    │                  │  ├─entity
+    │                  │  ├─repository
+    │                  │  └─service
+    │                  ├─bookmark
+    │                  │  ├─controller
+    │                  │  ├─dto
+    │                  │  ├─entity
+    │                  │  ├─repository
+    │                  │  └─service
+    │                  ├─chat
+    │                  │  ├─controller
+    │                  │  ├─dto
+    │                  │  ├─entity
+    │                  │  ├─repository
+    │                  │  └─service
+    │                  ├─config
+    │                  ├─congestion
+    │                  │  ├─controller
+    │                  │  ├─dto
+    │                  │  ├─entity
+    │                  │  ├─repository
+    │                  │  └─service
+    │                  ├─member
+    │                  │  ├─controller
+    │                  │  ├─dto
+    │                  │  ├─entity
+    │                  │  ├─repository
+    │                  │  └─service
+    │                  ├─road
+    │                  │  ├─bike
+    │                  │  ├─controller
+    │                  │  ├─dto
+    │                  │  ├─list
+    │                  │  ├─service
+    │                  │  ├─sk
+    │                  │  └─subwaypath
+    │                  ├─subway
+    │                  │  ├─controller
+    │                  │  ├─dto
+    │                  │  ├─entity
+    │                  │  ├─repository
+    │                  │  └─service
+    │                  └─weather
+    │                      ├─controller
+    │                      └─dto
+    └─test
+        └─java
+            └─site
+                └─nonestep
+                    └─idontwantwalk
+```
+
+
+<br>
+
+
+## 🚇 배포가이드
+
+### 1. 레포지토리 clone
+```
+git clone https://github.com/None-Step/None-Step-BE
+```
+
+### 2. 다음과 같이 application.yml을 준비하여, resource 폴더에 넣어줍니다.
+```
+server:
+  port: 8080
+  servlet:
+    context-path: /nonestep
+    session:
+      timeout: 1800
+
+spring:
+  application:
+    name: idontwantwalk
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://{mysql ip}:{mysql port}/nonestepdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: {mysql id}
+    password: {mysql 비밀번호}
+  jpa:
+    show-sql: true
+    format_sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # multipart
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 500MB
+auth:
+  weather: {초단기예보 키}
+  odsay: {오디세이 키}
+  daejeonbike: {대전 자전거 키}
+  seoulbike: {서울 자전거 키}
+  sk: {sk api 키}
+  phone: {발신 전화번호 (형식 : 010xxxxxxxx)}
+  coolsmsapikey : {CoolSMS 키}
+  coolsmssecretkey : {CoolSMS 키}
+  server-url : {현재 사이트 url}
+  redirect-url: {소셜 로그인 후 리다이렉트할 url}
+  credentials:
+    aws:
+      id: {S3를 위한 키}
+      secret: {S3를 위한 키}
+    kakao:
+      id: {카카오 키}
+      secret:
+    naver:
+      id: {네이버 키}
+      secret: {네이버 키}
+logging:
+  level:
+    root: INFO
+
+```
+각 key값들을 해당 사이트에 가입하여 기입합니다.
+- [공공데이터(기상청_초단기예보)](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15084084)
+- [오디세이](https://lab.odsay.com/)
+- [대전자전거(타슈)](https://bike.tashu.or.kr/noticeDetail.do?seq=28)
+- [서울자전거](https://data.seoul.go.kr/dataList/OA-15493/A/1/datasetView.do)
+- [SK API](https://openapi.sk.com/)
+- [쿨에스엠에스](https://coolsms.co.kr/)
+- [S3](https://aws.amazon.com/ko/s3/)
+- [카카오](https://developers.kakao.com/)
+- [네이버](https://developers.naver.com/main/)
+
+
+### 3. mysql을 설치하고, nonestepdb 스키마를 생성합니다.
+그 후, sql 폴더에 존재하는 table.sql 파일을 실행하여 테이블들을 생성합니다.
+
+### 4. 이제 spring을 동작하면 구동합니다.
+
+```
+./gradlew bootRun
+```
+
+---
+
 ## 💡 <ERD 다이어그램>
 ![image](https://github.com/user-attachments/assets/2a30832e-cc69-40b9-bc5a-52ed69598e6e)
 
 ## 💡 사용한 공공 데이터 목록
 
-* 데이터의 경우, [공공데이터 포털](https://www.data.go.kr/) 및 [철도 데이터 포털](https://data.kric.go.kr/rips/) 에서 <br>
-  제공하는 공공 데이터를 가공하여 사용하였음
+* 데이터의 경우, [공공데이터 포털](https://www.data.go.kr/) 및 [철도 데이터 포털](https://data.kric.go.kr/rips/) 에서 제공하는 공공 데이터를 가공하여 사용하였음
 
 <details>
 <summary>📌 01. 기본 정보</summary>
@@ -795,156 +960,3 @@
 * 행정안전부_침수흔적도(2020년) <br>
 
 </details>
-
-## 디렉토리 구조조
-```
-├─gradle
-│  └─wrapper
-└─src
-    ├─main
-    │  └─java
-    │      └─site
-    │          └─nonestep
-    │              └─idontwantwalk
-    │                  ├─auth
-    │                  │  ├─exception
-    │                  │  ├─jwt
-    │                  │  ├─oauth
-    │                  │  ├─preferences
-    │                  │  └─util
-    │                  ├─board
-    │                  │  ├─controller
-    │                  │  ├─dto
-    │                  │  ├─entity
-    │                  │  ├─repository
-    │                  │  └─service
-    │                  ├─bookmark
-    │                  │  ├─controller
-    │                  │  ├─dto
-    │                  │  ├─entity
-    │                  │  ├─repository
-    │                  │  └─service
-    │                  ├─chat
-    │                  │  ├─controller
-    │                  │  ├─dto
-    │                  │  ├─entity
-    │                  │  ├─repository
-    │                  │  └─service
-    │                  ├─config
-    │                  ├─congestion
-    │                  │  ├─controller
-    │                  │  ├─dto
-    │                  │  ├─entity
-    │                  │  ├─repository
-    │                  │  └─service
-    │                  ├─member
-    │                  │  ├─controller
-    │                  │  ├─dto
-    │                  │  ├─entity
-    │                  │  ├─repository
-    │                  │  └─service
-    │                  ├─road
-    │                  │  ├─bike
-    │                  │  ├─controller
-    │                  │  ├─dto
-    │                  │  ├─list
-    │                  │  ├─service
-    │                  │  ├─sk
-    │                  │  └─subwaypath
-    │                  ├─subway
-    │                  │  ├─controller
-    │                  │  ├─dto
-    │                  │  ├─entity
-    │                  │  ├─repository
-    │                  │  └─service
-    │                  └─weather
-    │                      ├─controller
-    │                      └─dto
-    └─test
-        └─java
-            └─site
-                └─nonestep
-                    └─idontwantwalk
-```
-
-
-<br>
-
-
-## 배포가이드
-### 1. 다음과 같이 application.yml을 준비하여, resource 폴더에 넣어줍니다.
-```
-server:
-  port: 8080
-  servlet:
-    context-path: /nonestep
-    session:
-      timeout: 1800
-
-spring:
-  application:
-    name: idontwantwalk
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://{mysql ip}:{mysql port}/nonestepdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: {mysql id}
-    password: {mysql 비밀번호}
-  jpa:
-    show-sql: true
-    format_sql: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: true
-        use_sql_comments: true
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  # multipart
-  servlet:
-    multipart:
-      max-file-size: 20MB
-      max-request-size: 500MB
-auth:
-  weather: {초단기예보 키}
-  odsay: {오디세이 키}
-  daejeonbike: {대전 자전거 키}
-  seoulbike: {서울 자전거 키}
-  sk: {sk api 키}
-  phone: {발신 전화번호 (형식 : 010xxxxxxxx)}
-  coolsmsapikey : {CoolSMS 키}
-  coolsmssecretkey : {CoolSMS 키}
-  server-url : {현재 사이트 url}
-  redirect-url: {소셜 로그인 후 리다이렉트할 url}
-  credentials:
-    aws:
-      id: {S3를 위한 키}
-      secret: {S3를 위한 키}
-    kakao:
-      id: {카카오 키}
-      secret:
-    naver:
-      id: {네이버 키}
-      secret: {네이버 키}
-logging:
-  level:
-    root: INFO
-
-```
-각 key값들을 해당 사이트에 가입하여 기입합니다.
-- 공공데이터(기상청_초단기예보) : https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15084084
-- 오디세이 : https://lab.odsay.com/
-- 대전자전거(타슈) : https://bike.tashu.or.kr/noticeDetail.do?seq=28
-- 서울자전거 : https://data.seoul.go.kr/dataList/OA-15493/A/1/datasetView.do
-- SK API : https://openapi.sk.com/
-- 쿨에스엠에스 : https://coolsms.co.kr/
-- S3 : https://aws.amazon.com/ko/s3/
-- 카카오 : https://developers.kakao.com/
-- 네이버 : https://developers.naver.com/main/
-
-### 2. mysql을 설치하고, nonestepdb 스키마를 생성합니다.
-그 후, sql 폴더에 존재하는 table.sql 파일을 실행하여 테이블들을 생성합니다.
-
-### 3. 이제 spring을 동작하면 구동합니다.
