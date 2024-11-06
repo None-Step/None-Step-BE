@@ -1,7 +1,7 @@
  
 # 한 발자국도 걸을 수 없다
 [![한발자국도걸을수없다](https://github.com/user-attachments/assets/e954930e-58cf-4382-884e-263f4b15cdea)](https://www.youtube.com/watch?v=syRB6I2_28w)
-💡 이미지 클릭 시, 이번역 소개 영상 페이지로 이동합니다. _youtube_
+💡 이미지 클릭 시, 이번역 소개 영상 페이지로 이동합니다. _youtube_ <br>
 💡 기능별 GIF가 있으니, 잠시 기다려주세요.
 
 <br>
