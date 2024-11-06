@@ -968,5 +968,6 @@ logging:
 
 <br>
 
+
 ## 📄 라이선스
 * Apache License 2.0, Copyright (c) 2024 NONESTEP, see this [link](https://github.com/None-Step/None-Step-BE/blob/main/LICENSE) for more details
